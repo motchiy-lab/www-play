@@ -1,0 +1,21 @@
+header{
+  min-width: 100%;
+}
+
+.pc-mode {
+  display: inline;
+}
+
+.sp-mode {
+  display: none;
+}
+
+@media (max-width:1000px) {
+  .pc-mode {
+    display: none !important;
+  }
+
+  .sp-mode {
+    display: inline !important;
+  }
+}
