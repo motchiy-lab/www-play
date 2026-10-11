@@ -1,0 +1,43 @@
+---
+import "styles/mochi.css";
+import MainLayout from "layouts/Main.astro";
+---
+
+<MainLayout
+    title="Heiki's Motchii Clicker - Play on Heiki!"
+    ,
+    description="クリック&放置で増え続ける餅！テンポよく成長する爽快感と、どんどん加速するインフレがクセになる、中毒性アリなクッキークリッカーフォーク！"
+    ,tags="ミニゲーム,HTML,クッキークリッカー"
+>
+    <div id="game">
+        <div id="left">
+            <div id="cookie">餅</div>
+            <div id="count">0</div>
+            <div id="cps">0 / sec</div>
+        </div>
+
+        <div id="right">
+            <div id="tabs">
+                <div class="tab active" onclick="openTab('buildings',this)">
+                    Buildings
+                </div>
+                <div class="tab" onclick="openTab('upgrades',this)">
+                    Upgrades
+                </div>
+                <div class="tab" onclick="openTab('items',this)">
+                    Items
+                </div>
+                <div class="tab" onclick="openTab('achievements',this)">
+                    Achievements
+                </div>
+            </div>
+
+            <div id="panel"></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="mochi.js" defer></script>
+    <div id="tooltip"></div>
+</MainLayout>
