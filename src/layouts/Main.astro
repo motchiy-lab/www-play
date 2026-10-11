@@ -6,7 +6,7 @@ import "styles/style.css";
 import Header from "components/Header.astro";
 import Footer from "components/Footer.astro";
 
-const { title, description } = Astro.props;
+const { title, description, tags } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,7 +16,7 @@ const { title, description } = Astro.props;
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta name="keywords" content="ミニゲーム,HTML" />
+        <meta name="keywords" content={tags} />
         <link rel="icon" href="site_assets/favicon.png" type="image/png" />
 
         <meta property="og:title" content={title} />
