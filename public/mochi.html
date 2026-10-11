@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Heiki's Motchii Clicker - Play on Heiki!</title>
+
+<meta name="description" content="クリック&放置で増え続ける餅！テンポよく成長する爽快感と、どんどん加速するインフレがクセになる、中毒性アリなクッキークリッカーフォーク！">
+<meta name="keywords" content="ミニゲーム,HTML,クッキークリッカー">
+<link rel="icon" href="site_assets/favicon.png" type="image/png">
+
+<head prefix="og: https://ogp.me/ns#">
+
+<meta property="og:title" content="Heiki's Motchii Clicker - Play on Heiki!" />
+<meta property="og:description" content="クリック&放置で増え続ける餅！テンポよく成長する爽快感と、どんどん加速するインフレがクセになる、中毒性アリなクッキークリッカーフォーク！" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://play.motchiy.com/mochi" />
+<meta property="og:image" content="https://play.motchiy.com/site_assets/ogp_mochi.png" />
+<meta property="og:site_name" content="Play on Heiki!" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Heiki's Motchii Clicker - Play on Heiki!" />
+<meta name="twitter:description" content="クリック&放置で増え続ける餅！テンポよく成長する爽快感と、どんどん加速するインフレがクセになる、中毒性アリなクッキークリッカーフォーク！" />
+<meta name="twitter:image" content="https://play.motchiy.com/site_assets/ogp_mochi.png" />
+
+<link rel="stylesheet" href="mochi.css">
+<link rel="stylesheet" href="games.css">
+<?php include __DIR__ . "/head.php"; ?>
+</head>
+
+<body>
+<?php include __DIR__ . "/header.php"; ?>
+
+<div id="game">
+
+<div id="left">
+<div id="cookie">餅</div>
+<div id="count">0</div>
+<div id="cps">0 / sec</div>
+</div>
+
+<div id="right">
+
+<div id="tabs">
+<div class="tab active" onclick="openTab('buildings',this)">Buildings</div>
+<div class="tab" onclick="openTab('upgrades',this)">Upgrades</div>
+<div class="tab" onclick="openTab('items',this)">Items</div>
+<div class="tab" onclick="openTab('achievements',this)">Achievements</div>
+</div>
+
+<div id="panel"></div>
+
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+const panel=document.getElementById("panel")
+const count=document.getElementById("count")
+const cps=document.getElementById("cps")
+const cookie=document.getElementById("cookie")
+
+function formatNumber(n){
+
+n=BigInt(n)
+
+const units=[
+[10n**68n,"無量大数"],
+[10n**64n,"不可思議"],
+[10n**60n,"那由他"],
+[10n**56n,"阿僧祇"],
+[10n**52n,"恒河沙"],
+[10n**48n,"極"],
+[10n**44n,"載"],
+[10n**40n,"正"],
+[10n**36n,"澗"],
+[10n**32n,"溝"],
+[10n**28n,"穣"],
+[10n**24n,"秭"],
+[10n**20n,"垓"],
+[10n**16n,"京"],
+[10n**12n,"兆"],
+[10n**8n,"億"],
+[10n**4n,"万"]
+];
+
+for(const u of units){
+
+if(n>=u[0]){
+
+let val=Number(n/(u[0]/100n))/100
+return val+u[1]
+
+}
+
+}
+
+return n.toString()
+
+}
+
+let game={
+
+cookies:0n,
+clickPower:1n,
+
+stats:{
+clicks:0n,
+buildingsBought:0n,
+upgradesBought:0n
+},
+
+buildings:[
+{name:"バイトたくたん",cost:30n,cps:1n,owned:0n,desc:"安価な労働力。時には機械に劣るかもしれないが、やはり人の手で作る餅が安心できる。",flavor:"ぜひ、Twitterで@2nStPvpFot9537をフォローしよう！"},
+{name:"農場",cost:100n,cps:4n,owned:0n,desc:"餅を栽培する農場。とても効率よく餅の収穫ができる。",flavor:"餅米を田んぼで育てる？　そうではない、この餅は木になる実なのだ。"},
+{name:"工場",cost:500n,cps:20n,owned:0n,desc:"餅を全自動で製造する工場。無数のマシンが超高速で餅をつく。",flavor:"多少の温かみを犠牲に、利益は増えていく。"},
+{name:"西日本",cost:2000n,cps:50n,owned:0n,desc:"日本の西側の半分。東日本の価格が上がっても、こちらを安価で購入できる。",flavor:"西日本では餅は丸いらしい。"},
+{name:"東日本",cost:2000n,cps:50n,owned:0n,desc:"日本の東側の半分。西日本の価格が上がっても、こちらを安価で購入できる。",flavor:"東日本では角餅が主流らしい。"},
+{name:"覚醒たくたん",cost:10000n,cps:300n,owned:0n,desc:"覚醒した労働力。SSランクのたくたん。",flavor:"インフレはどこでも避けがたいものだ。"},
+{name:"超覚醒たくたん",cost:50000n,cps:1000n,owned:0n,desc:"さらに覚醒した労働力。SSSランクに上がり、さらに生産性が上昇した。",flavor:"とはいえこのゲームはそもそもインフレを楽しむゲームではある。"},
+{name:"邪術ラボ",cost:3000000n,cps:2500n,owned:0n,desc:"邪術ラボ。怪しげな術を用いて餅を作っているんだそう。",flavor:"「僕の【旧き氷域の邪術】の出番かな。……違う？」― さいほうへいき"},
+{name:"最高裁判所",cost:5500000n,cps:4000n,owned:0n,desc:"最高裁判所では、裁判の結果を左右する賄賂に餅が使われる。",flavor:"「その収益の一部を君に分けてやるという訳さ」― 『最高裁』"},
+{name:"餅工場惑星",cost:10000000n,cps:9500n,owned:0n,desc:"いっそのこと新たに星を作る。広大な面積を生産に費やせる。",flavor:"人口爆発の問題を、居住地の提供と食料の生産という二つのアプローチで解決させた。"},
+{name:"ぺったんうさぎ",cost:70000000n,cps:12000n,owned:0n,desc:"月で餅をついてくれるうさぎさんを雇おう。",flavor:"「……もう一度『月の観手』する必要はなさそうだね」― Motchiy"},
+{name:"バイト干支",cost:250000000n,cps:25000n,owned:0n,desc:"そこそこ高価な労働力。その業績はたくたんの比ではない。",flavor:"「別にそのうち俺UZランクになるから！！」― たくたん"},
+{name:"裏・最高裁判所",cost:600000000n,cps:85000n,owned:0n,desc:"地下闘技場とか闇オークションとかみたいなノリの裁判所。",flavor:"「こちらは権力者しか利用しないから、収益も相応に高いのだよ」― 『最高裁』"},
+{name:"山本の研究所",cost:1550000000n,cps:150000n,owned:0n,desc:"パーリナイ山本の研究所。しかし何を研究しているのかはよく分からない。",flavor:"「餅の研究？　違うね、あくまでアレは副産物だ。少し薬品が残留しているかもしれないな」― パーリナイ山本"},
+{name:"西邪馬台国",cost:4500000000n,cps:450000n,owned:0n,desc:"時は遡り、邪馬台国の西半分。",flavor:"卑弥呼もお餅で買収されてしまったのかもしれない。"},
+{name:"東邪馬台国",cost:4500000000n,cps:450000n,owned:0n,desc:"時は遡り、邪馬台国の東半分。",flavor:"邪馬台国の統一は、武力ではなく餅によって成し遂げられた。"},
+{name:"Motchiyサーバー",cost:10000000000n,cps:1000000n,owned:0n,desc:"このゲームをホストしているサーバー。購入すると、これより上位の施設がアンロックされる！",flavor:"「ゲームが気に入ったら寄付してね」― Motchiy"},
+{name:"[(r1)神域の二元庭(end)]",cost:82250000000n,cps:3400000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"この世界をはるかな高みから監視し、操作する神の庭園。",flavor:"「ここが僕の家です」― さいほうへいき"},
+{name:"[(r1)真覚醒たくたん(end)]",cost:23590000000n,cps:28500000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"超覚醒を更に超えた力を手にしたたくたん。",flavor:"しかし、それでも干支には届かない。"},
+{name:"[(r1)真超覚醒たくたん(end)]",cost:66550000000n,cps:74900000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"この力はもはや、Motchiyを遥かに超越せし高みに到達している。",flavor:"それでも干支のほうが強い。"},
+{name:"[(r1)虚数世界農場(end)]",cost:638350000000n,cps:208500000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"存在しない虚数の世界に、広大な餅農場を築き上げる。",flavor:"唯一の懸念は、作られた餅も虚数でできているので、現実世界に持ち出せるか、という点。"},
+{name:"[(r1)量子化Motchiyサーバー(end)]",cost:4200500000000n,cps:695800000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"量子コンピュータを超越し、そもそものハードウェア自体が超量子により作られているサーバーマシン。",flavor:"ありとあらゆる並行世界の重ね合わせにより、無限の演算速度を得た。"},
+{name:"[(r1)終末邪術ラボ(end)]",cost:7800500000000n,cps:880000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"終末を超越し、そのインスピレーションを以て再構築された邪術理論によるラボ。",flavor:"「【旧き氷域の邪術】の真髄、とくと見よ！」― さいほうへいき"},
+{name:"[(r1)覚醒干支(end)]",cost:32500500000000n,cps:1100000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"覚醒したバイト干支。覚醒たくたんのおよそ366万倍働く。",flavor:"「ふざけるなァアアア！」― たくたん"},
+{name:"[(r1)1847 シュトッベ(end)]",cost:1380000000000000n,cps:3400000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"遠いところにある小惑星。Motchiyの加護を受けているとされる。",flavor:"一説によれば、Motchiyサーバーのマスターマシンがここにあるらしい。"},
+{name:"[(r1)『楽園』ガレージ(end)]",cost:82900000000000000n,cps:8760000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"『チーム奉樂』の活動拠点……のレプリカ。面白い設備を整えれば、彼らが協力してくれるかもしれない。",flavor:"「面白そうだね！　いいんじゃない？」― ミングル"},
+{name:"[(r1)社員レノン(end)]",cost:6432950000000000000n,cps:2200000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"バイトではなく、正社員を雇う。とてもよく働くがサラリーは高い。",flavor:"本当によく働いているのだろうか？"},
+{name:"[(r1)虚構星臨装置(end)]",cost:377700000000000000000n,cps:4560000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"虚構の上に作り上げられた偽りの『餅』を、真実へ昇華させる装置。",flavor:""},
+{name:"[(r1)ハンドラ・ベルディヤの餅時計(end)]",cost:84950000000000000000000n,cps:18900000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"ハンドラ・ベルディヤ氏の作った時計。時間の進むエネルギーで餅を生産する。",flavor:"もはや水力も火力も不要！　時代は時間力だ。"},
+{name:"[(r1)小規模なMod(end)]",cost:15580000000000000000000000n,cps:47500000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"世界に小規模な機能を追加するMod。バージョンは0.0.1α。",flavor:"注：0.0.2αで修正予定のバグが334個存在している。"},
+{name:"[(r1)超覚醒干支(end)]",cost:2900000000000000000000000000n,cps:78499000000n,owned:0n,unlock(){return game.buildings[16].owned>0},unlocked:false,desc:"さらに覚醒した干支。圧倒的な労働力を見せる。",flavor:"干支は自分の生産力が高すぎて、機械がオーバーフローするのではないかと心配になった。"},
+],
+
+upgrades:[
+{name:"強化クリック",cost:100n,bought:false,effect(){game.clickPower+=1n},unlocked:true,desc:"クリック力+1。",flavor:"指を鍛え、筋肉を強化する。"},
+{name:"青銅の指",cost:500n,bought:false,effect(){game.clickPower+=20n},unlocked:true,desc:"クリック力+20。",flavor:"やはり人間には限界がある。鍛錬には見切りをつけ、素材を置き換えた。"},
+{name:"鉄の指",cost:5000n,bought:false,effect(){game.clickPower+=50n},unlocked:true,desc:"クリック力+50。",flavor:"より上質な素材へ。"},
+{name:"鋼の指",cost:10000n,bought:false,effect(){game.clickPower+=150n},unlocked:true,desc:"クリック力+150。",flavor:"頑丈な鋼は、今なお工業の根幹を占めている。"},
+{name:"ジュラルミンの指",cost:30000n,bought:false,effect(){game.clickPower+=500n},unlocked:true,desc:"クリック力+500。",flavor:"強度と軽度を十分に両立させたすごい金属。"},
+{name:"ダイヤモンドの指",cost:70000n,bought:false,effect(){game.clickPower+=1250n},unlocked:true,desc:"クリック力+1250。",flavor:"ドリルなどにも使われる最硬の物質。"},
+{name:"ウルトラダイヤモンドの指",cost:120000n,bought:false,effect(){game.clickPower+=2500n},unlocked:true,desc:"クリック力+2500。",flavor:"ダイヤモンドをさらに強化し、さらなる効率を手に入れた。"},
+{name:"ミラクルダイヤモンドの指",cost:350000n,bought:false,effect(){game.clickPower+=5000n},unlocked:true,desc:"クリック力+5000。",flavor:"空気との摩擦で発火するスピードにも耐えられる！"},
+{name:"邪術ダイヤモンドの指",cost:4000000n,bought:false,effect(){game.clickPower+=8000n},unlocked:true,desc:"クリック力+8000。",flavor:"さあ、科学に見切りをつけたら次は邪術だ。"},
+{name:"超邪術ダイヤモンドの指",cost:7850000n,bought:false,effect(){game.clickPower+=20000n},unlocked:true,desc:"クリック力+20000。",flavor:"【旧き氷域の邪術】に終わりはない。"},
+
+{name:"たくたん改造",cost:1000n,bought:false,unlock(){return game.buildings[0].owned>0},effect(){game.buildings[0].cps+=2n},unlocked:false,desc:"バイトたくたんの生産性+2。",flavor:"たくたんはサイボーグになった。"},
+{name:"たくたん魔改造",cost:10000n,bought:false,unlock(){return game.upgrades[10].bought},effect(){game.buildings[0].cps+=8n},unlocked:false,desc:"バイトたくたんの生産性+16。",flavor:"さらに高性能な設備を取り入れよう。"},
+{name:"たくたん絶改造",cost:100000n,bought:false,unlock(){return game.upgrades[11].bought},effect(){game.buildings[0].cps+=128n},unlocked:false,desc:"バイトたくたんの生産性+128。",flavor:"かなりの部分がメカメカしくなっている。"},
+{name:"たくたん爆改造",cost:1000000n,bought:false,unlock(){return game.upgrades[12].bought},effect(){game.buildings[0].cps+=1024n},unlocked:false,desc:"バイトたくたんの生産性+1024。",flavor:"世の中には『テセウスの船』という話があるが……。"},
+{name:"たくたん神改造",cost:100000000n,bought:false,unlock(){return game.upgrades[13].bought},effect(){game.buildings[0].cps+=8192n},unlocked:false,desc:"バイトたくたんの生産性+8192。",flavor:"もはや人造の天使とでもいうべき姿だ。"},
+{name:"たくたん極改造",cost:10000000000n,bought:false,unlock(){return game.upgrades[14].bought},effect(){game.buildings[0].cps+=32768n},unlocked:false,desc:"バイトたくたんの生産性+32768。",flavor:"餅作りに特化した金属塊になりつつある。"},
+{name:"たくたん天改造",cost:1000000000000n,bought:false,unlock(){return game.upgrades[15].bought},effect(){game.buildings[0].cps+=262144n},unlocked:false,desc:"バイトたくたんの生産性+262144。",flavor:"もはや人間とは呼べないのかもしれない。"},
+{name:"たくたん超改造",cost:100000000000000n,bought:false,unlock(){return game.upgrades[16].bought},effect(){game.buildings[0].cps+=2097152n},unlocked:false,desc:"バイトたくたんの生産性+2097152。",flavor:"脳にまで改造が及ぶ。たくたんの自我は薄れている。"},
+{name:"たくたん廻改造",cost:10000000000000000n,bought:false,unlock(){return game.upgrades[17].bought},effect(){game.buildings[0].cps+=16777216n},unlocked:false,desc:"バイトたくたんの生産性+16777216。",flavor:"ついに全てのパーツが機械化してしまった。"},
+{name:"たくたん黎改造",cost:1000000000000000000n,bought:false,unlock(){return game.upgrades[18].bought},effect(){game.buildings[0].cps+=134217728n},unlocked:false,desc:"バイトたくたんの生産性+134217728。",flavor:"はじめから餅生産機を作るのと大差ないのでは？"}
+],
+
+items:[
+{name:"たくたんフロストコーヒー",cost:500n,owned:0n,effect(){game.clickPower+=2n},unlocked:true,desc:"クリック力+2。",flavor:"たくたんは甘味料を体に入れ込む。"},
+{name:"アーチャウ茶",cost:4000n,owned:0n,unlock(){return game.clickPower>=100n},effect(){game.clickPower+=16n},unlocked:false,desc:"クリック力+16。",flavor:"Tenorで『Ahchaw Tea』と検索してみよう。"},
+{name:"無調整竹ミルク",cost:30000n,owned:0n,unlock(){return game.clickPower>=1000n},effect(){game.clickPower+=128n},unlocked:false,desc:"クリック力+128。",flavor:"たけのこ？　違う、普通に竹だ。硬い竹。"},
+{name:"竹カフェオレフラッペ",cost:250000n,owned:0n,unlock(){return game.clickPower>=10000n},effect(){game.clickPower+=1024n},unlocked:false,desc:"クリック力+1024。",flavor:"無調整竹ミルクよりもはるかに味がマシになった。"},
+{name:"Motchiyのペースト",cost:1000000n,owned:0n,unlock(){return game.clickPower>=50000n},effect(){game.clickPower+=8192n},unlocked:false,desc:"クリック力+8192。",flavor:"鯖主を潰してペーストにするとは、なんという不敬。"},
+{name:"液状化最高裁",cost:1850000n,owned:0n,unlock(){return game.clickPower>=300000n},effect(){game.clickPower+=16384n},unlocked:false,desc:"クリック力+16384。",flavor:"どこかの宗教が修行に使うらしい。"},
+{name:"液状化最高裁EXTRA",cost:7000000n,owned:0n,unlock(){return game.clickPower>=1000000n},effect(){game.clickPower+=65536n},unlocked:false,desc:"クリック力+65536。",flavor:"ふつうの液状化最高裁に慣れていないと、これに手を出してはいけない……。"},
+
+{name:"星声",cost:1000n,owned:0n,unlock(){return game.buildings[0].owned>=1},effect(){game.buildings[0].cps+=1n},unlocked:false,desc:"バイトたくたんの生産性+1。",flavor:"カカロの凸を進めよう。"},
+{name:"月相",cost:10000n,owned:0n,unlock(){return game.buildings[0].owned>=1},effect(){game.buildings[0].cps+=3n},unlocked:false,desc:"バイトたくたんの生産性+3。",flavor:"ついでに凌陽も。"},
+
+{name:"ヌサ・ペニダ島クッキー",cost:10000n,owned:0n,unlock(){return game.buildings[0].cost>=50000n},effect(){game.buildings[0].cost=(game.buildings[0].cost*95n-100n)/100n},unlocked:false,desc:"バイトたくたんの現在価格-5%、さらに-100。",flavor:"インドネシアにあるヌサ・ペニダ島の形をもしたクッキー。どうしてこの島がチョイスされたのかはわからない。"},
+{name:"大ニコバル島クッキー",cost:30000n,owned:0n,unlock(){return game.buildings[1].cost>=150000n},effect(){game.buildings[1].cost=(game.buildings[1].cost*95n-100n)/100n},unlocked:false,desc:"農場の現在価格-5%、さらに-100。",flavor:"インド領最南端の島、それが大ニコバル島。"},
+{name:"フリンダース島クッキー",cost:90000n,owned:0n,unlock(){return game.buildings[2].cost>=450000n},effect(){game.buildings[2].cost=(game.buildings[2].cost*95n-100n)/100n},unlocked:false,desc:"工場の現在価格-5%、さらに-100。",flavor:"オーストラリア領の島、人口はおよそ千人らしい。"},
+
+{name:"[(horaku)『[(ruby)雪色の火花[(rt)ホワイト・コーラス(/rt)](/ruby)]』(end)]",cost:100000000000000000n,owned:0n,unlock(){return game.buildings[25].owned>0},effect(){game.clickPower=(game.clickPower*101n)/100n},unlocked:false,desc:"特別なカクテル。クリック力+1%。",flavor:"「ここには面白いものがいっぱいあるね！　ためしに竹ミルクでカクテルを作ってみたけど」― ミングル"},
+{name:"[(horaku)『[(ruby)コトバの質量[(rt)ネイビー・ダイアリー(/rt)](/ruby)]』(end)]",cost:100000000000000000n,owned:0n,unlock(){return game.buildings[25].owned>0},effect(){game.buildings[16].cps=(game.buildings[16].cps*108n)/100n},unlocked:false,desc:"特別なカクテル。Motchiyサーバーの生産性+8%。",flavor:"ミングルは液状化最高裁を用いてカクテルを作ろうとしていたが、さすがに静止が入ったので無難な材料に落ち着いた。"},
+{name:"[(horaku)『[(ruby)楽園に降る霧[(rt)フォー・レイン(/rt)](/ruby)]』(end)]",cost:1500000000000000000n,owned:0n,unlock(){return game.buildings[25].owned>0},effect(){game.buildings[25].cps=(game.buildings[25].cps*110n)/100n},unlocked:false,desc:"特別なカクテル。『楽園』ガレージの生産性+10%。",flavor:""},
+],
+
+achievements:[
+{id:"click1",name:"ファーストペンギン",desc:"1回クリックする。",unlocked:false},
+{id:"click10",name:"バッチ！",desc:"10回クリックする。",unlocked:false},
+{id:"click100",name:"「まだまだ序の口」",desc:"100回クリックする。",unlocked:false},
+{id:"click314",name:"丸餅",desc:"314回クリックする。",unlocked:false},
+{id:"click777",name:"ラッキー！",desc:"777回クリックする。",unlocked:false},
+{id:"click1000",name:"「個人消費には向かない……」",desc:"1000回クリックする。",unlocked:false},
+{id:"click10000",name:"村ひとつ養える",desc:"10000回クリックする。",unlocked:false},
+{id:"click65535",name:"16bitの限界",desc:"65535回クリックする。",unlocked:false},
+{id:"click100000",name:"腱鞘炎もいとわない",desc:"100000回クリックする。",unlocked:false},
+{id:"click1000000",name:"「クリックに人生を費やした」",desc:"1000000回クリックする。",unlocked:false},
+
+{id:"own_takutan",name:"雇用契約",desc:"たくたんを雇用する。",unlocked:false},
+{id:"own_takutan10",name:"いい企業",desc:"たくたんを10人雇用する。",unlocked:false},
+{id:"own_takutan101",name:"大企業！",desc:"たくたんを101人雇用する。",unlocked:false},
+
+{id:"own_farm",name:"クワとスキ",desc:"農園を購入する。",unlocked:false},
+{id:"own_farm10",name:"大規模農家",desc:"農園を10個購入する。",unlocked:false},
+{id:"own_farm100",name:"「土地が足りない……」",desc:"農園を100個購入する。",unlocked:false},
+
+{id:"own_factory",name:"産業革命",desc:"工場を購入する。",unlocked:false},
+{id:"own_factory10",name:"立派な産業都市",desc:"工場を10個購入する。",unlocked:false},
+{id:"own_factory100",name:"「環境問題は？」",desc:"工場を100個購入する。",unlocked:false},
+
+{id:"own_west",name:"「西風の果てで」",desc:"西日本を購入する。",unlocked:false},
+{id:"own_west10",name:"超えて行く・西",desc:"西日本を10個購入する。",unlocked:false},
+{id:"own_east",name:"「極東からの餅」",desc:"東日本を購入する。",unlocked:false},
+{id:"own_east10",name:"超えて行く・東",desc:"西日本を10個購入する。",unlocked:false},
+
+{id:"own_sstakutan",name:"インフレの予兆",desc:"覚醒たくたんを雇用する。",unlocked:false},
+{id:"own_sstakutan10",name:"「問題ないさ」",desc:"覚醒たくたんを10人雇用する。",unlocked:false},
+{id:"own_sstakutan100",name:"「SSランク……」",desc:"覚醒たくたんを100人雇用する。",unlocked:false},
+
+{id:"own_ssstakutan",name:"健全な成長",desc:"超覚醒たくたんを雇用する。",unlocked:false},
+{id:"own_ssstakutan10",name:"「問題……ない」",desc:"超覚醒たくたんを10人雇用する。",unlocked:false},
+{id:"own_ssstakutan100",name:"「次はZ？」",desc:"超覚醒たくたんを100人雇用する。",unlocked:false},
+
+{id:"own_evil",name:"怪しい製品",desc:"邪術ラボを設立する。",unlocked:false},
+{id:"own_evil10",name:"餅創りの邪術",desc:"邪術ラボを10棟設立する。",unlocked:false},
+
+{id:"own_court",name:"「俺が法律の最高峰だ」",desc:"最高裁判所を設立する。",unlocked:false},
+{id:"own_court10",name:"「六法全書で殴る」",desc:"最高裁判所を10棟設立する。",unlocked:false},
+
+{id:"own_planet",name:"「土地がないなら……」",desc:"餅工場惑星を製造する。",unlocked:false},
+{id:"own_planet10",name:"太陽より大きい！",desc:"餅工場惑星を10個製造する。",unlocked:false},
+
+{id:"own_rabbit",name:"「討伐しなかったっけ？」",desc:"ぺったんうさぎを雇用する。",unlocked:false},
+{id:"own_rabbit10",name:"ニンジン代もばかにならない",desc:"ぺったんうさぎを10匹雇用する。",unlocked:false},
+
+{id:"own_eto",name:"@jingyunlrn46010",desc:"バイト干支を雇用する。",unlocked:false},
+{id:"own_eto10",name:"「別に餅とかどうでもいいけど」",desc:"バイト干支を10人雇用する。",unlocked:false},
+
+{id:"own_truecourt",name:"「やり直しだ」",desc:"裏・最高裁判所を設立する。",unlocked:false},
+{id:"own_truecourt10",name:"所詮正義は慈悲による",desc:"裏・最高裁判所を10棟設立する。",unlocked:false},
+
+{id:"own_yamamotolab",name:"断定的",desc:"山本の研究所を設立する。",unlocked:false},
+{id:"own_yamamotolab10",name:"紅色",desc:"山本の研究所を10棟設立する。",unlocked:false},
+
+{id:"own_westyama",name:"「時を戻そう……」・西",desc:"西邪馬台国を手中に収める。",unlocked:false},
+{id:"own_westyama10",name:"支配者・西",desc:"西邪馬台国を10個手中に収める。",unlocked:false},
+{id:"own_eastyama",name:"「時を戻そう……」・東",desc:"東邪馬台国を手中に収める。",unlocked:false},
+{id:"own_eastyama10",name:"支配者・東",desc:"東邪馬台国を10個手中に収める。",unlocked:false},
+
+{id:"own_motchiy",name:"「ここからだ」",desc:"Motchiyサーバーを購入する。",unlocked:false},
+{id:"own_motchiy100",name:"「……アッハッハッハッハ！」",desc:"Motchiyサーバーを100台購入する。",unlocked:false}
+]
+
+}
+
+let tab="buildings"
+
+function isUnlocked(obj){
+if(!obj.unlock) return true
+return obj.unlock()
+}
+
+function updateUnlocks(){
+
+game.buildings.forEach(b=>{
+if(!b.unlocked && b.unlock && b.unlock()){
+b.unlocked = true
+}
+})
+
+game.upgrades.forEach(u=>{
+if(!u.unlocked && u.unlock && u.unlock()){
+u.unlocked = true
+}
+})
+
+game.items.forEach(it=>{
+if(!it.unlocked && it.unlock && it.unlock()){
+it.unlocked = true
+}
+})
+
+render()
+
+}
+
+
+function allUnlock(){
+  game.buildings.forEach(b=>{b.unlocked = true})
+  game.upgrades.forEach(u=>{u.unlocked = true})
+  game.items.forEach(it=>{it.unlocked = true})
+}
+
+const tooltip = document.getElementById("tooltip");
+
+function showTooltip(e, title, desc, flavor){
+
+  tooltip.innerHTML =
+    "<b>"+title+"</b><br>"+desc+
+    (flavor ? "<span class='flavor'>"+flavor+"</span>" : "");
+  tooltip.style.opacity = 0;
+  tooltip.style.display = "block";
+
+  let tooltipWidth = tooltip.offsetWidth;
+  let screenWidth = window.innerWidth;
+
+  let x = e.pageX + 10;
+  let y = e.pageY + 10;
+  if(x + tooltipWidth > screenWidth){
+    x = e.pageX - tooltipWidth - 10;
+  }
+  tooltip.style.left = x + "px";
+  tooltip.style.top  = y + "px";
+  tooltip.style.opacity = 1;
+}
+
+function moveTooltip(e){
+
+  let tooltipWidth = tooltip.offsetWidth;
+  let screenWidth = window.innerWidth;
+
+  let x = e.pageX + 10;
+  let y = e.pageY + 10;
+
+  if(x + tooltipWidth > screenWidth){
+    x = e.pageX - tooltipWidth - 10;
+  }
+
+  tooltip.style.left = x + "px";
+  tooltip.style.top  = y + "px";
+}
+
+function hideTooltip(){
+  tooltip.style.opacity = 0;
+}
+
+function innerHTMLReplacing(text){
+  text = text.replace("[(red)", "<span style='color:red'>");
+  text = text.replace("[(blue)", "<span style='color:blue'>");
+  text = text.replace("[(green)", "<span style='color:green'>");
+  text = text.replace("[(yellow)", "<span style='color:yellow'>");
+  text = text.replace("[(purple)", "<span style='color:purple'>");
+  text = text.replace("[(cyan)", "<span style='color:cyan'>");
+  text = text.replace("[(pink)", "<span style='color:pink'>");
+
+  text = text.replace("[(r1)", "<span style='color:#b0e5eb'>");
+  text = text.replace("[(r2)", "<span style='color:#aebcf5'>");
+  text = text.replace("[(r3)", "<span style='color:#f5f5ae'>");
+  text = text.replace("[(r4)", "<span style='color:#f7d49c'>");
+
+  text = text.replace("[(horaku)", "<span style='color:#b9fae6'>");
+
+  text = text.replace("[(ruby)", "<ruby>");
+  text = text.replace("(/ruby)]", "</ruby>");
+  text = text.replace("[(rt)", "<rt>");
+  text = text.replace("(/rt)]", "</rt>");
+  
+  text = text.replace("(end)]", "</span>");
+  return text;
+}
+
+function innerHTMLRemoving(text){
+  text = text.replace("[(red)", "");
+  text = text.replace("[(blue)", "");
+  text = text.replace("[(green)", "");
+  text = text.replace("[(yellow)", "");
+  text = text.replace("[(purple)", "");
+  text = text.replace("[(cyan)", "");
+  text = text.replace("[(pink)", "");
+
+  text = text.replace("[(r1)", "");
+  text = text.replace("[(r2)", "");
+  text = text.replace("[(r3)", "");
+  text = text.replace("[(r4)", "");
+
+  text = text.replace("[(horaku)", "");
+
+  text = text.replace("[(ruby)", "");
+  text = text.replace("(/ruby)]", "");
+  text = text.replace("[(rt)", "(");
+  text = text.replace("(/rt)]", ")");
+  
+  text = text.replace("(end)]", "");
+  return text;
+}
+
+function openTab(t,el){
+
+tab=t
+
+document.querySelectorAll(".tab")
+.forEach(x=>x.classList.remove("active"))
+
+el.classList.add("active")
+
+render()
+
+}
+
+function unlockAchievement(id){
+
+let a = game.achievements.find(x=>x.id===id)
+
+if(!a || a.unlocked) return
+
+a.unlocked = true
+toast("Achievement: "+a.name)
+
+render()
+
+}
+
+function checkAchievements(){
+if(game.stats.clicks>=1n){unlockAchievement("click1")}
+if(game.stats.clicks>=10n){unlockAchievement("click10")}
+if(game.stats.clicks>=100n){unlockAchievement("click100")}
+if(game.stats.clicks>=314n){unlockAchievement("click314")}
+if(game.stats.clicks>=777n){unlockAchievement("click777")}
+if(game.stats.clicks>=1000n){unlockAchievement("click1000")}
+if(game.stats.clicks>=10000n){unlockAchievement("click10000")}
+if(game.stats.clicks>=65535n){unlockAchievement("click65535")}
+if(game.stats.clicks>=100000n){unlockAchievement("click100000")}
+if(game.stats.clicks>=1000000n){unlockAchievement("click1000000")}
+
+if(game.buildings[0].owned>=1){unlockAchievement("own_takutan")}
+if(game.buildings[0].owned>=10){unlockAchievement("own_takutan10")}
+if(game.buildings[0].owned>=101){unlockAchievement("own_takutan101")}
+
+if(game.buildings[1].owned>=1){unlockAchievement("own_farm")}
+if(game.buildings[1].owned>=10){unlockAchievement("own_farm10")}
+if(game.buildings[1].owned>=101){unlockAchievement("own_farm100")}
+
+if(game.buildings[2].owned>=1){unlockAchievement("own_factory")}
+if(game.buildings[2].owned>=10){unlockAchievement("own_factory10")}
+if(game.buildings[2].owned>=101){unlockAchievement("own_factory100")}
+
+if(game.buildings[3].owned>=1){unlockAchievement("own_west")}
+if(game.buildings[3].owned>=10){unlockAchievement("own_west10")}
+if(game.buildings[4].owned>=1){unlockAchievement("own_east")}
+if(game.buildings[4].owned>=10){unlockAchievement("own_east10")}
+
+if(game.buildings[5].owned>=1){unlockAchievement("own_sstakutan")}
+if(game.buildings[5].owned>=10){unlockAchievement("own_sstakutan10")}
+if(game.buildings[5].owned>=101){unlockAchievement("own_sstakutan100")}
+
+if(game.buildings[6].owned>=1){unlockAchievement("own_ssstakutan")}
+if(game.buildings[6].owned>=10){unlockAchievement("own_ssstakutan10")}
+if(game.buildings[6].owned>=101){unlockAchievement("own_ssstakutan100")}
+
+if(game.buildings[7].owned>=1){unlockAchievement("own_evil")}
+if(game.buildings[7].owned>=10){unlockAchievement("own_evil10")}
+
+if(game.buildings[8].owned>=1){unlockAchievement("own_court")}
+if(game.buildings[8].owned>=10){unlockAchievement("own_court10")}
+
+if(game.buildings[9].owned>=1){unlockAchievement("own_planet")}
+if(game.buildings[9].owned>=10){unlockAchievement("own_planet10")}
+
+if(game.buildings[10].owned>=1){unlockAchievement("own_rabbit")}
+if(game.buildings[10].owned>=10){unlockAchievement("own_rabbit10")}
+
+if(game.buildings[11].owned>=1){unlockAchievement("own_eto")}
+if(game.buildings[11].owned>=10){unlockAchievement("own_eto10")}
+
+if(game.buildings[12].owned>=1){unlockAchievement("own_truecourt")}
+if(game.buildings[12].owned>=10){unlockAchievement("own_truecourt10")}
+
+if(game.buildings[13].owned>=1){unlockAchievement("own_yamamotolab")}
+if(game.buildings[13].owned>=10){unlockAchievement("own_yamamotolab10")}
+
+if(game.buildings[14].owned>=1){unlockAchievement("own_westyama")}
+if(game.buildings[14].owned>=10){unlockAchievement("own_westyama10")}
+if(game.buildings[15].owned>=1){unlockAchievement("own_eastyama")}
+if(game.buildings[15].owned>=10){unlockAchievement("own_eastyama10")}
+
+if(game.buildings[16].owned>=1){unlockAchievement("own_motchiy")}
+if(game.buildings[16].owned>=100){unlockAchievement("own_motchiy100")}
+}
+
+function render(){
+
+count.textContent=formatNumber(game.cookies)
+cps.textContent=formatNumber(getCPS())+" / sec"
+
+if(tab==="buildings")renderBuildings()
+if(tab==="upgrades")renderUpgrades()
+if(tab==="items")renderItems()
+if(tab==="achievements")renderAchievements()
+
+}
+
+function renderBuildings(){
+
+panel.innerHTML=""
+
+game.buildings.forEach((b,i)=>{
+
+if(b.unlock && !b.unlocked) return
+
+let d=document.createElement("div")
+d.className="card"
+
+d.onmouseenter = (e)=>showTooltip(e,innerHTMLReplacing(b.name),innerHTMLReplacing(b.desc),b.flavor)
+d.onmousemove = moveTooltip
+d.onmouseleave = hideTooltip
+
+d.innerHTML=
+"<b>"+innerHTMLReplacing(b.name)+"</b><br>"+
+"Owned: "+b.owned+
+"<br>Cost: "+formatNumber(b.cost)+
+"<br>"+formatNumber(b.cps)+" cps"
+
+d.onclick=()=>buyBuilding(i)
+
+panel.appendChild(d)
+
+})
+
+}
+
+function buyBuilding(i){
+
+let b=game.buildings[i]
+
+if(game.cookies<b.cost){
+toast("餅不足🥹")
+return
+}
+
+game.cookies-=b.cost
+b.owned++
+b.cost=(b.cost*115n+50n)/100n
+toast("Bought "+innerHTMLRemoving(b.name))
+checkAchievements()
+
+render()
+
+}
+
+function buyItem(i){
+
+let it=game.items[i]
+
+if(game.cookies<it.cost){
+toast("餅不足だぞ🥹")
+return
+}
+
+game.cookies-=it.cost
+it.owned++
+
+it.effect()
+
+// Buildings風に価格上昇
+it.cost=(it.cost*115n+50n)/100n
+
+toast("Item: "+innerHTMLRemoving(it.name))
+
+render()
+
+}
+
+function renderUpgrades(){
+
+panel.innerHTML=""
+
+game.upgrades.forEach((u,i)=>{
+
+if(u.unlock && !u.unlocked) return
+
+let d=document.createElement("div")
+d.className="card"
+
+d.onmouseenter = (e)=>showTooltip(e,innerHTMLReplacing(u.name),innerHTMLReplacing(u.desc),u.flavor)
+d.onmousemove = moveTooltip
+d.onmouseleave = hideTooltip
+
+if(u.bought)d.style.opacity=".5"
+
+d.innerHTML="<b>"+innerHTMLReplacing(u.name)+"</b><br>Cost: "+formatNumber(u.cost)
+
+d.onclick=()=>buyUpgrade(i)
+
+panel.appendChild(d)
+
+})
+
+}
+
+function buyUpgrade(i){
+
+let u=game.upgrades[i]
+
+if(u.bought)return
+if(game.cookies<u.cost)return
+
+game.cookies-=u.cost
+u.effect()
+u.bought=true
+
+toast("Upgrade: "+innerHTMLRemoving(u.name))
+
+render()
+
+}
+
+function renderItems(){
+
+panel.innerHTML=""
+
+game.items.forEach((it,i)=>{
+
+if(it.unlock && !it.unlocked) return
+
+let d=document.createElement("div")
+d.className="card"
+
+d.onmouseenter = (e)=>showTooltip(e,innerHTMLReplacing(it.name),innerHTMLReplacing(it.desc),it.flavor)
+d.onmousemove = moveTooltip
+d.onmouseleave = hideTooltip
+
+d.innerHTML=
+"<b>"+innerHTMLReplacing(it.name)+"</b><br>"+
+"Owned: "+it.owned+
+"<br>Cost: "+formatNumber(it.cost)
+
+d.onclick=()=>buyItem(i)
+
+panel.appendChild(d)
+
+})
+
+}
+
+function renderAchievements(){
+
+panel.innerHTML=""
+
+game.achievements.forEach(a=>{
+
+let d=document.createElement("div")
+
+d.className="achievement"
+
+if(a.unlocked)d.classList.add("unlocked")
+
+d.innerHTML="<b>"+a.name+"</b><br>"+a.desc
+
+panel.appendChild(d)
+
+})
+
+}
+
+cookie.onclick=e=>{
+
+game.cookies+=game.clickPower
+game.stats.clicks++
+
+if(game.stats.clicks >= 10n){game.achievements[0].unlocked = true}
+checkAchievements()
+particle(e.pageX,e.pageY)
+
+render()
+
+}
+
+function particle(x,y){
+
+let p=document.createElement("div")
+
+p.className="particle"
+p.textContent="+"+formatNumber(game.clickPower)
+
+p.style.left=x+"px"
+p.style.top=y+"px"
+
+document.body.appendChild(p)
+
+setTimeout(()=>p.remove(),1000)
+
+}
+
+function getCPS(){
+
+let cps=0n
+
+game.buildings.forEach(b=>{
+cps+=b.cps*b.owned
+})
+
+return cps
+
+}
+
+function updateCounter(){
+
+count.textContent = formatNumber(game.cookies)
+cps.textContent = formatNumber(getCPS()) + " / sec"
+
+}
+
+let cookieRemainder = 0n; // 余りを保持
+
+const tick = 50; // 50ms
+
+setInterval(()=>{
+    // 1秒あたりのCPSを tick に換算して BigInt に変換
+    let cps = getCPS(); // BigInt
+    let increment = cps * BigInt(tick) / 1000n;
+    let remainder = cps * BigInt(tick) % 1000n;
+
+    game.cookies += increment;
+    cookieRemainder += remainder;
+
+    // 余りが1000以上になったら cookies に加算
+    if(cookieRemainder >= 1000n){
+        game.cookies += cookieRemainder / 1000n;
+        cookieRemainder %= 1000n;
+    }
+    updateUnlocks();
+    updateCounter();
+}, tick);
+
+function toast(msg){
+
+let t=document.getElementById("toast")
+
+t.textContent=msg
+t.className="toast show"
+
+setTimeout(()=>t.className="toast",2000)
+
+}
+
+/* SAVE */
+
+function save(){
+
+const data={
+
+cookies:game.cookies.toString(),
+clickPower:game.clickPower.toString(),
+
+stats:{
+clicks:game.stats.clicks.toString()
+},
+
+buildings:game.buildings.map(b=>({
+owned:b.owned.toString(),
+cost:b.cost.toString(),
+cps:b.cps.toString()
+})),
+
+upgrades:game.upgrades.map(u=>({
+bought:u.bought
+})),
+
+items:game.items.map(it=>({
+owned:it.owned.toString(),
+cost:it.cost.toString()
+})),
+
+achievements:game.achievements.map(a=>({
+unlocked:a.unlocked
+}))
+
+}
+
+localStorage.setItem("cookieEmpirePro",JSON.stringify(data))
+
+}
+
+/* LOAD */
+
+function load(){
+
+let s = localStorage.getItem("cookieEmpirePro")
+if(!s) return
+
+let data = JSON.parse(s)
+
+if(data.cookies) game.cookies = BigInt(data.cookies)
+if(data.clickPower) game.clickPower = BigInt(data.clickPower)
+
+if(data.stats) game.stats.clicks = BigInt(data.stats.clicks)
+
+if(data.buildings){
+
+data.buildings.forEach((b,i)=>{
+
+if(!game.buildings[i]) return
+
+game.buildings[i].owned = BigInt(b.owned)
+game.buildings[i].cost = BigInt(b.cost)
+game.buildings[i].cps = BigInt(b.cps)
+
+})
+
+}
+
+if(data.upgrades){
+
+data.upgrades.forEach((u,i)=>{
+
+if(!game.upgrades[i]) return
+
+game.upgrades[i].bought = u.bought
+
+})
+
+}
+
+if(data.items){
+
+data.items.forEach((it,i)=>{
+
+if(!game.items[i]) return
+
+game.items[i].owned = BigInt(it.owned)
+game.items[i].cost = BigInt(it.cost)
+
+})
+
+}
+
+if(data.achievements){
+
+data.achievements.forEach((a,i)=>{
+
+if(!game.achievements[i]) return
+
+game.achievements[i].unlocked = a.unlocked
+
+})
+
+}
+
+}
+
+setInterval(save,5000)
+
+load()
+render()
+
+</script>
+<div id="tooltip"></div>
+</body>
+</html>
