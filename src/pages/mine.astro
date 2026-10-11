@@ -1,0 +1,105 @@
+---
+import MainLayout from "layouts/Main.astro";
+import "styles/mine.css";
+---
+
+<MainLayout
+    title="Minesweeper: The Marvellous Motchiy - Play on Heiki!"
+    ,description="シンプルで楽しいマインスイーパー！地雷を探すこのパズルで精神を鍛えよう。"
+    ,tags="ミニゲーム,HTML,マインスイーパー"
+>
+    <body>
+        <div class="wrap">
+            <h1>Minesweeper: The Marvellous Motchiy</h1>
+
+            <div class="panel controls">
+                <div class="group">
+                    <label for="preset">プリセット</label>
+                    <select id="preset">
+                        <option value="easy">簡単</option>
+                        <option value="normal">ふつう</option>
+                        <option value="hard">難しい</option>
+                        <option value="extreme">エクストリーム</option>
+                        <option value="lunatic">ルナティック</option>
+                    </select>
+                </div>
+
+                <div class="group">
+                    <label for="width">横</label>
+                    <input
+                        type="number"
+                        id="width"
+                        value="9"
+                        min="2"
+                        max="5000"
+                    />
+                </div>
+
+                <div class="group">
+                    <label for="height">縦</label>
+                    <input
+                        type="number"
+                        id="height"
+                        value="9"
+                        min="2"
+                        max="5000"
+                    />
+                </div>
+
+                <div class="group">
+                    <label for="mines">地雷</label>
+                    <input
+                        type="number"
+                        id="mines"
+                        value="10"
+                        min="1"
+                        max="999999"
+                    />
+                </div>
+
+                <div class="group">
+                    <label>&nbsp;</label>
+                    <button id="applyPresetBtn">適用</button>
+                </div>
+
+                <div class="group">
+                    <label>&nbsp;</label>
+                    <button id="startBtn">開始 / リトライ</button>
+                </div>
+            </div>
+
+            <div class="hud">
+                <div>
+                    ⏱ タイム: <span id="timer">0</span>s
+                </div>
+                <div>
+                    💣 残り地雷: <span id="mineCount">0</span>
+                </div>
+                <div>
+                    🏁 スコア: <span id="scoreDisplay">0</span>
+                </div>
+            </div>
+
+            <div class="board-shell">
+                <div id="board" aria-label="マインスイーパー盤面"></div>
+            </div>
+
+            <div class="muted">
+                右クリック、またはスマホで長押しで旗を置けます。
+            </div>
+        </div>
+
+        <div id="overlay" class="overlay" aria-hidden="true">
+            <div class="modal">
+                <h2 id="resultTitle" class="result-title"></h2>
+                <div id="resultText" class="result-text"></div>
+                <div class="button-row">
+                    <button id="retryBtn">リトライ</button>
+                    <button id="shareBtn">Twitterで共有</button>
+                    <button id="authorBtn">作者のTwitter</button>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="/mine.js" defer></script>
+</MainLayout>
