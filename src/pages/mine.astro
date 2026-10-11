@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Minesweeper: The Marvellous Motchiy - Play on Heiki!</title>
+<meta name="description" content="シンプルで楽しいマインスイーパー！地雷を探すこのパズルで精神を鍛えよう。">
+<meta name="keywords" content="ミニゲーム,HTML,マインスイーパー">
+<link rel="icon" href="site_assets/favicon.png" type="image/png">
+
+<meta property="og:title" content="Minesweeper: The Marvellous Motchiy - Play on Heiki!" />
+<meta property="og:description" content="シンプルで楽しいマインスイーパー！地雷を探すこのパズルで精神を鍛えよう。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://play.motchiy.com/mine.html" />
+<meta property="og:image" content="https://play.motchiy.com/site_assets/ogp_mine.png" />
+<meta property="og:site_name" content="Play on Heiki!" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Minesweeper: The Marvellous Motchiy - Play on Heiki!" />
+<meta name="twitter:description" content="シンプルで楽しいマインスイーパー！地雷を探すこのパズルで精神を鍛えよう。" />
+<meta name="twitter:image" content="https://play.motchiy.com/site_assets/ogp_mine.png" />
+
+<style>
+  :root {
+    --bg: white;
+    --panel: #eee;
+    --text: black;
+    --mine-text: gray;
+    --muted: #2a2a2a;
+    --cell-closed: #eee;
+    --cell-open: #fff;
+    --border: #ccc;
+    --accent: #4da3ff;
+    --danger: #ff5c7a;
+    --success: #39d98a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrap {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 10px 14px;
+    gap: 10px;
+  }
+
+  h1 {
+    margin: 4px 0 0;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+  }
+
+  .panel {
+    width: min(100%, 1100px);
+    background: var(--panel);
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 10px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .controls {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
+  }
+
+  .controls .group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .controls label {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  input, select, button {
+    font: inherit;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #111;
+    padding: 10px 10px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .button-row {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hud {
+    width: min(100%, 1100px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 18px;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .hud span {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+
+  .board-shell {
+    width: min(100%, 1100px);
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    padding-bottom: 6px;
+  }
+
+  #board {
+    display: grid;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0 auto;
+  }
+
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--cell-closed);
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  .cell.open {
+    background: var(--cell-open);
+    cursor: default;
+  }
+
+  .cell.flagged,
+  .cell.mine {
+    background: var(--cell-open);
+  }
+
+  .cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 50;
+  }
+
+  .overlay.show {
+    display: flex;
+  }
+
+  .modal {
+    width: min(92vw, 520px);
+    background: #ccc;
+    border: 1px solid #444;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 16px 60px rgba(0,0,0,0.35);
+    animation: pop 180ms ease-out;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.96); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .result-title {
+    margin: 0 0 8px;
+    font-size: clamp(1.5rem, 4vw, 2.3rem);
+  }
+
+  .result-text {
+    margin: 0 0 14px;
+    color: #2a2a2a;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .score {
+    color: var(--success);
+    font-weight: 900;
+    font-size: 1.2rem;
+  }
+
+  .modal .button-row {
+    margin-top: 12px;
+  }
+
+  .muted {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .controls {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .button-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body><header>
+  <div class="logo">
+    <img src="https://play.motchiy.com/site_assets/hachosah_icon.png" width="32" alt="ハチョウサくんのアイコン">
+    <div style="opacity:.9">Play on Heiki - さいほうへいきのこまごまミニゲーム集！</div>
+  </div>
+  <div class="header-links">
+    <a href="https://play.motchiy.com/" class="header-link pc-mode">プレイポータル</a>
+    <a href="https://play.motchiy.com/games.html" class="header-link pc-mode">ゲームリスト</a>
+    <a href="https://play.motchiy.com/game_notes.html" class="header-link pc-mode">ゲーム雑記</a>
+    <a href="https://play.motchiy.com/about_hachosah.html" class="header-link pc-mode">ハチョウサくんについて</a>
+    <a href="https://play.motchiy.com/" class="header-link sp-mode">トップ</a>
+    <a href="https://play.motchiy.com/games.html" class="header-link sp-mode">ゲーム</a>
+    <a href="https://play.motchiy.com/game_notes.html" class="header-link sp-mode">雑記</a>
+    <a href="https://play.motchiy.com/about_hachosah.html" class="header-link sp-mode">ハチョウサくん</a>
+    <a href="https://heiki.motchiy.com/credits.html" class="header-link">クレジット</a>
+  </div>
+</header>
+  
+  <div class="wrap">
+    <h1>Minesweeper: The Marvellous Motchiy</h1>
+
+    <div class="panel controls">
+      <div class="group">
+        <label for="preset">プリセット</label>
+        <select id="preset">
+          <option value="easy">簡単</option>
+          <option value="normal">ふつう</option>
+          <option value="hard">難しい</option>
+          <option value="extreme">エクストリーム</option>
+          <option value="lunatic">ルナティック</option>
+        </select>
+      </div>
+
+      <div class="group">
+        <label for="width">横</label>
+        <input type="number" id="width" value="9" min="2" max="5000" />
+      </div>
+
+      <div class="group">
+        <label for="height">縦</label>
+        <input type="number" id="height" value="9" min="2" max="5000" />
+      </div>
+
+      <div class="group">
+        <label for="mines">地雷</label>
+        <input type="number" id="mines" value="10" min="1" max="999999" />
+      </div>
+
+      <div class="group">
+        <label>&nbsp;</label>
+        <button id="applyPresetBtn">適用</button>
+      </div>
+
+      <div class="group">
+        <label>&nbsp;</label>
+        <button id="startBtn">開始 / リトライ</button>
+      </div>
+    </div>
+
+    <div class="hud">
+      <div>⏱ タイム: <span id="timer">0</span>s</div>
+      <div>💣 残り地雷: <span id="mineCount">0</span></div>
+      <div>🏁 スコア: <span id="scoreDisplay">0</span></div>
+    </div>
+
+    <div class="board-shell">
+      <div id="board" aria-label="マインスイーパー盤面"></div>
+    </div>
+
+    <div class="muted">右クリック、またはスマホで長押しで旗を置けます。</div>
+  </div>
+
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="modal">
+      <h2 id="resultTitle" class="result-title"></h2>
+      <div id="resultText" class="result-text"></div>
+      <div class="button-row">
+        <button id="retryBtn">リトライ</button>
+        <button id="shareBtn">Twitterで共有</button>
+        <button id="authorBtn">作者のTwitter</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const presets = {
+    easy: [9, 9, 10],
+    normal: [16, 16, 40],
+    hard: [30, 16, 99],
+    extreme: [40, 25, 250],
+    lunatic: [80, 40, 1200]
+  };
+
+  const AUTHOR_TWITTER_URL = "https://twitter.com/leoved_kuru";
+  const mineImg = "mine_assets/mine.png";
+  const flagImg = "mine_assets/flag.png";
+
+  const els = {
+    preset: document.getElementById("preset"),
+    width: document.getElementById("width"),
+    height: document.getElementById("height"),
+    mines: document.getElementById("mines"),
+    applyPresetBtn: document.getElementById("applyPresetBtn"),
+    startBtn: document.getElementById("startBtn"),
+    timer: document.getElementById("timer"),
+    mineCount: document.getElementById("mineCount"),
+    scoreDisplay: document.getElementById("scoreDisplay"),
+    board: document.getElementById("board"),
+    overlay: document.getElementById("overlay"),
+    resultTitle: document.getElementById("resultTitle"),
+    resultText: document.getElementById("resultText"),
+    retryBtn: document.getElementById("retryBtn"),
+    shareBtn: document.getElementById("shareBtn"),
+    authorBtn: document.getElementById("authorBtn"),
+  };
+
+  let board = [];
+  let width = 9;
+  let height = 9;
+  let mines = 10;
+  let flagsPlaced = 0;
+  let firstClick = true;
+  let gameEnded = false;
+  let timer = 0;
+  let timerId = null;
+  let cellSize = 24;
+  let openedSafeCells = 0;
+  let totalSafeCells = 0;
+  let lastScore = 0;
+  let lastClearTime = 0;
+
+  function applyPreset() {
+    const p = presets[els.preset.value];
+    els.width.value = p[0];
+    els.height.value = p[1];
+    els.mines.value = p[2];
+  }
+
+  function clampSettings() {
+    width = Math.max(2, parseInt(els.width.value || "9", 10));
+    height = Math.max(2, parseInt(els.height.value || "9", 10));
+    mines = Math.max(1, parseInt(els.mines.value || "10", 10));
+
+    const maxMines = width * height - 1;
+    if (mines > maxMines) mines = maxMines;
+
+    els.width.value = width;
+    els.height.value = height;
+    els.mines.value = mines;
+  }
+
+  function calcCellSize() {
+    const shell = document.querySelector(".board-shell");
+    const hud = document.querySelector(".hud");
+    const controls = document.querySelector(".controls");
+    const note = document.querySelector(".muted");
+
+    const availableW = Math.max(180, window.innerWidth - 24);
+    const usedH =
+      document.querySelector("h1").offsetHeight +
+      controls.offsetHeight +
+      hud.offsetHeight +
+      note.offsetHeight +
+      72;
+
+    const availableH = Math.max(180, window.innerHeight - usedH);
+    const size = Math.floor(Math.min(availableW / width, availableH / height));
+    cellSize = Math.max(8, Math.min(32, size));
+    if (shell) shell.style.maxWidth = `${availableW}px`;
+  }
+
+  function updateHud() {
+    els.timer.textContent = String(timer);
+    els.mineCount.textContent = String(Math.max(0, mines - flagsPlaced));
+    els.scoreDisplay.textContent = String(lastScore);
+  }
+
+  function startTimer() {
+    clearInterval(timerId);
+    timer = 0;
+    els.timer.textContent = "0";
+    timerId = setInterval(() => {
+      if (gameEnded) return;
+      timer++;
+      els.timer.textContent = String(timer);
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerId);
+    timerId = null;
+  }
+
+  function createBoard() {
+    clampSettings();
+    calcCellSize();
+
+    board = [];
+    flagsPlaced = 0;
+    firstClick = true;
+    gameEnded = false;
+    timer = 0;
+    lastScore = 0;
+    lastClearTime = 0;
+    openedSafeCells = 0;
+    totalSafeCells = width * height - mines;
+
+    els.overlay.classList.remove("show");
+    els.overlay.setAttribute("aria-hidden", "true");
+    els.resultTitle.textContent = "";
+    els.resultText.textContent = "";
+
+    els.board.innerHTML = "";
+    els.board.style.gridTemplateColumns = `repeat(${width}, ${cellSize}px)`;
+    els.board.style.gap = "0px";
+
+    for (let y = 0; y < height; y++) {
+      board[y] = [];
+      for (let x = 0; x < width; x++) {
+        const cellEl = document.createElement("div");
+        cellEl.className = "cell";
+        cellEl.style.width = `${cellSize}px`;
+        cellEl.style.height = `${cellSize}px`;
+        cellEl.style.fontSize = `${Math.max(8, Math.floor(cellSize * 0.58))}px`;
+
+        const cell = {
+          mine: false,
+          open: false,
+          flag: false,
+          count: 0,
+          el: cellEl,
+        };
+        board[y][x] = cell;
+
+        let longPressTimer = null;
+        let longPressTriggered = false;
+
+        cellEl.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          toggleFlag(x, y);
+        });
+
+        cellEl.addEventListener("pointerdown", () => {
+          if (gameEnded) return;
+          longPressTriggered = false;
+          clearTimeout(longPressTimer);
+          longPressTimer = setTimeout(() => {
+            if (gameEnded) return;
+            longPressTriggered = true;
+            toggleFlag(x, y);
+          }, 380);
+        });
+
+        const cancelPress = () => {
+          clearTimeout(longPressTimer);
+        };
+
+        cellEl.addEventListener("pointerup", cancelPress);
+        cellEl.addEventListener("pointerleave", cancelPress);
+        cellEl.addEventListener("pointercancel", cancelPress);
+
+        cellEl.addEventListener("click", () => {
+          if (gameEnded) return;
+          if (longPressTriggered) {
+            longPressTriggered = false;
+            return;
+          }
+          openCell(x, y);
+        });
+
+        els.board.appendChild(cellEl);
+      }
+    }
+
+    updateHud();
+  }
+
+  function placeMines(safeX, safeY) {
+    let placed = 0;
+    while (placed < mines) {
+      const x = (Math.random() * width) | 0;
+      const y = (Math.random() * height) | 0;
+      if ((x === safeX && y === safeY) || board[y][x].mine) continue;
+      board[y][x].mine = true;
+      placed++;
+    }
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        if (board[y][x].mine) continue;
+
+        let count = 0;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            if (board[y + dy]?.[x + dx]?.mine) count++;
+          }
+        }
+        board[y][x].count = count;
+      }
+    }
+  }
+
+  function openCell(x, y) {
+    if (gameEnded) return;
+    const cell = board[y]?.[x];
+    if (!cell || cell.open || cell.flag) return;
+
+    if (firstClick) {
+      placeMines(x, y);
+      startTimer();
+      firstClick = false;
+    }
+
+    cell.open = true;
+    cell.el.classList.add("open");
+
+    if (cell.mine) {
+      cell.el.classList.add("mine");
+      cell.el.innerHTML = `<img src="${mineImg}" alt="地雷">`;
+      loseGame();
+      return;
+    }
+
+    openedSafeCells++;
+    if (cell.count > 0) {
+      cell.el.textContent = String(cell.count);
+    } else {
+      floodOpen(x, y);
+    }
+
+    if (openedSafeCells >= totalSafeCells) {
+      winGame();
+      return;
+    }
+  }
+
+  function floodOpen(startX, startY) {
+    const queue = [[startX, startY]];
+    const seen = new Set([`${startX},${startY}`]);
+
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx;
+          const ny = y + dy;
+          const key = `${nx},${ny}`;
+          const cell = board[ny]?.[nx];
+          if (!cell || seen.has(key) || cell.open || cell.flag || cell.mine) continue;
+
+          seen.add(key);
+          cell.open = true;
+          cell.el.classList.add("open");
+          openedSafeCells++;
+
+          if (cell.count > 0) {
+            cell.el.textContent = String(cell.count);
+          } else {
+            queue.push([nx, ny]);
+          }
+
+          if (openedSafeCells >= totalSafeCells) return;
+        }
+      }
+    }
+  }
+
+  function toggleFlag(x, y) {
+    if (gameEnded) return;
+    const cell = board[y]?.[x];
+    if (!cell || cell.open) return;
+
+    cell.flag = !cell.flag;
+    if (cell.flag) {
+      cell.el.classList.add("flagged");
+      cell.el.innerHTML = `<img src="${flagImg}" alt="旗">`;
+      flagsPlaced++;
+    } else {
+      cell.el.classList.remove("flagged");
+      cell.el.innerHTML = "";
+      flagsPlaced--;
+    }
+    updateHud();
+  }
+
+  function revealAllMines() {
+    for (const row of board) {
+      for (const cell of row) {
+        if (cell.mine) {
+          cell.el.classList.add("mine", "open");
+          cell.el.innerHTML = `<img src="${mineImg}" alt="地雷">`;
+        }
+      }
+    }
+  }
+
+  function computeScore() {
+    const area = width * height;
+    const density = mines / area;
+    const timeFactor = Math.max(1, lastClearTime);
+    const raw = ((area * mines) * (1 + density)) / timeFactor * 10;
+    return Math.max(1, Math.floor(raw));
+  }
+
+  function showResult(isWin) {
+    const pageUrl = location.href.split("#")[0];
+
+    els.overlay.classList.add("show");
+    els.overlay.setAttribute("aria-hidden", "false");
+
+    if (isWin) {
+      lastScore = computeScore();
+      els.scoreDisplay.textContent = String(lastScore);
+      els.resultTitle.textContent = "🎉 クリア！";
+      els.resultText.innerHTML =
+        `タイム: ${lastClearTime} 秒\n` +
+        `面積: ${width} × ${height} = ${width * height}\n` +
+        `地雷数: ${mines}\n\n` +
+        `スコア: <span class="score">${lastScore}</span>`;
+
+      els.shareBtn.style.display = "";
+      els.shareBtn.onclick = () => {
+        const text = `わーい！Play on Heikiのマインスイーパーをクリアしたよ！スコア：${lastScore}！${pageUrl} #マインスイーパー #PlayOnHeiki`;
+        const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+        window.open(tweetUrl, "_blank", "noopener,noreferrer");
+      };
+    } else {
+      els.resultTitle.textContent = "💥 ゲームオーバー";
+      els.resultText.innerHTML =
+        `タイム: ${timer} 秒\n` +
+        `面積: ${width} × ${height} = ${width * height}\n` +
+        `地雷数: ${mines}`;
+
+      els.shareBtn.style.display = "none";
+    }
+
+    els.retryBtn.onclick = () => startGame();
+    els.authorBtn.onclick = () => window.open(AUTHOR_TWITTER_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function winGame() {
+    if (gameEnded) return;
+    gameEnded = true;
+    stopTimer();
+    lastClearTime = timer;
+    lastScore = computeScore();
+    updateHud();
+    showResult(true);
+  }
+
+  function loseGame() {
+    if (gameEnded) return;
+    gameEnded = true;
+    stopTimer();
+    revealAllMines();
+    showResult(false);
+  }
+
+  function startGame() {
+    stopTimer();
+    createBoard();
+  }
+
+  els.applyPresetBtn.addEventListener("click", applyPreset);
+  els.startBtn.addEventListener("click", startGame);
+  els.retryBtn.addEventListener("click", startGame);
+
+  window.addEventListener("resize", () => {
+    if (!board.length) return;
+    calcCellSize();
+    els.board.style.gridTemplateColumns = `repeat(${width}, ${cellSize}px)`;
+    for (const row of board) {
+      for (const cell of row) {
+        cell.el.style.width = `${cellSize}px`;
+        cell.el.style.height = `${cellSize}px`;
+        cell.el.style.fontSize = `${Math.max(8, Math.floor(cellSize * 0.58))}px`;
+      }
+    }
+  });
+
+  applyPreset();
+  startGame();
+</script>
+<footer>
+  <div class="info-grid">
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb"><img src="https://heiki.motchiy.com/imgs/heikikun.png" width="40" alt="さいほうへいきのアイコン"></div>
+      <div class="info-body">
+        <div class="info-title">サイト運営: さいほうへいき</div>
+        <div class="info-text">この掲示板の制作者。フィードバック歓迎。</div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb"><img src="https://heiki.motchiy.com/imgs/motchiy.png" width="40" alt="Motchiyのアイコン"></div>
+      <div class="info-body">
+        <div class="info-title">サーバー運営: Motchiy</div>
+        <div class="info-text">サーバーの運営者。接続の問題があればこのひとを荒らしてください。</div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb">📠</div>
+      <div class="info-body">
+        <div class="info-title">コンタクト</div>
+        <div class="info-text"><a href="https://x.com/leoved_kuru" class="link-inline">さいほうへいきのTwitter</a><hr><a href="https://x.com/motchiy_tuti" class="link-inline">MotchiyのTwitter</a></div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb">🔗</div>
+      <div class="info-body">
+        <div class="info-title">関連リンク</div>
+        <div class="info-text"><a href="https://www.youtube.com/@saihou-heiki" class="link-inline">さいほうへいきのYouTube</a><hr><a class="link-inline" href="https://www.youtube.com/@motchiy_tuti">MotchiyのYouTube</a></div>
+      </div>
+    </article>
+  </div>
+  <div class="share-buttons">
+    <a class="share-btn twitter" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="icon" alt="Twitterアイコン">
+      Twitterで共有
+    </a>
+
+    <a class="share-btn facebook" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" class="icon" alt="Facebookアイコン">
+      Facebookで共有
+    </a>
+
+    <a class="share-btn line" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/line.svg" class="icon" alt="LINEアイコン">
+      LINEで共有
+    </a>
+  </div>
+
+  <div style="margin-top:18px;color:#555;font-size:13px;text-align:center">Copyright (C) 2026 さいほうへいき</div>
+</footer>
+<script is:inline src="/sharebtn.js"></script>
+</body>
+</html>

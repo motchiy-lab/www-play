@@ -1,16 +1,147 @@
----
----
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Play on Heiki! - さいほうへいきのこまごまミニゲーム集</title>
+<meta name="description" content="ウェブブラウザ上で動作する、こまごまとした楽しいミニゲームがたくさんのサイトです！">
+<meta name="keywords" content="ミニゲーム,HTML">
+<link rel="icon" href="site_assets/favicon.png" type="image/png">
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<meta property="og:title" content="Play on Heiki! - さいほうへいきのこまごまミニゲーム集" />
+<meta property="og:description" content="ウェブブラウザ上で動作する、こまごまとした楽しいミニゲームがたくさんのサイトです！" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://play.motchiy.com/" />
+<meta property="og:image" content="https://play.motchiy.com/site_assets/ogp.png" />
+<meta property="og:site_name" content="Play on Heiki!" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Play on Heiki! - さいほうへいきのこまごまミニゲーム集" />
+<meta name="twitter:description" content="ウェブブラウザ上で動作する、こまごまとした楽しいミニゲームがたくさんのサイトです！" />
+<meta name="twitter:image" content="https://play.motchiy.com/site_assets/ogp.png" />
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="documents_style.css">
+
+
+</head>
+<body><header>
+  <div class="logo">
+    <img src="https://play.motchiy.com/site_assets/hachosah_icon.png" width="32" alt="ハチョウサくんのアイコン">
+    <div style="opacity:.9">Play on Heiki - さいほうへいきのこまごまミニゲーム集！</div>
+  </div>
+  <div class="header-links">
+    <a href="https://play.motchiy.com/" class="header-link pc-mode">プレイポータル</a>
+    <a href="https://play.motchiy.com/games.html" class="header-link pc-mode">ゲームリスト</a>
+    <a href="https://play.motchiy.com/game_notes.html" class="header-link pc-mode">ゲーム雑記</a>
+    <a href="https://play.motchiy.com/about_hachosah.html" class="header-link pc-mode">ハチョウサくんについて</a>
+    <a href="https://play.motchiy.com/" class="header-link sp-mode">トップ</a>
+    <a href="https://play.motchiy.com/games.html" class="header-link sp-mode">ゲーム</a>
+    <a href="https://play.motchiy.com/game_notes.html" class="header-link sp-mode">雑記</a>
+    <a href="https://play.motchiy.com/about_hachosah.html" class="header-link sp-mode">ハチョウサくん</a>
+    <a href="https://heiki.motchiy.com/credits.html" class="header-link">クレジット</a>
+  </div>
+</header>
+  
+  <div class="documents-container">
+  <h1>Play on Heiki! ゲームポータル</h1>
+  <img src="/site_assets/gameportal_thumb_1.jpg" class="thumbnail" alt="ゲーム中の">
+  <br>
+  <h2>Welcome to Play on Heiki!</h2>
+  <p>
+    こんにちは！<br>
+    このサイトは、さいほうへいきの制作したいろいろなミニゲームを公開している暇潰し向けのサイトです！
+  </p>
+  <p>
+    いろいろな種類のゲームが公開されているので、ぜひ以下から遊んでいってみてください！
+  </p>
+
+  <h2>稼働中のゲーム</h2>
+  <table class="table-box" border="1">
+    <thead>
+        <tr>
+            <th scope="col">ゲーム名</th>
+            <th scope="col">ゲーム名</th>
+            <th scope="col">ゲーム名</th>
+            <th scope="col">ゲーム名</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="mochi.html"><img src="" alt="Heiki's Motchii Clickerのアイコン"><br>Heiki's Motchii Clicker</a></td>
+            <td><a href="2048.html"><img src="" alt="2048: The Unlimited Motchiyのアイコン"><br>2048: The Unlimited Motchiy</a></td>
+            <td><a href="32768.html"><img src="" alt="32768: The Unlimited Motchiy++のアイコン"><br>32768: The Unlimited Motchiy++</a></td>
+            <td><a href="mine.html"><img src="" alt="Minesweeper: The Marvellous Motchiyのアイコン"><br>Minesweeper: The Marvellous Motchiy</a></td>
+        </tr>
+        <tr>
+            <td><a href=""><img src="" alt="空のポータルのアイコン"><br>このポータルはオフラインです……</a></td>
+            <td><a href=""><img src="" alt="空のポータルのアイコン"><br>このポータルはオフラインです……</a></td>
+            <td><a href=""><img src="" alt="空のポータルのアイコン"><br>このポータルはオフラインです……</a></td>
+            <td><a href=""><img src="" alt="空のポータルのアイコン"><br>このポータルはオフラインです……</a></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2 id="items">ゲーム雑記</h2>
+  <p>
+    また、このサイトではそれぞれのゲームなどについての開発メモも公開しています。<br>
+    ぜひ、ゲーム雑記もご覧ください！
+  </p>
+  </div>
+
+<footer>
+  <div class="info-grid">
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb"><img src="https://heiki.motchiy.com/imgs/heikikun.png" width="40" alt="さいほうへいきのアイコン"></div>
+      <div class="info-body">
+        <div class="info-title">サイト運営: さいほうへいき</div>
+        <div class="info-text">この掲示板の制作者。フィードバック歓迎。</div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb"><img src="https://heiki.motchiy.com/imgs/motchiy.png" width="40" alt="Motchiyのアイコン"></div>
+      <div class="info-body">
+        <div class="info-title">サーバー運営: Motchiy</div>
+        <div class="info-text">サーバーの運営者。接続の問題があればこのひとを荒らしてください。</div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb">📠</div>
+      <div class="info-body">
+        <div class="info-title">コンタクト</div>
+        <div class="info-text"><a href="https://x.com/leoved_kuru" class="link-inline">さいほうへいきのTwitter</a><hr><a href="https://x.com/motchiy_tuti" class="link-inline">MotchiyのTwitter</a></div>
+      </div>
+    </article>
+
+    <article class="info-card" tabindex="0">
+      <div class="info-thumb">🔗</div>
+      <div class="info-body">
+        <div class="info-title">関連リンク</div>
+        <div class="info-text"><a href="https://www.youtube.com/@saihou-heiki" class="link-inline">さいほうへいきのYouTube</a><hr><a class="link-inline" href="https://www.youtube.com/@motchiy_tuti">MotchiyのYouTube</a></div>
+      </div>
+    </article>
+  </div>
+  <div class="share-buttons">
+    <a class="share-btn twitter" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="icon" alt="Twitterアイコン">
+      Twitterで共有
+    </a>
+
+    <a class="share-btn facebook" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" class="icon" alt="Facebookアイコン">
+      Facebookで共有
+    </a>
+
+    <a class="share-btn line" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/line.svg" class="icon" alt="LINEアイコン">
+      LINEで共有
+    </a>
+  </div>
+
+  <div style="margin-top:18px;color:#555;font-size:13px;text-align:center">Copyright (C) 2026 さいほうへいき</div>
+</footer>
+<script is:inline src="/sharebtn.js"></script>
+</body>
 </html>
