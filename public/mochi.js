@@ -1154,25 +1154,30 @@ function isUnlocked(obj) {
 }
 
 function updateUnlocks() {
+  let unlockedAnything = false;
+
   game.buildings.forEach((b) => {
     if (!b.unlocked && b.unlock && b.unlock()) {
       b.unlocked = true;
+      unlockedAnything = true;
     }
   });
 
   game.upgrades.forEach((u) => {
     if (!u.unlocked && u.unlock && u.unlock()) {
       u.unlocked = true;
+      unlockedAnything = true;
     }
   });
 
   game.items.forEach((it) => {
     if (!it.unlocked && it.unlock && it.unlock()) {
       it.unlocked = true;
+      unlockedAnything = true;
     }
   });
 
-  render();
+  if (unlockedAnything) render();
 }
 
 function allUnlock() {
@@ -1485,7 +1490,8 @@ function renderBuildings() {
   game.buildings.forEach((b, i) => {
     if (b.unlock && !b.unlocked) return;
 
-    let d = document.createElement("div");
+    let d = document.createElement("button");
+    d.type = "button";
     d.className = "card";
 
     d.onmouseenter = (e) =>
@@ -1510,21 +1516,22 @@ function renderBuildings() {
       formatNumber(b.cps) +
       " cps";
 
-    d.onclick = () => buyBuilding(i);
+    d.onclick = (e) => buyBuilding(i, e);
 
     panel.appendChild(d);
   });
 }
 
-function buyBuilding(i) {
+function buyBuilding(i, e) {
   let b = game.buildings[i];
 
   if (game.cookies < b.cost) {
-    toast("餅不足🥹");
+    toast(`餅が足りません（あと${formatNumber(b.cost - game.cookies)}）`);
     return;
   }
 
   game.cookies -= b.cost;
+  particle(e.clientX, e.clientY, "-" + formatNumber(b.cost), true);
   b.owned++;
   b.cost = (b.cost * 115n + 50n) / 100n;
   toast("Bought " + innerHTMLRemoving(b.name));
@@ -1533,15 +1540,16 @@ function buyBuilding(i) {
   render();
 }
 
-function buyItem(i) {
+function buyItem(i, e) {
   let it = game.items[i];
 
   if (game.cookies < it.cost) {
-    toast("餅不足だぞ🥹");
+    toast(`餅が足りません（あと${formatNumber(it.cost - game.cookies)}）`);
     return;
   }
 
   game.cookies -= it.cost;
+  particle(e.clientX, e.clientY, "-" + formatNumber(it.cost), true);
   it.owned++;
 
   it.effect();
@@ -1560,7 +1568,8 @@ function renderUpgrades() {
   game.upgrades.forEach((u, i) => {
     if (u.unlock && !u.unlocked) return;
 
-    let d = document.createElement("div");
+    let d = document.createElement("button");
+    d.type = "button";
     d.className = "card";
 
     d.onmouseenter = (e) =>
@@ -1581,19 +1590,26 @@ function renderUpgrades() {
       "</b><br>Cost: " +
       formatNumber(u.cost);
 
-    d.onclick = () => buyUpgrade(i);
+    d.onclick = (e) => buyUpgrade(i, e);
 
     panel.appendChild(d);
   });
 }
 
-function buyUpgrade(i) {
+function buyUpgrade(i, e) {
   let u = game.upgrades[i];
 
-  if (u.bought) return;
-  if (game.cookies < u.cost) return;
+  if (u.bought) {
+    toast("このアップグレードは購入済みです");
+    return;
+  }
+  if (game.cookies < u.cost) {
+    toast(`餅が足りません（あと${formatNumber(u.cost - game.cookies)}）`);
+    return;
+  }
 
   game.cookies -= u.cost;
+  particle(e.clientX, e.clientY, "-" + formatNumber(u.cost), true);
   u.effect();
   u.bought = true;
 
@@ -1608,7 +1624,8 @@ function renderItems() {
   game.items.forEach((it, i) => {
     if (it.unlock && !it.unlocked) return;
 
-    let d = document.createElement("div");
+    let d = document.createElement("button");
+    d.type = "button";
     d.className = "card";
 
     d.onmouseenter = (e) =>
@@ -1630,7 +1647,7 @@ function renderItems() {
       "<br>Cost: " +
       formatNumber(it.cost);
 
-    d.onclick = () => buyItem(i);
+    d.onclick = (e) => buyItem(i, e);
 
     panel.appendChild(d);
   });
@@ -1660,19 +1677,20 @@ cookie.onclick = (e) => {
     game.achievements[0].unlocked = true;
   }
   checkAchievements();
-  particle(e.pageX, e.pageY);
+  particle(e.clientX, e.clientY, "+" + formatNumber(game.clickPower));
 
   render();
 };
 
-function particle(x, y) {
+function particle(x, y, text, spent = false) {
   let p = document.createElement("div");
 
-  p.className = "particle";
-  p.textContent = "+" + formatNumber(game.clickPower);
+  p.className = "mochi-particle";
+  if (spent) p.classList.add("mochi-particle--spent");
+  p.textContent = text;
 
-  p.style.left = x + "px";
-  p.style.top = y + "px";
+  p.style.left = `${x}px`;
+  p.style.top = `${y}px`;
 
   document.body.appendChild(p);
 
