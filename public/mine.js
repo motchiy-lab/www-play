@@ -7,8 +7,8 @@ const presets = {
 };
 
 const AUTHOR_TWITTER_URL = "https://twitter.com/leoved_kuru";
-const mineImg = "mine_assets/mine.png";
-const flagImg = "mine_assets/flag.png";
+const mineImg = "/mine_assets/mine.png";
+const flagImg = "/mine_assets/flag.png";
 
 const els = {
   preset: document.getElementById("preset"),
