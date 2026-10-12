@@ -1,10 +1,12 @@
 ---
-import ShareBotton from "components/ShareBottun.astro";
+import ShareButton from "components/ShareButton.astro";
+
+const { title } = Astro.props;
 ---
 
-<footer class="site-footer">
+<footer id="about" class="site-footer">
     <div class="info-grid">
-        <article class="info-card" tabindex="0">
+        <article class="info-card">
             <div class="info-thumb">
                 <img
                     src="https://heiki.motchiy.com/imgs/heikikun.png"
@@ -15,12 +17,12 @@ import ShareBotton from "components/ShareBottun.astro";
             <div class="info-body">
                 <div class="info-title">サイト運営: さいほうへいき</div>
                 <div class="info-text">
-                    この掲示板の制作者。フィードバック歓迎。
+                    このサイトの制作者。フィードバック歓迎。
                 </div>
             </div>
         </article>
 
-        <article class="info-card" tabindex="0">
+        <article class="info-card">
             <div class="info-thumb">
                 <img
                     src="https://heiki.motchiy.com/imgs/motchiy.png"
@@ -36,7 +38,7 @@ import ShareBotton from "components/ShareBottun.astro";
             </div>
         </article>
 
-        <article class="info-card" tabindex="0">
+        <article class="info-card">
             <div class="info-thumb">📠</div>
             <div class="info-body">
                 <div class="info-title">コンタクト</div>
@@ -52,7 +54,7 @@ import ShareBotton from "components/ShareBottun.astro";
             </div>
         </article>
 
-        <article class="info-card" tabindex="0">
+        <article class="info-card">
             <div class="info-thumb">🔗</div>
             <div class="info-body">
                 <div class="info-title">関連リンク</div>
@@ -75,7 +77,7 @@ import ShareBotton from "components/ShareBottun.astro";
         </article>
     </div>
 
-    <ShareBotton />
+    <ShareButton title={title} />
     <div class="footer-copyright">
         Copyright (C) 2026 さいほうへいき
     </div>

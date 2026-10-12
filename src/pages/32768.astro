@@ -5,21 +5,20 @@ import MainLayout from "layouts/Main.astro";
 
 <MainLayout
     title="32768: The Unlimited Motchiy++ - Play on Heiki!"
-    ,description="クラシックな2048ゲームを、すべて4倍に拡張した超ワイドゲーム！さらなる『混沌』を味わおう。"
-    ,tags="ミニゲーム,HTML"
+    description="クラシックな2048ゲームを、すべて4倍に拡張した超ワイドゲーム！さらなる『混沌』を味わおう。"
+    tags="ミニゲーム,HTML"
     pageClass="game-32768-page"
 >
     <main class="documents-container">
-        <h1>32768: The Unlimted Motchiy++</h1>
+        <h1>32768: The Unlimited Motchiy++</h1>
         <div>
             Score: <span id="score">0</span> | High Score:{" "}
             <span id="high-score">0</span>
         </div>
         <button onclick="newGame()">New Game</button>
-        <div
-            id="game-board"
-            class="game-board game-board--32768"
-        ></div>
+        <div class="game-board-shell">
+            <div id="game-board" class="game-board game-board--32768"></div>
+        </div>
         <div
             id="game-over-overlay"
             class="game-over-overlay"
@@ -28,15 +27,12 @@ import MainLayout from "layouts/Main.astro";
             <p>
                 Your Score: <span id="final-score">0</span>
             </p>
-            <button
-                onclick="newGame()"
-                class="game-over-retry"
-            >
+            <button onclick="newGame()" class="game-over-retry">
                 Play Again
             </button>
         </div>
         <br />
-        <button onclick="location.href='/2048.html'">Also play 2048!</button>
+        <a class="game-link" href="/2048/">Also play 2048!</a>
     </main>
     <script src="/32768.js" defer></script>
 </MainLayout>

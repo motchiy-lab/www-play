@@ -5,10 +5,10 @@ import MainLayout from "layouts/Main.astro";
 
 <MainLayout
     title="Heiki's Motchii Clicker - Play on Heiki!"
-    ,
     description="クリック&放置で増え続ける餅！テンポよく成長する爽快感と、どんどん加速するインフレがクセになる、中毒性アリなクッキークリッカーフォーク！"
-    ,tags="ミニゲーム,HTML,クッキークリッカー"
+    tags="ミニゲーム,HTML,クッキークリッカー"
     pageClass="mochi-page"
+    hideSiteChrome={true}
 >
     <main id="game" class="mochi-game">
         <div id="left" class="mochi-game__left">
@@ -38,7 +38,7 @@ import MainLayout from "layouts/Main.astro";
 
         <div id="toast" class="mochi-game__toast"></div>
 
-        <script src="mochi.js" defer></script>
+        <script src="/mochi.js" defer></script>
         <div id="tooltip" class="mochi-game__tooltip"></div>
     </main>
 </MainLayout>

@@ -2,12 +2,12 @@ let board; // Will now store objects: {value: number, id: string} or null for em
 let score = 0;
 let highScore = 0; // Added for high score
 let gameOver = false;
+let moveInProgress = false;
 let activeTileElements = {}; // Global object to store references to actual tile HTML elements (id -> DOM element)
 let nextTileId = 0; // For assigning unique IDs to new tiles
 
 const GRID_SIZE = 16;
-const BOARD_PIXEL_SIZE = 400; // 盤面サイズはそのまま
-const TILE_SIZE = BOARD_PIXEL_SIZE / GRID_SIZE; // 自動計算
+let TILE_SIZE = 400 / GRID_SIZE;
 
 window.onload = function () {
   setGame();
@@ -38,6 +38,7 @@ function setGame() {
 
   let boardElement = document.getElementById("game-board");
   boardElement.innerHTML = ""; // Clear previous board, including any old grid cells or tiles
+  resizeBoard();
 
   // Hide game over overlay at the start of a new game
   document.getElementById("game-over-overlay").style.display = "none";
@@ -56,6 +57,8 @@ function setGame() {
       gridBackgroundCell.style.top = r * TILE_SIZE + "px";
       gridBackgroundCell.style.width = TILE_SIZE + "px";
       gridBackgroundCell.style.height = TILE_SIZE + "px";
+      gridBackgroundCell.dataset.r = r;
+      gridBackgroundCell.dataset.c = c;
       gridBackgroundCell.style.border = "1px solid #ccc"; // Border for the grid lines
       gridBackgroundCell.style.boxSizing = "border-box"; // Include padding and border in the element's total width and height
       gridBackgroundCell.style.backgroundColor = "#eee"; // Background color for empty slots
@@ -68,6 +71,31 @@ function setGame() {
   addRandomTile();
   updateBoard(); // Call updateBoard to create and position the actual game tiles
 }
+
+function resizeBoard() {
+  const boardElement = document.getElementById("game-board");
+  const nextTileSize = boardElement.clientWidth / GRID_SIZE;
+  if (!nextTileSize) return;
+
+  TILE_SIZE = nextTileSize;
+  boardElement.style.gridTemplateColumns =
+    `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
+  boardElement.style.gridTemplateRows = `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
+
+  for (const cell of boardElement.children) {
+    const row = Number(cell.dataset.r);
+    const column = Number(cell.dataset.c);
+    cell.style.width = `${TILE_SIZE}px`;
+    cell.style.height = `${TILE_SIZE}px`;
+    cell.style.left = `${column * TILE_SIZE}px`;
+    cell.style.top = `${row * TILE_SIZE}px`;
+    if (cell.classList.contains("game-tile")) {
+      cell.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
+    }
+  }
+}
+
+window.addEventListener("resize", resizeBoard);
 
 function newGame() {
   setGame();
@@ -100,6 +128,10 @@ function updateBoard() {
           // Update image if value changed (merge target) and apply pop animation
           let img = existingTileElement.querySelector("img");
           if (parseInt(existingTileElement.dataset.value) !== tileValue) {
+            img.hidden = false;
+            existingTileElement
+              .querySelector(".game-tile__value")
+              ?.remove();
             img.src = `/2048_assets/${tileValue}.png`;
             //img.src = `https://yt3.ggpht.com/p9ZeMmWH1TTDKyl3KLaFd2rwjsdraDVjWXeTBnxEOOKQQTC2QLDWIZB0HAWOtHUdIgSe-8Qf2uc=s800-c-k-c0x00ffffff-no-rj`;
             img.alt = `Tile ${tileValue}`;
@@ -130,7 +162,7 @@ function updateBoard() {
           tileElement.style.display = "flex";
           tileElement.style.justifyContent = "center";
           tileElement.style.alignItems = "center";
-          tileElement.style.fontSize = "24px";
+          tileElement.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
           tileElement.style.fontWeight = "bold";
           tileElement.style.backgroundColor = "#ccc"; // Default background for a tile
           tileElement.style.borderRadius = "5px"; // Soften corners
@@ -153,6 +185,7 @@ function updateBoard() {
           img.style.width = "100%";
           img.style.height = "100%";
           img.dataset.value = tileValue; // Store value on image too
+          img.addEventListener("error", () => showTileFallback(img, tileElement));
           tileElement.appendChild(img);
 
           boardElement.appendChild(tileElement);
@@ -192,6 +225,19 @@ function updateBoard() {
       document.getElementById("high-score").innerText = highScore; // Update displayed high score
     }
   }
+}
+
+function showTileFallback(image, tileElement) {
+  image.hidden = true;
+  let label = tileElement.querySelector(".game-tile__value");
+  if (!label) {
+    label = document.createElement("span");
+    label.className = "game-tile__value";
+    tileElement.appendChild(label);
+  }
+  label.textContent = tileElement.dataset.value;
+  tileElement.style.backgroundColor =
+    `hsl(${(Math.log2(Number(tileElement.dataset.value)) * 34) % 360} 55% 42%)`;
 }
 
 function addRandomTile() {
@@ -295,7 +341,12 @@ function slide(row, fixedIndex, direction) {
 
 document.addEventListener("keydown", async (e) => {
   // Made async to await animations
-  if (gameOver) return;
+  if (
+    ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)
+  ) {
+    e.preventDefault();
+  }
+  if (gameOver || moveInProgress) return;
 
   let allChanges = [];
   let hasMoved = false;
@@ -323,15 +374,53 @@ document.addEventListener("keydown", async (e) => {
     hasMoved = moveDown(allChanges);
   }
   if (hasMoved) {
-    await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
+    moveInProgress = true;
+    try {
+      await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
 
-    for (let i = 0; i < 4; i++) {
-      addRandomTile();
+      for (let i = 0; i < 4; i++) {
+        addRandomTile();
+      }
+
+      gameOver = checkGameOver();
+      updateBoard();
+    } finally {
+      moveInProgress = false;
     }
-
-    gameOver = checkGameOver();
-    updateBoard();
   }
+});
+
+const gameBoard = document.getElementById("game-board");
+let swipeStart = null;
+
+gameBoard.addEventListener("pointerdown", (event) => {
+  if (event.pointerType === "touch") {
+    swipeStart = { x: event.clientX, y: event.clientY };
+  }
+});
+
+gameBoard.addEventListener("pointerup", (event) => {
+  if (!swipeStart || event.pointerType !== "touch") return;
+
+  const deltaX = event.clientX - swipeStart.x;
+  const deltaY = event.clientY - swipeStart.y;
+  swipeStart = null;
+
+  if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 24) return;
+
+  const key =
+    Math.abs(deltaX) > Math.abs(deltaY)
+      ? deltaX > 0
+        ? "ArrowRight"
+        : "ArrowLeft"
+      : deltaY > 0
+        ? "ArrowDown"
+        : "ArrowUp";
+  document.dispatchEvent(new KeyboardEvent("keydown", { key, code: key }));
+});
+
+gameBoard.addEventListener("pointercancel", () => {
+  swipeStart = null;
 });
 
 async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {

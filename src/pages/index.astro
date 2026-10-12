@@ -1,22 +1,20 @@
 ---
 import MainLayout from "layouts/Main.astro";
+import "styles/portal.css";
 ---
 
 <MainLayout
     title="Play on Heiki! - さいほうへいきのこまごまミニゲーム集"
-    ,
     description="ウェブブラウザ上で動作する、こまごまとした楽しいミニゲームがたくさんのサイトです！"
-    ,
     tags="ミニゲーム,HTML"
 >
-    <div class="documents-container">
+    <main class="documents-container">
         <h1>Play on Heiki! ゲームポータル</h1>
         <img
             src="/site_assets/gameportal_thumbnail.png"
-            class="thumbnail"
-            alt="ゲーム画面"
+            class="portal-thumbnail"
+            alt="Play on Heiki!のゲームポータル"
         />
-        <br />
         <h2>Welcome to Play on Heiki!</h2>
         <p>
             こんにちは！
@@ -27,91 +25,31 @@ import MainLayout from "layouts/Main.astro";
             いろいろな種類のゲームが公開されているので、ぜひ以下から遊んでいってみてください！
         </p>
 
-        <h2>稼働中のゲーム</h2>
-        <table class="table-box" border="1">
-            <thead>
-                <tr>
-                    <th scope="col">ゲーム名</th>
-                    <th scope="col">ゲーム名</th>
-                    <th scope="col">ゲーム名</th>
-                    <th scope="col">ゲーム名</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <a href="/mochi">
-                            <img
-                                src=""
-                                alt="Heiki's Motchii Clickerのアイコン"
-                            />
-                            <br />
-                            Heiki's Motchii Clicker
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/2048">
-                            <img
-                                src=""
-                                alt="2048: The Unlimited Motchiyのアイコン"
-                            />
-                            <br />
-                            2048: The Unlimited Motchiy
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/32768">
-                            <img
-                                src=""
-                                alt="32768: The Unlimited Motchiy++のアイコン"
-                            />
-                            <br />
-                            32768: The Unlimited Motchiy++
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/mine">
-                            <img
-                                src=""
-                                alt="Minesweeper: The Marvellous Motchiyのアイコン"
-                            />
-                            <br />
-                            Minesweeper: The Marvellous Motchiy
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="/dino">
-                            <img src="" alt="Dino Clone+のアイコン" />
-                            <br />
-                            Dino Clone+
-                        </a>
-                    </td>
-                    <td>
-                        <a href="">
-                            <img src="" alt="空のポータルのアイコン" />
-                            <br />
-                            このポータルはオフラインです……
-                        </a>
-                    </td>
-                    <td>
-                        <a href="">
-                            <img src="" alt="空のポータルのアイコン" />
-                            <br />
-                            このポータルはオフラインです……
-                        </a>
-                    </td>
-                    <td>
-                        <a href="">
-                            <img src="" alt="空のポータルのアイコン" />
-                            <br />
-                            このポータルはオフラインです……
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <h2 id="games">稼働中のゲーム</h2>
+        <nav class="game-grid" aria-label="稼働中のゲーム">
+            <a class="game-card" href="/mochi/">
+                <span class="game-card__title">Heiki's Motchii Clicker</span>
+                <span class="game-card__action">クリックして遊ぶ →</span>
+            </a>
+            <a class="game-card" href="/2048/">
+                <span class="game-card__title">2048: The Unlimited Motchiy</span>
+                <span class="game-card__action">パズルを始める →</span>
+            </a>
+            <a class="game-card" href="/32768/">
+                <span class="game-card__title">32768: The Unlimited Motchiy++</span>
+                <span class="game-card__action">パズルを始める →</span>
+            </a>
+            <a class="game-card" href="/mine/">
+                <span class="game-card__title">
+                    Minesweeper: The Marvellous Motchiy
+                </span>
+                <span class="game-card__action">地雷を探す →</span>
+            </a>
+            <a class="game-card" href="/dino/">
+                <span class="game-card__title">Dino Clone+</span>
+                <span class="game-card__action">ゲームを始める →</span>
+            </a>
+        </nav>
 
         <h2 id="items">ゲーム雑記</h2>
         <p>
@@ -119,5 +57,5 @@ import MainLayout from "layouts/Main.astro";
             <br />
             ぜひ、ゲーム雑記もご覧ください！
         </p>
-    </div>
+    </main>
 </MainLayout>

@@ -1,0 +1,52 @@
+---
+---
+
+<nav class="share-buttons" aria-label="ページを共有">
+    <a href="https://twitter.com/intent/tweet" class="share-btn twitter" rel="noopener noreferrer">
+        <img
+            src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg"
+            alt=""
+            width="18"
+            height="18"
+        />
+        Twitterで共有
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php" class="share-btn facebook" rel="noopener noreferrer">
+        <img
+            src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg"
+            alt=""
+            width="18"
+            height="18"
+        />
+        Facebookで共有
+    </a>
+    <a href="https://social-plugins.line.me/lineit/share" class="share-btn line" rel="noopener noreferrer">
+        <img
+            src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/line.svg"
+            alt=""
+            width="18"
+            height="18"
+        />
+        LINEで共有
+    </a>
+</nav>
+
+<script>
+    document.querySelectorAll(".share-buttons").forEach((navigation) => {
+        const url = window.location.href;
+        const title = document.title;
+
+        navigation.querySelector(".twitter")?.setAttribute(
+            "href",
+            `https://twitter.com/intent/tweet?${new URLSearchParams({ url, text: title })}`,
+        );
+        navigation.querySelector(".facebook")?.setAttribute(
+            "href",
+            `https://www.facebook.com/sharer/sharer.php?${new URLSearchParams({ u: url })}`,
+        );
+        navigation.querySelector(".line")?.setAttribute(
+            "href",
+            `https://social-plugins.line.me/lineit/share?${new URLSearchParams({ url })}`,
+        );
+    });
+</script>

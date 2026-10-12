@@ -1,0 +1,52 @@
+.portal-thumbnail {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 16px;
+    margin: 20px 0 32px;
+}
+
+.game-card {
+    display: flex;
+    min-height: 140px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    border: 1px solid #e4d9eb;
+    border-radius: 12px;
+    padding: 18px;
+    background: linear-gradient(145deg, #fff, #faf6fc);
+    color: #222;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(32, 20, 40, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(32, 20, 40, 0.14);
+}
+
+.game-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.game-card__action {
+    color: #713d8b;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .game-card {
+        transition: none;
+    }
+}

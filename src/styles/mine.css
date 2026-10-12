@@ -1,3 +1,14 @@
+:root {
+    --bg: #fff;
+    --panel: #eee;
+    --text: #111;
+    --muted: #2a2a2a;
+    --cell-closed: #eee;
+    --cell-open: #fff;
+    --border: #ccc;
+    --success: #168c57;
+}
+
 .minesweeper-page {
     display: flex;
     flex-direction: column;
@@ -11,6 +22,10 @@
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
+}
+
+.minesweeper-page > main {
+    flex: 1;
 }
 
 .minesweeper-page .wrap {

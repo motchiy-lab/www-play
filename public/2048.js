@@ -2,10 +2,11 @@ let board;
 let score = 0;
 let highScore = 0;
 let gameOver = false;
+let moveInProgress = false;
 let activeTileElements = {};
 let nextTileId = 0;
 
-const TILE_SIZE = 100;
+let TILE_SIZE = 100;
 const GRID_SIZE = 4;
 
 window.onload = function () {
@@ -29,7 +30,7 @@ window.onload = function () {
   ];
   images.forEach((src) => {
     const img = new Image();
-    img.src = "2048_assets/" + src;
+    img.src = "/2048_assets/" + src;
   });
 
   setGame();
@@ -57,6 +58,7 @@ function setGame() {
 
   let boardElement = document.getElementById("game-board");
   boardElement.innerHTML = "";
+  resizeBoard();
 
   document.getElementById("game-over-overlay").style.display = "none";
 
@@ -72,6 +74,8 @@ function setGame() {
       gridBackgroundCell.style.top = r * TILE_SIZE + "px";
       gridBackgroundCell.style.width = TILE_SIZE + "px";
       gridBackgroundCell.style.height = TILE_SIZE + "px";
+      gridBackgroundCell.dataset.r = r;
+      gridBackgroundCell.dataset.c = c;
       gridBackgroundCell.style.border = "1px solid #ccc";
       gridBackgroundCell.style.boxSizing = "border-box";
       gridBackgroundCell.style.backgroundColor = "#eee";
@@ -82,6 +86,31 @@ function setGame() {
   addRandomTile();
   updateBoard();
 }
+
+function resizeBoard() {
+  const boardElement = document.getElementById("game-board");
+  const nextTileSize = boardElement.clientWidth / GRID_SIZE;
+  if (!nextTileSize) return;
+
+  TILE_SIZE = nextTileSize;
+  boardElement.style.gridTemplateColumns =
+    `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
+  boardElement.style.gridTemplateRows = `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
+
+  for (const cell of boardElement.children) {
+    const row = Number(cell.dataset.r);
+    const column = Number(cell.dataset.c);
+    cell.style.width = `${TILE_SIZE}px`;
+    cell.style.height = `${TILE_SIZE}px`;
+    cell.style.left = `${column * TILE_SIZE}px`;
+    cell.style.top = `${row * TILE_SIZE}px`;
+    if (cell.classList.contains("game-tile")) {
+      cell.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
+    }
+  }
+}
+
+window.addEventListener("resize", resizeBoard);
 
 function newGame() {
   setGame();
@@ -110,6 +139,10 @@ function updateBoard() {
 
           let img = existingTileElement.querySelector("img");
           if (parseInt(existingTileElement.dataset.value) !== tileValue) {
+            img.hidden = false;
+            existingTileElement
+              .querySelector(".game-tile__value")
+              ?.remove();
             img.src = `/2048_assets/${tileValue}.png`;
             //img.src = `https://yt3.ggpht.com/p9ZeMmWH1TTDKyl3KLaFd2rwjsdraDVjWXeTBnxEOOKQQTC2QLDWIZB0HAWOtHUdIgSe-8Qf2uc=s800-c-k-c0x00ffffff-no-rj`;
             img.alt = `Tile ${tileValue}`;
@@ -137,7 +170,7 @@ function updateBoard() {
           tileElement.style.display = "flex";
           tileElement.style.justifyContent = "center";
           tileElement.style.alignItems = "center";
-          tileElement.style.fontSize = "24px";
+          tileElement.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
           tileElement.style.fontWeight = "bold";
           tileElement.style.backgroundColor = "#ccc";
           tileElement.style.borderRadius = "5px";
@@ -158,6 +191,7 @@ function updateBoard() {
           img.style.width = "100%";
           img.style.height = "100%";
           img.dataset.value = tileValue;
+          img.addEventListener("error", () => showTileFallback(img, tileElement));
           tileElement.appendChild(img);
 
           boardElement.appendChild(tileElement);
@@ -192,6 +226,19 @@ function updateBoard() {
       document.getElementById("high-score").innerText = highScore;
     }
   }
+}
+
+function showTileFallback(image, tileElement) {
+  image.hidden = true;
+  let label = tileElement.querySelector(".game-tile__value");
+  if (!label) {
+    label = document.createElement("span");
+    label.className = "game-tile__value";
+    tileElement.appendChild(label);
+  }
+  label.textContent = tileElement.dataset.value;
+  tileElement.style.backgroundColor =
+    `hsl(${(Math.log2(Number(tileElement.dataset.value)) * 34) % 360} 55% 42%)`;
 }
 
 function addRandomTile() {
@@ -306,7 +353,12 @@ function slide(row, fixedIndex, direction) {
 
 document.addEventListener("keydown", async (e) => {
   // Made async to await animations
-  if (gameOver) return;
+  if (
+    ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)
+  ) {
+    e.preventDefault();
+  }
+  if (gameOver || moveInProgress) return;
 
   let allChanges = [];
   let hasMoved = false;
@@ -335,14 +387,51 @@ document.addEventListener("keydown", async (e) => {
   }
 
   if (hasMoved) {
-    await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
-    addRandomTile();
+    moveInProgress = true;
+    try {
+      await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
+      addRandomTile();
 
-    // FIX: Set gameOver *before* calling updateBoard()
-    gameOver = checkGameOver();
+      gameOver = checkGameOver();
 
-    updateBoard(); // updateBoard will now use the correct gameOver status
+      updateBoard();
+    } finally {
+      moveInProgress = false;
+    }
   }
+});
+
+const gameBoard = document.getElementById("game-board");
+let swipeStart = null;
+
+gameBoard.addEventListener("pointerdown", (event) => {
+  if (event.pointerType === "touch") {
+    swipeStart = { x: event.clientX, y: event.clientY };
+  }
+});
+
+gameBoard.addEventListener("pointerup", (event) => {
+  if (!swipeStart || event.pointerType !== "touch") return;
+
+  const deltaX = event.clientX - swipeStart.x;
+  const deltaY = event.clientY - swipeStart.y;
+  swipeStart = null;
+
+  if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 24) return;
+
+  const key =
+    Math.abs(deltaX) > Math.abs(deltaY)
+      ? deltaX > 0
+        ? "ArrowRight"
+        : "ArrowLeft"
+      : deltaY > 0
+        ? "ArrowDown"
+        : "ArrowUp";
+  document.dispatchEvent(new KeyboardEvent("keydown", { key, code: key }));
+});
+
+gameBoard.addEventListener("pointercancel", () => {
+  swipeStart = null;
 });
 
 async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {

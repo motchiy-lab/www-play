@@ -23,13 +23,19 @@ const files = [
 ];
 
 let loaded = 0;
+let started = false;
 files.forEach((f) => {
   img[f] = new Image();
-  img[f].src = f;
-  img[f].onload = () => {
+  const onSettled = () => {
     loaded++;
-    if (loaded === files.length) start();
+    if (loaded === files.length && !started) {
+      started = true;
+      start();
+    }
   };
+  img[f].onload = onSettled;
+  img[f].onerror = onSettled;
+  img[f].src = `/${f}`;
 });
 
 // ===== 状態 =====
@@ -141,7 +147,8 @@ function update() {
     if (hit(player, o)) {
       gameOver = true;
       if (score > highScore) {
-        localStorage.setItem("dino_high", Math.floor(score));
+        highScore = Math.floor(score);
+        localStorage.setItem("dino_high", highScore);
       }
     }
   });
@@ -187,7 +194,12 @@ function draw() {
 
   // 雲
   clouds.forEach((c) => {
-    ctx.drawImage(img["run_assets/clouds.png"], c.x, 50, 300, 100);
+    drawSprite("run_assets/clouds.png", c.x, 50, 300, 100, () => {
+      ctx.fillStyle = day ? "#d8ecff" : "#444";
+      ctx.beginPath();
+      ctx.ellipse(c.x + 150, 90, 120, 24, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
   });
 
   // 太陽/月
@@ -198,7 +210,12 @@ function draw() {
         ? "run_assets/blue_moon.png"
         : "run_assets/moon.png";
   }
-  ctx.drawImage(img[cel], celestial.x, 30, 80, 80);
+  drawSprite(cel, celestial.x, 30, 80, 80, () => {
+    ctx.fillStyle = celestial.type === "sun" ? "#ffd34d" : "#e6e9ff";
+    ctx.beginPath();
+    ctx.arc(celestial.x + 40, 70, 32, 0, Math.PI * 2);
+    ctx.fill();
+  });
 
   // 地面
   ctx.fillStyle = "#888";
@@ -216,7 +233,14 @@ function draw() {
           : "run_assets/character_1.png"
       ];
   }
-  ctx.drawImage(char, player.x, player.y, player.w, player.h);
+  drawSprite(
+    gameOver ? "run_assets/character_over.png" : `run_assets/character_${player.frame + 1}.png`,
+    player.x,
+    player.y,
+    player.w,
+    player.h,
+    () => drawFallbackPlayer(),
+  );
 
   // 障害物
   obstacles.forEach((o) => {
@@ -224,7 +248,21 @@ function draw() {
       o.type === "ground"
         ? "run_assets/obstacle_ground.png"
         : "run_assets/obstacle_air.png";
-    ctx.drawImage(img[name], o.x, o.y, o.w, o.h);
+    drawSprite(name, o.x, o.y, o.w, o.h, () => {
+      ctx.fillStyle = "#3d8b4f";
+      if (o.type === "ground") {
+        ctx.fillRect(o.x + 12, o.y, 16, o.h);
+        ctx.fillRect(o.x + 2, o.y + 12, 12, 8);
+        ctx.fillRect(o.x + 26, o.y + 20, 12, 8);
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(o.x, o.y + 20);
+        ctx.lineTo(o.x + 20, o.y + 8);
+        ctx.lineTo(o.x + 40, o.y + 20);
+        ctx.lineTo(o.x + 20, o.y + 16);
+        ctx.fill();
+      }
+    });
   });
 
   ctx.restore();
@@ -241,9 +279,39 @@ function draw() {
 
   if (gameOver) {
     ctx.fillStyle = "red";
-    ctx.font = "40px sans-serif";
-    ctx.fillText("GAME OVER", canvas.width / 2 - 120, 150);
-    ctx.font = "20px sans-serif";
-    ctx.fillText("Tap or SPACE to restart", canvas.width / 2 - 130, 180);
+    ctx.font = `${Math.min(40, canvas.width / 8)}px sans-serif`;
+    const gameOverText = "GAME OVER";
+    ctx.fillText(
+      gameOverText,
+      (canvas.width - ctx.measureText(gameOverText).width) / 2,
+      150,
+    );
+    ctx.font = `${Math.min(20, canvas.width / 12)}px sans-serif`;
+    const restartText = "Tap or SPACE to restart";
+    ctx.fillText(
+      restartText,
+      (canvas.width - ctx.measureText(restartText).width) / 2,
+      180,
+    );
   }
+}
+
+function drawSprite(name, x, y, width, height, fallback) {
+  const sprite = img[name];
+  if (sprite?.complete && sprite.naturalWidth > 0) {
+    ctx.drawImage(sprite, x, y, width, height);
+    return;
+  }
+  fallback();
+}
+
+function drawFallbackPlayer() {
+  ctx.fillStyle = gameOver ? "#c44" : "#4b6cb7";
+  ctx.fillRect(player.x + 4, player.y + 8, 30, 25);
+  ctx.fillRect(player.x + 20, player.y, 18, 18);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(player.x + 30, player.y + 5, 4, 4);
+  ctx.fillStyle = "#252525";
+  ctx.fillRect(player.x + 8, player.y + 31, 8, 9);
+  ctx.fillRect(player.x + 25, player.y + 31, 8, 9);
 }
