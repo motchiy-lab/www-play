@@ -1,0 +1,14 @@
+---
+import MainLayout from "layouts/Main.astro";
+import "styles/run.css";
+---
+
+<MainLayout
+    title="Dino Clone+"
+    ,
+    description="Dinoもどきのゲーム"
+    ,tags="ミニゲーム,HTML,恐竜ゲーム"
+>
+    <canvas id="game"></canvas>
+    <script src="/run.js" defer></script>
+</MainLayout>
