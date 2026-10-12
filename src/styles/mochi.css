@@ -1,153 +1,157 @@
-html, body {
-  height: 100%;
+.mochi-page {
+    min-height: 100vh;
+    margin: 0;
+    background: #101010;
+    color: white;
+    font-family: sans-serif;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
-body{
-margin:0;
-background:#101010;
-color:white;
-font-family:sans-serif;
-overflow-x: hidden;
-display: flex;
-flex-direction: column;
-user-select: none;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
+.mochi-game {
+    display: flex;
+    flex: 1;
+    min-height: 0;
 }
 
-#game{
-display:flex;
-flex: 1;
-min-height: 0;
+.mochi-game__left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #181818;
 }
 
-#left{
-flex:1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background:#181818;
+.mochi-game__cookie {
+    font-size: 140px;
+    cursor: pointer;
+    transition: 0.1s;
+    user-select: none;
 }
 
-#cookie{
-font-size:140px;
-cursor:pointer;
-transition:.1s;
-user-select:none;
+.mochi-game__cookie:active {
+    transform: scale(0.9);
 }
 
-#cookie:active{
-transform:scale(.9);
+.mochi-game__count {
+    font-size: 42px;
 }
 
-#count{
-font-size:42px;
+.mochi-game__cps {
+    opacity: 0.7;
 }
 
-#cps{
-opacity:.7;
+.mochi-game__right {
+    width: 420px;
+    background: #141414;
+    display: flex;
+    flex-direction: column;
 }
 
-#right{
-width:420px;
-background:#141414;
-display:flex;
-flex-direction:column;
+.mochi-game__tabs {
+    display: flex;
 }
 
-#tabs{
-display:flex;
+.mochi-game .tab {
+    flex: 1;
+    padding: 12px;
+    background: #222;
+    text-align: center;
+    cursor: pointer;
 }
 
-.tab{
-flex:1;
-padding:12px;
-background:#222;
-text-align:center;
-cursor:pointer;
+.mochi-game .tab.active {
+    background: #333;
 }
 
-.tab.active{
-background:#333;
+.mochi-game__panel {
+    flex: 1;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    overflow-y: auto;
 }
 
-#panel{
-flex:1;
-padding:10px;
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-grid-gap:10px;
-overflow-y:auto;
+.mochi-game .card,
+.mochi-game .achievement {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    background: #2a2a2a;
 }
 
-.card,.achievement{
-padding:10px;
-border-radius:6px;
-cursor:pointer;
-text-align:center;
-position:relative;
-background:#2a2a2a;
+.mochi-game .achievement {
+    opacity: 0.4;
 }
 
-.achievement{
-opacity:.4;
+.mochi-game .achievement.unlocked {
+    opacity: 1;
+    background: #3c5e2d;
 }
 
-.achievement.unlocked{
-opacity:1;
-background:#3c5e2d;
+.mochi-game .toast {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #333;
+    padding: 12px 16px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.4s;
 }
 
-.toast{
-position:absolute;
-bottom:20px;
-right:20px;
-background:#333;
-padding:12px 16px;
-border-radius:6px;
-opacity:0;
-transform:translateY(20px);
-transition:.4s;
+.mochi-game .toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.toast.show{
-opacity:1;
-transform:translateY(0);
+.mochi-game .particle {
+    position: absolute;
+    pointer-events: none;
+    color: #ffd700;
+    font-weight: bold;
+    animation: rise 1s forwards;
 }
 
-.particle{
-position:absolute;
-pointer-events:none;
-color:#ffd700;
-font-weight:bold;
-animation:rise 1s forwards;
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-80px);
+        opacity: 0;
+    }
 }
 
-@keyframes rise{
-0%{transform:translateY(0);opacity:1;}
-100%{transform:translateY(-80px);opacity:0;}
+.mochi-game__tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: #222;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    max-width: 250px;
+    white-space: normal;
+    word-break: break-word;
+    z-index: 9999;
+    opacity: 0;
 }
 
-#tooltip{
-  position:fixed;
-  pointer-events:none;
-  background:#222;
-  color:#fff;
-  padding:8px 10px;
-  border-radius:6px;
-  font-size:14px;
-  max-width:250px;
-  white-space: normal;
-  word-break: break-word;
-  z-index:9999;
-  opacity:0;
-}
-
-#tooltip .flavor{
-  display:block;
-  margin-top:6px;
-  font-style:italic;
-  color:#aaa;
+.mochi-game__tooltip .flavor {
+    display: block;
+    margin-top: 6px;
+    font-style: italic;
+    color: #aaa;
 }

@@ -9,8 +9,9 @@ import MainLayout from "layouts/Main.astro";
     description="思考力の試される、シンプルでベストな2048パズル！初心者からやり込み勢まで楽しめる、クラシックなゲーム体験を！"
     ,
     tags="ミニゲーム,HTML"
+    pageClass="game-2048-page"
 >
-    <div class="documents-container">
+    <main class="documents-container">
         <h1>2048: The Unlimted Motchiy</h1>
         <div>
             Score: <span id="score">0</span> | High Score:{" "}
@@ -19,11 +20,11 @@ import MainLayout from "layouts/Main.astro";
         <button onclick="newGame()">New Game</button>
         <div
             id="game-board"
-            style="display: grid; grid-template-columns: repeat(4, 100px); grid-template-rows: repeat(4, 100px); border: 1px solid black; width: 400px; height: 400px; position: relative;"
+            class="game-board game-board--2048"
         ></div>
         <div
             id="game-over-overlay"
-            style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;"
+            class="game-over-overlay"
         >
             <h2>Game Over!</h2>
             <p>
@@ -31,13 +32,13 @@ import MainLayout from "layouts/Main.astro";
             </p>
             <button
                 onclick="newGame()"
-                style="padding: 10px 20px; font-size: 18px; cursor: pointer;"
+                class="game-over-retry"
             >
                 Play Again
             </button>
         </div>
         <br />
         <button onclick="location.href='/32768.html'">Also play 32768!</button>
-    </div>
+    </main>
     <script src="/2048.js" defer></script>
 </MainLayout>

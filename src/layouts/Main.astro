@@ -1,12 +1,11 @@
 ---
 import "styles/documents_style.css";
-import "styles/games.css";
 import "styles/style.css";
 
 import Header from "components/Header.astro";
 import Footer from "components/Footer.astro";
 
-const { title, description, tags } = Astro.props;
+const { title, description, tags, pageClass } = Astro.props;
 ---
 
 <!doctype html>
@@ -31,7 +30,7 @@ const { title, description, tags } = Astro.props;
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content="/site_assets/ogp.png" />
     </head>
-    <body>
+    <body class={pageClass}>
         <Header />
         <slot />
         <Footer />

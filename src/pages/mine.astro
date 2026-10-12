@@ -7,8 +7,9 @@ import "styles/mine.css";
     title="Minesweeper: The Marvellous Motchiy - Play on Heiki!"
     ,description="シンプルで楽しいマインスイーパー！地雷を探すこのパズルで精神を鍛えよう。"
     ,tags="ミニゲーム,HTML,マインスイーパー"
+    pageClass="minesweeper-page"
 >
-    <body>
+    <main>
         <div class="wrap">
             <h1>Minesweeper: The Marvellous Motchiy</h1>
 
@@ -81,7 +82,11 @@ import "styles/mine.css";
             </div>
 
             <div class="board-shell">
-                <div id="board" aria-label="マインスイーパー盤面"></div>
+                <div
+                    id="board"
+                    class="minesweeper-board"
+                    aria-label="マインスイーパー盤面"
+                ></div>
             </div>
 
             <div class="muted">
@@ -100,6 +105,6 @@ import "styles/mine.css";
                 </div>
             </div>
         </div>
-    </body>
+    </main>
     <script src="/mine.js" defer></script>
 </MainLayout>

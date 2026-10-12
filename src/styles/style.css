@@ -5,7 +5,13 @@ body {
     padding: 0;
 }
 
-header {
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.site-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -13,6 +19,7 @@ header {
     background: #111;
     color: #fff;
     margin: 0;
+    width: 100%;
 }
 
 .header-links {
@@ -31,7 +38,7 @@ header {
     color: #d8f;
 }
 
-.header-links a:last-child {
+.header-links .header-link:last-child {
     border-right: none;
 }
 
@@ -52,7 +59,17 @@ button {
 
 .logo img {
     height: 36px;
-    align-items: left;
+}
+
+.site-title {
+    opacity: 0.9;
+}
+
+.footer-copyright {
+    margin-top: 18px;
+    color: #555;
+    font-size: 13px;
+    text-align: center;
 }
 
 .sp-mode {
@@ -60,14 +77,6 @@ button {
 }
 
 @media (max-width: 1000px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    input[type="text"] {
-        max-width: 200px;
-    }
-
     .sp-mode {
         display: inline;
     }

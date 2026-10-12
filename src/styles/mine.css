@@ -1,22 +1,7 @@
-:root {
-    --bg: white;
-    --panel: #eee;
-    --text: black;
-    --mine-text: gray;
-    --muted: #2a2a2a;
-    --cell-closed: #eee;
-    --cell-open: #fff;
-    --border: #ccc;
-    --accent: #4da3ff;
-    --danger: #ff5c7a;
-    --success: #39d98a;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
+.minesweeper-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
     font-family:
         system-ui,
@@ -26,11 +11,9 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
 }
 
-.wrap {
+.minesweeper-page .wrap {
     min-height: auto;
     display: flex;
     flex-direction: column;
@@ -39,12 +22,12 @@ body {
     gap: 10px;
 }
 
-h1 {
+.minesweeper-page .wrap > h1 {
     margin: 4px 0 0;
     font-size: clamp(1.2rem, 3vw, 2rem);
 }
 
-.panel {
+.minesweeper-page .panel {
     width: min(100%, 1100px);
     background: var(--panel);
     border: 1px solid #ccc;
@@ -54,43 +37,43 @@ h1 {
     gap: 10px;
 }
 
-.controls {
+.minesweeper-page .controls {
     grid-template-columns: repeat(6, minmax(0, 1fr));
     align-items: end;
 }
 
-.controls .group {
+.minesweeper-page .controls .group {
     display: flex;
     flex-direction: column;
     gap: 5px;
     min-width: 0;
 }
 
-.controls label {
+.minesweeper-page .controls label {
     font-size: 0.8rem;
     color: var(--muted);
 }
 
-input,
-select,
-button {
+.minesweeper-page input,
+.minesweeper-page select,
+.minesweeper-page button {
     font: inherit;
     border-radius: 10px;
     border: 1px solid #ccc;
     background: #fff;
     color: #111;
-    padding: 10px 10px;
+    padding: 10px;
     width: 100%;
     min-width: 0;
 }
 
-.button-row {
+.minesweeper-page .button-row {
     display: grid;
     gap: 8px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.hud {
+.minesweeper-page .hud {
     width: min(100%, 1100px);
     display: flex;
     flex-wrap: wrap;
@@ -100,12 +83,12 @@ button {
     color: var(--text);
 }
 
-.hud span {
+.minesweeper-page .hud span {
     font-variant-numeric: tabular-nums;
     font-weight: 700;
 }
 
-.board-shell {
+.minesweeper-page .board-shell {
     width: min(100%, 1100px);
     display: flex;
     justify-content: center;
@@ -113,7 +96,7 @@ button {
     padding-bottom: 6px;
 }
 
-#board {
+.minesweeper-page .minesweeper-board {
     display: grid;
     touch-action: none;
     user-select: none;
@@ -122,7 +105,7 @@ button {
     margin: 0 auto;
 }
 
-.cell {
+.minesweeper-page .cell {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,17 +118,17 @@ button {
     overflow: hidden;
 }
 
-.cell.open {
+.minesweeper-page .cell.open {
     background: var(--cell-open);
     cursor: default;
 }
 
-.cell.flagged,
-.cell.mine {
+.minesweeper-page .cell.flagged,
+.minesweeper-page .cell.mine {
     background: var(--cell-open);
 }
 
-.cell img {
+.minesweeper-page .cell img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -153,7 +136,7 @@ button {
     display: block;
 }
 
-.overlay {
+.minesweeper-page .overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.72);
@@ -164,11 +147,11 @@ button {
     z-index: 50;
 }
 
-.overlay.show {
+.minesweeper-page .overlay.show {
     display: flex;
 }
 
-.modal {
+.minesweeper-page .modal {
     width: min(92vw, 520px);
     background: #ccc;
     border: 1px solid #444;
@@ -190,38 +173,39 @@ button {
     }
 }
 
-.result-title {
+.minesweeper-page .result-title {
     margin: 0 0 8px;
     font-size: clamp(1.5rem, 4vw, 2.3rem);
 }
 
-.result-text {
+.minesweeper-page .result-text {
     margin: 0 0 14px;
     color: #2a2a2a;
     line-height: 1.6;
     white-space: pre-wrap;
 }
 
-.score {
+.minesweeper-page .score {
     color: var(--success);
     font-weight: 900;
     font-size: 1.2rem;
 }
 
-.modal .button-row {
+.minesweeper-page .modal .button-row {
     margin-top: 12px;
 }
 
-.muted {
+.minesweeper-page .muted {
     color: var(--muted);
     font-size: 0.9rem;
 }
 
 @media (max-width: 900px) {
-    .controls {
+    .minesweeper-page .controls {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .button-row {
+
+    .minesweeper-page .button-row {
         grid-template-columns: 1fr;
     }
 }
