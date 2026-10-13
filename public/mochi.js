@@ -1539,7 +1539,7 @@ function buyBuilding(i, e) {
   let b = game.buildings[i];
 
   if (game.cookies < b.cost) {
-    toast(`餅が足りません（あと${formatNumber(b.cost - game.cookies)}）`);
+    toast(`餅が足りません😭（あと${formatNumber(b.cost - game.cookies)}）`);
     return;
   }
 
@@ -1547,7 +1547,7 @@ function buyBuilding(i, e) {
   particle(e.clientX, e.clientY, "-" + formatNumber(b.cost), true);
   b.owned++;
   b.cost = (b.cost * 115n + 50n) / 100n;
-  toast("Bought " + innerHTMLRemoving(b.name));
+  toast(innerHTMLRemoving(b.name) + "を購入した");
   checkAchievements();
 
   render();
