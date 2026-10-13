@@ -192,7 +192,7 @@ let game = {
     },
     {
       name: "[(r1)神域の二元庭(end)]",
-      cost: 82250000000n,
+      cost: 8225000000n,
       mps: 3400000n,
       owned: 0n,
       unlock() {
