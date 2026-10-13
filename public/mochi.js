@@ -798,7 +798,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.clickMultiplier = (game.clickMultiplier * 101n) / 100n;
+        game.clickMultiplier += 100000n;
       },
       unlocked: false,
       desc: "特別なカクテル。クリック力+1%。",
@@ -813,7 +813,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].multiplier = (game.buildings[16].multiplier * 108n) / 100n;
+        game.buildings[16].multiplier += 100000n;
       },
       unlocked: false,
       desc: "特別なカクテル。Motchiyサーバーの生産性+8%。",
@@ -828,7 +828,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[25].multiplier = (game.buildings[25].multiplier * 110n) / 100n;
+        game.buildings[25].multiplier += 100000n;
       },
       unlocked: false,
       desc: "特別なカクテル。『楽園』ガレージの生産性+10%。",
@@ -1519,9 +1519,9 @@ function renderBuildings() {
       b.owned +
       "<br>Cost: " +
       formatNumber(b.cost) +
-      "<br>通常MPS: " +
+      "<br>MPS: " +
       formatNumber(b.mps) +
-      "<br>x" +
+      " x " +
       (
         Number(b.multiplier) /
         Number(MULTIPLIER_SCALE)
