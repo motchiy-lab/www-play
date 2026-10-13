@@ -3,6 +3,8 @@ const count = document.getElementById("count");
 const mps = document.getElementById("mps");
 const cookie = document.getElementById("cookie");
 
+const MULTIPLIER_SCALE = 1000000n;
+
 function formatNumber(n) {
   n = BigInt(n);
 
@@ -39,6 +41,7 @@ function formatNumber(n) {
 let game = {
   cookies: 0n,
   clickPower: 1n,
+  clickMultiplier: MULTIPLIER_SCALE,
 
   stats: {
     clicks: 0n,
@@ -633,7 +636,7 @@ let game = {
       cost: 4000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 100n;
+        return getClickPower() >= 100n;
       },
       effect() {
         game.clickPower += 16n;
@@ -647,7 +650,7 @@ let game = {
       cost: 30000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 1000n;
+        return getClickPower() >= 1000n;
       },
       effect() {
         game.clickPower += 128n;
@@ -661,7 +664,7 @@ let game = {
       cost: 250000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 10000n;
+        return getClickPower() >= 10000n;
       },
       effect() {
         game.clickPower += 1024n;
@@ -675,7 +678,7 @@ let game = {
       cost: 1000000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 50000n;
+        return getClickPower() >= 50000n;
       },
       effect() {
         game.clickPower += 8192n;
@@ -689,7 +692,7 @@ let game = {
       cost: 1850000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 300000n;
+        return getClickPower() >= 300000n;
       },
       effect() {
         game.clickPower += 16384n;
@@ -703,7 +706,7 @@ let game = {
       cost: 7000000n,
       owned: 0n,
       unlock() {
-        return game.clickPower >= 1000000n;
+        return getClickPower() >= 1000000n;
       },
       effect() {
         game.clickPower += 65536n;
@@ -795,7 +798,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.clickPower = (game.clickPower * 101n) / 100n;
+        game.clickMultiplier = (game.clickMultiplier * 101n) / 100n;
       },
       unlocked: false,
       desc: "特別なカクテル。クリック力+1%。",
@@ -810,12 +813,12 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].mps = (game.buildings[16].mps * 108n) / 100n;
+        game.buildings[16].multiplier = (game.buildings[16].multiplier * 108n) / 100n;
       },
       unlocked: false,
       desc: "特別なカクテル。Motchiyサーバーの生産性+8%。",
       flavor:
-        "ミングルは液状化最高裁を用いてカクテルを作ろうとしていたが、さすがに静止が入ったので無難な材料に落ち着いた。",
+        "ミングルは液状化最高裁を用いてカクテルを作ろうとしていたが、さすがに制止が入ったので無難な材料に落ち着いた。",
     },
     {
       name: "[(horaku)『[(ruby)楽園に降る霧[(rt)フォー・レイン(/rt)](/ruby)]』(end)]",
@@ -825,11 +828,11 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[25].mps = (game.buildings[25].mps * 110n) / 100n;
+        game.buildings[25].multiplier = (game.buildings[25].multiplier * 110n) / 100n;
       },
       unlocked: false,
       desc: "特別なカクテル。『楽園』ガレージの生産性+10%。",
-      flavor: "",
+      flavor: "「僕らにとって特別な味わいです、と言って僕はグラスを傾けました」― ボンファイア・レノックス",
     },
   ],
 
@@ -1145,6 +1148,10 @@ let game = {
     },
   ],
 };
+
+game.buildings.forEach((b) => {
+  b.multiplier ??= MULTIPLIER_SCALE;
+});
 
 let tab = "buildings";
 
@@ -1512,9 +1519,15 @@ function renderBuildings() {
       b.owned +
       "<br>Cost: " +
       formatNumber(b.cost) +
-      "<br>" +
+      "<br>通常MPS: " +
       formatNumber(b.mps) +
-      " mps";
+      "<br>x" +
+      (
+        Number(b.multiplier) /
+        Number(MULTIPLIER_SCALE)
+      ).toLocaleString("ja-JP", {
+        maximumFractionDigits: 6,
+      });
 
     d.onclick = (e) => buyBuilding(i, e);
 
@@ -1670,14 +1683,15 @@ function renderAchievements() {
 }
 
 cookie.onclick = (e) => {
-  game.cookies += game.clickPower;
+  const power = getClickPower();
+  game.cookies += power;
   game.stats.clicks++;
 
   if (game.stats.clicks >= 10n) {
     game.achievements[0].unlocked = true;
   }
   checkAchievements();
-  particle(e.clientX, e.clientY, "+" + formatNumber(game.clickPower));
+  particle(e.clientX,e.clientY,"+" + formatNumber(power));
 
   render();
 };
@@ -1697,14 +1711,24 @@ function particle(x, y, text, spent = false) {
   setTimeout(() => p.remove(), 1000);
 }
 
+// 最終的なクリック力
+function getClickPower() {
+  return (
+    (game.clickPower * game.clickMultiplier) /
+    MULTIPLIER_SCALE
+  );
+}
+
 function getmps() {
-  let mps = 0n;
+  let total = 0n;
 
   game.buildings.forEach((b) => {
-    mps += b.mps * b.owned;
+    total +=
+      (b.mps * b.multiplier * b.owned) /
+      MULTIPLIER_SCALE;
   });
 
-  return mps;
+  return total;
 }
 
 function updateCounter() {
@@ -1758,6 +1782,7 @@ function save() {
       owned: b.owned.toString(),
       cost: b.cost.toString(),
       mps: b.mps.toString(),
+      multiplier: b.multiplier.toString(),
     })),
 
     upgrades: game.upgrades.map((u) => ({
@@ -1772,6 +1797,8 @@ function save() {
     achievements: game.achievements.map((a) => ({
       unlocked: a.unlocked,
     })),
+    
+    clickMultiplier: game.clickMultiplier.toString(),
   };
 
   localStorage.setItem("cookieEmpirePro", JSON.stringify(data));
@@ -1798,6 +1825,10 @@ function load() {
       game.buildings[i].cost = BigInt(b.cost);
       game.buildings[i].mps = BigInt(b.mps);
     });
+    if (b.multiplier) {
+      game.buildings[i].multiplier =
+      BigInt(b.multiplier);
+    }
   }
 
   if (data.upgrades) {
@@ -1823,6 +1854,10 @@ function load() {
 
       game.achievements[i].unlocked = a.unlocked;
     });
+  }
+
+  if (data.clickMultiplier) {
+    game.clickMultiplier = BigInt(data.clickMultiplier);
   }
 }
 
