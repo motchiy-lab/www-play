@@ -798,7 +798,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.clickMultiplier += 100000n;
+        game.clickMultiplier += 10000n;
       },
       unlocked: false,
       desc: "特別なカクテル。クリック力+1%。",
@@ -813,7 +813,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].multiplier += 100000n;
+        game.buildings[16].multiplier += 80000n;
       },
       unlocked: false,
       desc: "特別なカクテル。Motchiyサーバーの生産性+8%。",
