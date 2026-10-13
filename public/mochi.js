@@ -228,7 +228,7 @@ let game = {
     },
     {
       name: "[(r1)虚数世界農場(end)]",
-      cost: 638350000000n,
+      cost: 156375000000n,
       mps: 208500000n,
       owned: 0n,
       unlock() {
@@ -241,7 +241,7 @@ let game = {
     },
     {
       name: "[(r1)量子化Motchiyサーバー(end)]",
-      cost: 4200500000000n,
+      cost: 521850000000n,
       mps: 695800000n,
       owned: 0n,
       unlock() {
@@ -254,7 +254,7 @@ let game = {
     },
     {
       name: "[(r1)終末邪術ラボ(end)]",
-      cost: 7800500000000n,
+      cost: 110000000000n,
       mps: 880000000n,
       owned: 0n,
       unlock() {
@@ -266,7 +266,7 @@ let game = {
     },
     {
       name: "[(r1)覚醒干支(end)]",
-      cost: 32500500000000n,
+      cost: 610000000000n,
       mps: 1100000000n,
       owned: 0n,
       unlock() {
@@ -278,7 +278,7 @@ let game = {
     },
     {
       name: "[(r1)1847 シュトッベ(end)]",
-      cost: 1380000000000000n,
+      cost: 2055000000000n,
       mps: 3400000000n,
       owned: 0n,
       unlock() {
@@ -291,7 +291,7 @@ let game = {
     },
     {
       name: "[(r1)『楽園』ガレージ(end)]",
-      cost: 82900000000000000n,
+      cost: 7300000000000n,
       mps: 8760000000n,
       owned: 0n,
       unlock() {
@@ -303,7 +303,7 @@ let game = {
     },
     {
       name: "[(r1)社員レノン(end)]",
-      cost: 6432950000000000000n,
+      cost: 1988500000000n,
       mps: 2200000000n,
       owned: 0n,
       unlock() {
@@ -315,7 +315,7 @@ let game = {
     },
     {
       name: "[(r1)虚構星臨装置(end)]",
-      cost: 377700000000000000000n,
+      cost: 4208500000000n,
       mps: 4560000000n,
       owned: 0n,
       unlock() {
@@ -327,7 +327,7 @@ let game = {
     },
     {
       name: "[(r1)ハンドラ・ベルディヤの餅時計(end)]",
-      cost: 84950000000000000000000n,
+      cost: 9608500000000n,
       mps: 18900000000n,
       owned: 0n,
       unlock() {
@@ -339,7 +339,7 @@ let game = {
     },
     {
       name: "[(r1)小規模なMod(end)]",
-      cost: 15580000000000000000000000n,
+      cost: 10808500000000n,
       mps: 47500000000n,
       owned: 0n,
       unlock() {
@@ -351,7 +351,7 @@ let game = {
     },
     {
       name: "[(r1)超覚醒干支(end)]",
-      cost: 2900000000000000000000000000n,
+      cost: 32908000000000n,
       mps: 78499000000n,
       owned: 0n,
       unlock() {
@@ -361,6 +361,45 @@ let game = {
       desc: "さらに覚醒した干支。圧倒的な労働力を見せる。",
       flavor:
         "干支は自分の生産力が高すぎて、機械がオーバーフローするのではないかと心配になった。",
+    },
+    {
+      name: "[(r1)社員kaiha(end)]",
+      cost: 185508000000000n,
+      mps: 364599000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "小説の人。無数の仮想たくたんを物語から生み出し、強制労働させる。",
+      flavor:
+        "『たくたんは香辛料を体に入れ込む：Rewind：Rewind』",
+    },
+    {
+      name: "[(r1)社員Rai(end)]",
+      cost: 485508000000000n,
+      mps: 1382829000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "なんかすごそう、よく分からないけどすごそう。優先して採用したいけどよく分からない。",
+      flavor:
+        "一体ライって誰なんでしょう。",
+    },
+    {
+      name: "[(r1)覚醒レノン(end)]",
+      cost: 1750508000000000n,
+      mps: 4102829000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "UZ++++++ぐらいになったレノン。まさに最強。",
+      flavor:
+        "二十四時間どころか、一日あたり三十兆時間働く！",
     },
   ],
 
