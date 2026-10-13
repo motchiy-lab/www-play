@@ -1,6 +1,6 @@
 const panel = document.getElementById("panel");
 const count = document.getElementById("count");
-const cps = document.getElementById("cps");
+const mps = document.getElementById("mps");
 const cookie = document.getElementById("cookie");
 
 function formatNumber(n) {
@@ -50,7 +50,7 @@ let game = {
     {
       name: "バイトたくたん",
       cost: 30n,
-      cps: 1n,
+      mps: 1n,
       owned: 0n,
       desc: "安価な労働力。時には機械に劣るかもしれないが、やはり人の手で作る餅が安心できる。",
       flavor: "ぜひ、Twitterで@2nStPvpFot9537をフォローしよう！",
@@ -58,7 +58,7 @@ let game = {
     {
       name: "農場",
       cost: 100n,
-      cps: 4n,
+      mps: 4n,
       owned: 0n,
       desc: "餅を栽培する農場。とても効率よく餅の収穫ができる。",
       flavor:
@@ -67,7 +67,7 @@ let game = {
     {
       name: "工場",
       cost: 500n,
-      cps: 20n,
+      mps: 20n,
       owned: 0n,
       desc: "餅を全自動で製造する工場。無数のマシンが超高速で餅をつく。",
       flavor: "多少の温かみを犠牲に、利益は増えていく。",
@@ -75,7 +75,7 @@ let game = {
     {
       name: "西日本",
       cost: 2000n,
-      cps: 50n,
+      mps: 50n,
       owned: 0n,
       desc: "日本の西側の半分。東日本の価格が上がっても、こちらを安価で購入できる。",
       flavor: "西日本では餅は丸いらしい。",
@@ -83,7 +83,7 @@ let game = {
     {
       name: "東日本",
       cost: 2000n,
-      cps: 50n,
+      mps: 50n,
       owned: 0n,
       desc: "日本の東側の半分。西日本の価格が上がっても、こちらを安価で購入できる。",
       flavor: "東日本では角餅が主流らしい。",
@@ -91,7 +91,7 @@ let game = {
     {
       name: "覚醒たくたん",
       cost: 10000n,
-      cps: 300n,
+      mps: 300n,
       owned: 0n,
       desc: "覚醒した労働力。SSランクのたくたん。",
       flavor: "インフレはどこでも避けがたいものだ。",
@@ -99,7 +99,7 @@ let game = {
     {
       name: "超覚醒たくたん",
       cost: 50000n,
-      cps: 1000n,
+      mps: 1000n,
       owned: 0n,
       desc: "さらに覚醒した労働力。SSSランクに上がり、さらに生産性が上昇した。",
       flavor: "とはいえこのゲームはそもそもインフレを楽しむゲームではある。",
@@ -107,7 +107,7 @@ let game = {
     {
       name: "邪術ラボ",
       cost: 3000000n,
-      cps: 2500n,
+      mps: 2500n,
       owned: 0n,
       desc: "邪術ラボ。怪しげな術を用いて餅を作っているんだそう。",
       flavor: "「僕の【旧き氷域の邪術】の出番かな。……違う？」― さいほうへいき",
@@ -115,7 +115,7 @@ let game = {
     {
       name: "最高裁判所",
       cost: 5500000n,
-      cps: 4000n,
+      mps: 4000n,
       owned: 0n,
       desc: "最高裁判所では、裁判の結果を左右する賄賂に餅が使われる。",
       flavor: "「その収益の一部を君に分けてやるという訳さ」― 『最高裁』",
@@ -123,7 +123,7 @@ let game = {
     {
       name: "餅工場惑星",
       cost: 10000000n,
-      cps: 9500n,
+      mps: 9500n,
       owned: 0n,
       desc: "いっそのこと新たに星を作る。広大な面積を生産に費やせる。",
       flavor:
@@ -132,7 +132,7 @@ let game = {
     {
       name: "ぺったんうさぎ",
       cost: 70000000n,
-      cps: 12000n,
+      mps: 12000n,
       owned: 0n,
       desc: "月で餅をついてくれるうさぎさんを雇おう。",
       flavor: "「……もう一度『月の観手』する必要はなさそうだね」― Motchiy",
@@ -140,7 +140,7 @@ let game = {
     {
       name: "バイト干支",
       cost: 250000000n,
-      cps: 25000n,
+      mps: 25000n,
       owned: 0n,
       desc: "そこそこ高価な労働力。その業績はたくたんの比ではない。",
       flavor: "「別にそのうち俺UZランクになるから！！」― たくたん",
@@ -148,7 +148,7 @@ let game = {
     {
       name: "裏・最高裁判所",
       cost: 600000000n,
-      cps: 85000n,
+      mps: 85000n,
       owned: 0n,
       desc: "地下闘技場とか闇オークションとかみたいなノリの裁判所。",
       flavor:
@@ -157,7 +157,7 @@ let game = {
     {
       name: "山本の研究所",
       cost: 1550000000n,
-      cps: 150000n,
+      mps: 150000n,
       owned: 0n,
       desc: "パーリナイ山本の研究所。しかし何を研究しているのかはよく分からない。",
       flavor:
@@ -166,7 +166,7 @@ let game = {
     {
       name: "西邪馬台国",
       cost: 4500000000n,
-      cps: 450000n,
+      mps: 450000n,
       owned: 0n,
       desc: "時は遡り、邪馬台国の西半分。",
       flavor: "卑弥呼もお餅で買収されてしまったのかもしれない。",
@@ -174,7 +174,7 @@ let game = {
     {
       name: "東邪馬台国",
       cost: 4500000000n,
-      cps: 450000n,
+      mps: 450000n,
       owned: 0n,
       desc: "時は遡り、邪馬台国の東半分。",
       flavor: "邪馬台国の統一は、武力ではなく餅によって成し遂げられた。",
@@ -182,7 +182,7 @@ let game = {
     {
       name: "Motchiyサーバー",
       cost: 10000000000n,
-      cps: 1000000n,
+      mps: 1000000n,
       owned: 0n,
       desc: "このゲームをホストしているサーバー。購入すると、これより上位の施設がアンロックされる！",
       flavor: "「ゲームが気に入ったら寄付してね」― Motchiy",
@@ -190,7 +190,7 @@ let game = {
     {
       name: "[(r1)神域の二元庭(end)]",
       cost: 82250000000n,
-      cps: 3400000n,
+      mps: 3400000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -202,7 +202,7 @@ let game = {
     {
       name: "[(r1)真覚醒たくたん(end)]",
       cost: 23590000000n,
-      cps: 28500000n,
+      mps: 28500000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -214,7 +214,7 @@ let game = {
     {
       name: "[(r1)真超覚醒たくたん(end)]",
       cost: 66550000000n,
-      cps: 74900000n,
+      mps: 74900000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -226,7 +226,7 @@ let game = {
     {
       name: "[(r1)虚数世界農場(end)]",
       cost: 638350000000n,
-      cps: 208500000n,
+      mps: 208500000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -239,7 +239,7 @@ let game = {
     {
       name: "[(r1)量子化Motchiyサーバー(end)]",
       cost: 4200500000000n,
-      cps: 695800000n,
+      mps: 695800000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -252,7 +252,7 @@ let game = {
     {
       name: "[(r1)終末邪術ラボ(end)]",
       cost: 7800500000000n,
-      cps: 880000000n,
+      mps: 880000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -264,7 +264,7 @@ let game = {
     {
       name: "[(r1)覚醒干支(end)]",
       cost: 32500500000000n,
-      cps: 1100000000n,
+      mps: 1100000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -276,7 +276,7 @@ let game = {
     {
       name: "[(r1)1847 シュトッベ(end)]",
       cost: 1380000000000000n,
-      cps: 3400000000n,
+      mps: 3400000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -289,7 +289,7 @@ let game = {
     {
       name: "[(r1)『楽園』ガレージ(end)]",
       cost: 82900000000000000n,
-      cps: 8760000000n,
+      mps: 8760000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -301,7 +301,7 @@ let game = {
     {
       name: "[(r1)社員レノン(end)]",
       cost: 6432950000000000000n,
-      cps: 2200000000n,
+      mps: 2200000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -313,7 +313,7 @@ let game = {
     {
       name: "[(r1)虚構星臨装置(end)]",
       cost: 377700000000000000000n,
-      cps: 4560000000n,
+      mps: 4560000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -325,7 +325,7 @@ let game = {
     {
       name: "[(r1)ハンドラ・ベルディヤの餅時計(end)]",
       cost: 84950000000000000000000n,
-      cps: 18900000000n,
+      mps: 18900000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -337,7 +337,7 @@ let game = {
     {
       name: "[(r1)小規模なMod(end)]",
       cost: 15580000000000000000000000n,
-      cps: 47500000000n,
+      mps: 47500000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -349,7 +349,7 @@ let game = {
     {
       name: "[(r1)超覚醒干支(end)]",
       cost: 2900000000000000000000000000n,
-      cps: 78499000000n,
+      mps: 78499000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -482,7 +482,7 @@ let game = {
         return game.buildings[0].owned > 0;
       },
       effect() {
-        game.buildings[0].cps += 2n;
+        game.buildings[0].mps += 2n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+2。",
@@ -496,7 +496,7 @@ let game = {
         return game.upgrades[10].bought;
       },
       effect() {
-        game.buildings[0].cps += 8n;
+        game.buildings[0].mps += 8n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+16。",
@@ -510,7 +510,7 @@ let game = {
         return game.upgrades[11].bought;
       },
       effect() {
-        game.buildings[0].cps += 128n;
+        game.buildings[0].mps += 128n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+128。",
@@ -524,7 +524,7 @@ let game = {
         return game.upgrades[12].bought;
       },
       effect() {
-        game.buildings[0].cps += 1024n;
+        game.buildings[0].mps += 1024n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+1024。",
@@ -538,7 +538,7 @@ let game = {
         return game.upgrades[13].bought;
       },
       effect() {
-        game.buildings[0].cps += 8192n;
+        game.buildings[0].mps += 8192n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+8192。",
@@ -552,7 +552,7 @@ let game = {
         return game.upgrades[14].bought;
       },
       effect() {
-        game.buildings[0].cps += 32768n;
+        game.buildings[0].mps += 32768n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+32768。",
@@ -566,7 +566,7 @@ let game = {
         return game.upgrades[15].bought;
       },
       effect() {
-        game.buildings[0].cps += 262144n;
+        game.buildings[0].mps += 262144n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+262144。",
@@ -580,7 +580,7 @@ let game = {
         return game.upgrades[16].bought;
       },
       effect() {
-        game.buildings[0].cps += 2097152n;
+        game.buildings[0].mps += 2097152n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+2097152。",
@@ -594,7 +594,7 @@ let game = {
         return game.upgrades[17].bought;
       },
       effect() {
-        game.buildings[0].cps += 16777216n;
+        game.buildings[0].mps += 16777216n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+16777216。",
@@ -608,7 +608,7 @@ let game = {
         return game.upgrades[18].bought;
       },
       effect() {
-        game.buildings[0].cps += 134217728n;
+        game.buildings[0].mps += 134217728n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+134217728。",
@@ -722,7 +722,7 @@ let game = {
         return game.buildings[0].owned >= 1;
       },
       effect() {
-        game.buildings[0].cps += 1n;
+        game.buildings[0].mps += 1n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+1。",
@@ -736,7 +736,7 @@ let game = {
         return game.buildings[0].owned >= 1;
       },
       effect() {
-        game.buildings[0].cps += 3n;
+        game.buildings[0].mps += 3n;
       },
       unlocked: false,
       desc: "バイトたくたんの生産性+3。",
@@ -810,7 +810,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].cps = (game.buildings[16].cps * 108n) / 100n;
+        game.buildings[16].mps = (game.buildings[16].mps * 108n) / 100n;
       },
       unlocked: false,
       desc: "特別なカクテル。Motchiyサーバーの生産性+8%。",
@@ -825,7 +825,7 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[25].cps = (game.buildings[25].cps * 110n) / 100n;
+        game.buildings[25].mps = (game.buildings[25].mps * 110n) / 100n;
       },
       unlocked: false,
       desc: "特別なカクテル。『楽園』ガレージの生産性+10%。",
@@ -1476,7 +1476,7 @@ function checkAchievements() {
 
 function render() {
   count.textContent = formatNumber(game.cookies);
-  cps.textContent = formatNumber(getCPS()) + " / sec";
+  mps.textContent = formatNumber(getmps()) + " / sec";
 
   if (tab === "buildings") renderBuildings();
   if (tab === "upgrades") renderUpgrades();
@@ -1513,8 +1513,8 @@ function renderBuildings() {
       "<br>Cost: " +
       formatNumber(b.cost) +
       "<br>" +
-      formatNumber(b.cps) +
-      " cps";
+      formatNumber(b.mps) +
+      " mps";
 
     d.onclick = (e) => buyBuilding(i, e);
 
@@ -1697,19 +1697,19 @@ function particle(x, y, text, spent = false) {
   setTimeout(() => p.remove(), 1000);
 }
 
-function getCPS() {
-  let cps = 0n;
+function getmps() {
+  let mps = 0n;
 
   game.buildings.forEach((b) => {
-    cps += b.cps * b.owned;
+    mps += b.mps * b.owned;
   });
 
-  return cps;
+  return mps;
 }
 
 function updateCounter() {
   count.textContent = formatNumber(game.cookies);
-  cps.textContent = formatNumber(getCPS()) + " / sec";
+  mps.textContent = formatNumber(getmps()) + " / sec";
 }
 
 let cookieRemainder = 0n; // 余りを保持
@@ -1717,10 +1717,10 @@ let cookieRemainder = 0n; // 余りを保持
 const tick = 50; // 50ms
 
 setInterval(() => {
-  // 1秒あたりのCPSを tick に換算して BigInt に変換
-  let cps = getCPS(); // BigInt
-  let increment = (cps * BigInt(tick)) / 1000n;
-  let remainder = (cps * BigInt(tick)) % 1000n;
+  // 1秒あたりのmpsを tick に換算して BigInt に変換
+  let mps = getmps(); // BigInt
+  let increment = (mps * BigInt(tick)) / 1000n;
+  let remainder = (mps * BigInt(tick)) % 1000n;
 
   game.cookies += increment;
   cookieRemainder += remainder;
@@ -1757,7 +1757,7 @@ function save() {
     buildings: game.buildings.map((b) => ({
       owned: b.owned.toString(),
       cost: b.cost.toString(),
-      cps: b.cps.toString(),
+      mps: b.mps.toString(),
     })),
 
     upgrades: game.upgrades.map((u) => ({
@@ -1796,7 +1796,7 @@ function load() {
 
       game.buildings[i].owned = BigInt(b.owned);
       game.buildings[i].cost = BigInt(b.cost);
-      game.buildings[i].cps = BigInt(b.cps);
+      game.buildings[i].mps = BigInt(b.mps);
     });
   }
 
