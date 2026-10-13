@@ -1626,6 +1626,8 @@ function buyUpgrade(i, e) {
   u.effect();
   u.bought = true;
 
+  save();
+
   toast("Upgrade: " + innerHTMLRemoving(u.name));
 
   render();
@@ -1824,17 +1826,16 @@ function load() {
       game.buildings[i].owned = BigInt(b.owned);
       game.buildings[i].cost = BigInt(b.cost);
       game.buildings[i].mps = BigInt(b.mps);
+      if (b.multiplier) {
+        game.buildings[i].multiplier =
+        BigInt(b.multiplier);
+      }
     });
-    if (b.multiplier) {
-      game.buildings[i].multiplier =
-      BigInt(b.multiplier);
-    }
   }
 
   if (data.upgrades) {
     data.upgrades.forEach((u, i) => {
       if (!game.upgrades[i]) return;
-
       game.upgrades[i].bought = u.bought;
     });
   }
