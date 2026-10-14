@@ -123,6 +123,7 @@ let game = {
       desc: "最高裁判所では、裁判の結果を左右する賄賂に餅が使われる。",
       flavor: "「その収益の一部を君に分けてやるという訳さ」― 『最高裁』",
     },
+    // 10
     {
       name: "餅工場惑星",
       cost: 10000000n,
@@ -214,6 +215,7 @@ let game = {
       desc: "超覚醒を更に超えた力を手にしたたくたん。",
       flavor: "しかし、それでも干支には届かない。",
     },
+    // 20
     {
       name: "[(r1)真超覚醒たくたん(end)]",
       cost: 66550000000n,
@@ -254,8 +256,8 @@ let game = {
     },
     {
       name: "[(r1)終末邪術ラボ(end)]",
-      cost: 110000000000n,
-      mps: 880000000n,
+      cost: 2121850000000n,
+      mps: 1395800000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -266,8 +268,8 @@ let game = {
     },
     {
       name: "[(r1)覚醒干支(end)]",
-      cost: 610000000000n,
-      mps: 1100000000n,
+      cost: 8171850000000n,
+      mps: 3895800000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -278,8 +280,8 @@ let game = {
     },
     {
       name: "[(r1)1847 シュトッベ(end)]",
-      cost: 2055000000000n,
-      mps: 3400000000n,
+      cost: 30985750000000n,
+      mps: 9085000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -291,8 +293,8 @@ let game = {
     },
     {
       name: "[(r1)『楽園』ガレージ(end)]",
-      cost: 7300000000000n,
-      mps: 8760000000n,
+      cost: 90000350000000n,
+      mps: 19005000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -303,8 +305,8 @@ let game = {
     },
     {
       name: "[(r1)社員レノン(end)]",
-      cost: 1988500000000n,
-      mps: 2200000000n,
+      cost: 230000350000000n,
+      mps: 78005000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -315,8 +317,8 @@ let game = {
     },
     {
       name: "[(r1)虚構星臨装置(end)]",
-      cost: 4208500000000n,
-      mps: 4560000000n,
+      cost: 1070000350000000n,
+      mps: 261005000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -327,8 +329,8 @@ let game = {
     },
     {
       name: "[(r1)ハンドラ・ベルディヤの餅時計(end)]",
-      cost: 9608500000000n,
-      mps: 18900000000n,
+      cost: 3250000350000000n,
+      mps: 881005000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -337,10 +339,11 @@ let game = {
       desc: "ハンドラ・ベルディヤ氏の作った時計。時間の進むエネルギーで餅を生産する。",
       flavor: "もはや水力も火力も不要！　時代は時間力だ。",
     },
+    // 30
     {
       name: "[(r1)小規模なMod(end)]",
-      cost: 10808500000000n,
-      mps: 47500000000n,
+      cost: 8650000000000000n,
+      mps: 2038440000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -351,8 +354,8 @@ let game = {
     },
     {
       name: "[(r1)超覚醒干支(end)]",
-      cost: 32908000000000n,
-      mps: 78499000000n,
+      cost: 29199500000000000n,
+      mps: 777844000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -364,8 +367,8 @@ let game = {
     },
     {
       name: "[(r1)社員kaiha(end)]",
-      cost: 185508000000000n,
-      mps: 364599000000n,
+      cost: 165082800000000000n,
+      mps: 3291844000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -377,8 +380,8 @@ let game = {
     },
     {
       name: "[(r1)社員Rai(end)]",
-      cost: 485508000000000n,
-      mps: 1382829000000n,
+      cost: 639882800000000000n,
+      mps: 8086000000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -390,8 +393,8 @@ let game = {
     },
     {
       name: "[(r1)覚醒レノン(end)]",
-      cost: 1750508000000000n,
-      mps: 4102829000000n,
+      cost: 2225500000000000000n,
+      mps: 19151000000000n,
       owned: 0n,
       unlock() {
         return game.buildings[16].owned > 0;
@@ -401,8 +404,35 @@ let game = {
       flavor:
         "二十四時間どころか、一日あたり三十兆時間働く！",
     },
+    {
+      name: "[(r1)中規模なMod(end)]",
+      cost: 9025000000000000000n,
+      mps: 75351000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "まあまあ規模の大きなチートの塊。バージョンは0.1.1。",
+      flavor:
+        "それでもインフレには抗えないかもしれない……。",
+    },
+    {
+      name: "[(r1)超虚数ブーメラン星雲(end)]",
+      cost: 31100000000000000000n,
+      mps: 34070000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "絶対零度を超越しすぎて逆にとてつもない高温になり、時の進みさえ引っ張られて以上に加速した宇宙の区域。",
+      flavor:
+        "熱中症になるので、アクエリアスを持っていこう。",
+    },
   ],
 
+  
   upgrades: [
     {
       name: "強化クリック",
@@ -487,10 +517,10 @@ let game = {
       cost: 350000n,
       bought: false,
       effect() {
-        game.clickPower += 5000n;
+        game.clickPower += 7000n;
       },
       unlocked: true,
-      desc: "クリック力+5000。",
+      desc: "クリック力+7000。",
       flavor: "空気との摩擦で発火するスピードにも耐えられる！",
     },
     {
@@ -498,10 +528,10 @@ let game = {
       cost: 4000000n,
       bought: false,
       effect() {
-        game.clickPower += 8000n;
+        game.clickPower += 13000n;
       },
       unlocked: true,
-      desc: "クリック力+8000。",
+      desc: "クリック力+13000。",
       flavor: "さあ、科学に見切りをつけたら次は邪術だ。",
     },
     {
@@ -515,7 +545,49 @@ let game = {
       desc: "クリック力+20000。",
       flavor: "【旧き氷域の邪術】に終わりはない。",
     },
-
+    {
+      name: "真邪術ダイヤモンドの指",
+      cost: 45000000n,
+      bought: false,
+      unlock() {
+        return game.clickPower > 400000;
+      },
+      effect() {
+        game.clickPower += 85000n;
+      },
+      unlocked: false,
+      desc: "クリック力+85000。",
+      flavor: "邪術パワーが強すぎるため、聖なる者が使うと光と闇が両方備わり最強に見えるが、悪しき者が使うと逆に頭がおかしくなって死ぬ。",
+    },
+    {
+      name: "ココロオブシディアンの指・疑似",
+      cost: 300000000n,
+      bought: false,
+      unlock() {
+        return game.clickPower > 8000000;
+      },
+      effect() {
+        game.clickPower += 1000000n;
+      },
+      unlocked: false,
+      desc: "クリック力+1000000。",
+      flavor: "ココロオブシディアン……を模倣して作った疑似的な鉱物。まがい物だが、それでも十分すごい。",
+    },
+    {
+      name: "ココロオブシディアンの指・真",
+      cost: 2500000000n,
+      bought: false,
+      unlock() {
+        return game.clickPower > 135000000;
+      },
+      effect() {
+        game.clickPower += 7500000n;
+      },
+      unlocked: false,
+      desc: "クリック力+7500000。",
+      flavor: "本物のココロオブシディアンの指。ありとあらゆるこの世の神秘を強欲に喰らい、餅へと変化させる。",
+    },
+  
     {
       name: "たくたん改造",
       cost: 1000n,
@@ -535,13 +607,13 @@ let game = {
       cost: 10000n,
       bought: false,
       unlock() {
-        return game.upgrades[10].bought;
+        return hasUpgrade("たくたん改造");
       },
       effect() {
         game.buildings[0].mps += 8n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+16。",
+      desc: "バイトたくたんの生産性+8。",
       flavor: "さらに高性能な設備を取り入れよう。",
     },
     {
@@ -549,7 +621,7 @@ let game = {
       cost: 100000n,
       bought: false,
       unlock() {
-        return game.upgrades[11].bought;
+        return hasUpgrade("たくたん魔改造");
       },
       effect() {
         game.buildings[0].mps += 128n;
@@ -563,7 +635,7 @@ let game = {
       cost: 1000000n,
       bought: false,
       unlock() {
-        return game.upgrades[12].bought;
+        return hasUpgrade("たくたん絶改造");
       },
       effect() {
         game.buildings[0].mps += 1024n;
@@ -577,13 +649,13 @@ let game = {
       cost: 100000000n,
       bought: false,
       unlock() {
-        return game.upgrades[13].bought;
+        return hasUpgrade("たくたん爆改造");
       },
       effect() {
-        game.buildings[0].mps += 8192n;
+        game.buildings[0].mps += 32768n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+8192。",
+      desc: "バイトたくたんの生産性+32768。",
       flavor: "もはや人造の天使とでもいうべき姿だ。",
     },
     {
@@ -591,13 +663,13 @@ let game = {
       cost: 10000000000n,
       bought: false,
       unlock() {
-        return game.upgrades[14].bought;
+        return hasUpgrade("たくたん神改造");
       },
       effect() {
-        game.buildings[0].mps += 32768n;
+        game.buildings[0].mps += 1048576n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+32768。",
+      desc: "バイトたくたんの生産性+1048576。",
       flavor: "餅作りに特化した金属塊になりつつある。",
     },
     {
@@ -605,13 +677,13 @@ let game = {
       cost: 1000000000000n,
       bought: false,
       unlock() {
-        return game.upgrades[15].bought;
+        return hasUpgrade("たくたん極改造");
       },
       effect() {
-        game.buildings[0].mps += 262144n;
+        game.buildings[0].mps += 16777216n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+262144。",
+      desc: "バイトたくたんの生産性+16777216。",
       flavor: "もはや人間とは呼べないのかもしれない。",
     },
     {
@@ -619,13 +691,13 @@ let game = {
       cost: 100000000000000n,
       bought: false,
       unlock() {
-        return game.upgrades[16].bought;
+        return hasUpgrade("たくたん天改造");
       },
       effect() {
-        game.buildings[0].mps += 2097152n;
+        game.buildings[0].mps += 268435456n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+2097152。",
+      desc: "バイトたくたんの生産性+268435456。",
       flavor: "脳にまで改造が及ぶ。たくたんの自我は薄れている。",
     },
     {
@@ -633,13 +705,13 @@ let game = {
       cost: 10000000000000000n,
       bought: false,
       unlock() {
-        return game.upgrades[17].bought;
+        return hasUpgrade("たくたん超改造");
       },
       effect() {
-        game.buildings[0].mps += 16777216n;
+        game.buildings[0].mps += 8589934592n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+16777216。",
+      desc: "バイトたくたんの生産性+8589934592。",
       flavor: "ついに全てのパーツが機械化してしまった。",
     },
     {
@@ -647,16 +719,169 @@ let game = {
       cost: 1000000000000000000n,
       bought: false,
       unlock() {
-        return game.upgrades[18].bought;
+        return hasUpgrade("たくたん廻改造");
       },
       effect() {
-        game.buildings[0].mps += 134217728n;
+        game.buildings[0].mps += 137438953472n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+134217728。",
+      desc: "バイトたくたんの生産性+137438953472。",
       flavor: "はじめから餅生産機を作るのと大差ないのでは？",
     },
+    {
+      name: "たくたん改造：Rewind",
+      cost: 1000000000000000000000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("たくたん黎改造");
+      },
+      effect() {
+        game.buildings[0].mps += 2199023255552n;
+      },
+      unlocked: false,
+      desc: "バイトたくたんの生産性+2199023255552。",
+      flavor: "香辛料を体に入れ込む。",
+    },
+    
+    // 農場
+    {
+      name: "スーパー自動餅トラクター",
+      cost: 550n,
+      bought: false,
+      unlock() {
+        return game.buildings[1].owned >= 1;
+      },
+      effect() {
+        game.buildings[1].mps += 3n;
+      },
+      unlocked: false,
+      desc: "農場の生産性+3。",
+      flavor: "自動でガシャンガシャンと餅を耕してくれる耕運機。",
+    },
+    {
+      name: "ウルトラ自動餅トラクター",
+      cost: 25000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("スーパー自動餅トラクター");
+      },
+      effect() {
+        game.buildings[1].mps += 120n;
+      },
+      unlocked: false,
+      desc: "農場の生産性+120。",
+      flavor: "とんでもない拘束で耕せる耕運機。その最高速度は亜音速にまで至る。",
+    },
+
+    // 工場
+    {
+      name: "作業用フィジカルAI",
+      cost: 1200n,
+      bought: false,
+      unlock() {
+        return game.buildings[2].owned >= 1;
+      },
+      effect() {
+        game.buildings[2].mps += 15n;
+      },
+      unlocked: false,
+      desc: "工場の生産性+15。",
+      flavor: "最新の技術を投入し、生産ラインを効率化する。",
+    },
+    {
+      name: "スーパーバイザーフィジカルAI",
+      cost: 38000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("作業用フィジカルAI");
+      },
+      effect() {
+        game.buildings[2].mps += 180n;
+      },
+      unlocked: false,
+      desc: "工場の生産性+180。",
+      flavor: "工場は見違えるほど高密度に、そして驚くほどに効率化。",
+    },
+    
+    // 惑星餅工場
+    {
+      name: "巨大惑星エアーパンピング",
+      cost: 23000000n,
+      bought: false,
+      unlock() {
+        return game.buildings[9].owned >= 1;
+      },
+      effect() {
+        game.buildings[9].multiplier += 500000n;
+      },
+      unlocked: false,
+      desc: "餅工場惑星の生産性+50%。",
+      flavor: "惑星を拡大し、生産面積をさらに確保する。",
+    },
+  
+    // 邪術ラボ
+    {
+      name: "超高性能邪術管理装置",
+      cost: 4500000n,
+      bought: false,
+      unlock() {
+        return game.buildings[7].owned >= 1;
+      },
+      effect() {
+        game.buildings[7].multiplier += 300000n;
+      },
+      unlocked: false,
+      desc: "邪術ラボの生産性+30%。",
+      flavor: "素晴らしい設備だ！　すでにある邪術のメカニズムを超高性能なコンピュータで管理することで、新たな邪術の研究が非常に捗るだろう。",
+    },
+    {
+      name: "超高性能邪ジェネレーティヴAI",
+      cost: 7500000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("超高性能邪術管理装置");
+      },
+      effect() {
+        game.buildings[7].multiplier += 1500000n;
+      },
+      unlocked: false,
+      desc: "邪術ラボの生産性+150%。",
+      flavor: "あらゆるパターンを学習した最強のAIが、新たな邪術を創り出す。さいほうへいきはリストラの危機にある……。",
+    },
+
+    // ぺったんうさぎ
+    {
+      name: "月神の加護",
+      cost: 135000000n,
+      bought: false,
+      unlock() {
+        return game.buildings[10].owned >= 1;
+      },
+      effect() {
+        game.buildings[10].multiplier += 500000n;
+      },
+      unlocked: false,
+      desc: "ぺったんうさぎの生産性+50%。",
+      flavor: "遠い異世界から、月に豊かな実りの加護が訪れた。",
+    },
+
+    // Motchiyサーバー
+    {
+      name: "究極クラスターアップグレードピース",
+      cost: 30000000000n,
+      bought: false,
+      unlock() {
+        return game.buildings[16].owned >= 1;
+      },
+      effect() {
+        game.buildings[16].multiplier += 7500000n;
+      },
+      unlocked: false,
+      desc: "Motchiyサーバーの生産性+75%。",
+      flavor: "Motchiyサーバーの処理をさらに高速化させるリソースの爆増増築。",
+    },
   ],
+
 
   items: [
     {
@@ -1198,6 +1423,15 @@ function isUnlocked(obj) {
   if (!obj.unlock) return true;
   return obj.unlock();
 }
+
+function getUpgrade(name) {
+  return game.upgrades.find(upgrade => upgrade.name === name);
+}
+
+function hasUpgrade(name) {
+  return getUpgrade(name)?.bought ?? false;
+}
+
 
 function updateUnlocks() {
   let unlockedAnything = false;
