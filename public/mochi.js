@@ -1619,7 +1619,7 @@ let autoClickInterval = null;
 function autoClickStart() {
   if (autoClickInterval !== null) return;
   autoClickInterval = setInterval(() => {
-    clickCookie();
+    cookie.click();
   }, 1000 / 7);
 }
 function autoClickStop() {
