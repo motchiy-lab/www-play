@@ -1776,7 +1776,6 @@ function addFractions(aNum, aDen, bNum, bDen) {
 }
 
 let timeAlterSpeed = 1;
-let timeAlterNumerator = 1n;
 let timeAlterDenominator = 1n;
 
 const timeAlterState = {
