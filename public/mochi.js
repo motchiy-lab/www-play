@@ -1600,31 +1600,33 @@ function updateUnlocks() {
   if (unlockedAnything) render();
 }
 
-function allUnlock() {
-  game.buildings.forEach((b) => {
-    b.unlocked = true;
-  });
-  game.upgrades.forEach((u) => {
-    u.unlocked = true;
-  });
-  game.items.forEach((it) => {
-    it.unlocked = true;
-  });
-}
+class debugFunk{
+  // すべてをアンロック
+  static function allUnlock() {
+    game.buildings.forEach((b) => {
+      b.unlocked = true;
+    });
+    game.upgrades.forEach((u) => {
+      u.unlocked = true;
+    });
+    game.items.forEach((it) => {
+      it.unlocked = true;
+    });
+  }
 
-let autoClickInterval = null;
-
-function autoClickStart() {
-  if (autoClickInterval !== null) return;
-  autoClickInterval = setInterval(() => {
-    clickCookie();
-  }, 1000 / 7);
-}
-
-function autoClickStop() {
-  if (autoClickInterval === null) return;
-  clearInterval(autoClickInterval);
-  autoClickInterval = null;
+  // 自動クリックの開始終了。さいほうへいき様のタップ速度にあわせて毎秒7回
+  static let autoClickInterval = null;
+  static function autoClickStart() {
+    if (autoClickInterval !== null) return;
+    autoClickInterval = setInterval(() => {
+      clickCookie();
+    }, 1000 / 7);
+  }
+  static function autoClickStop() {
+    if (autoClickInterval === null) return;
+    clearInterval(autoClickInterval);
+    autoClickInterval = null;
+  }
 }
 
 const tooltip = document.getElementById("tooltip");
