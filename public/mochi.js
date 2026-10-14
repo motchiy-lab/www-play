@@ -1612,6 +1612,21 @@ function allUnlock() {
   });
 }
 
+let autoClickInterval = null;
+
+function autoClickStart() {
+  if (autoClickInterval !== null) return;
+  autoClickInterval = setInterval(() => {
+    clickCookie();
+  }, 1000 / 7);
+}
+
+function autoClickStop() {
+  if (autoClickInterval === null) return;
+  clearInterval(autoClickInterval);
+  autoClickInterval = null;
+}
+
 const tooltip = document.getElementById("tooltip");
 
 function showTooltip(e, title, desc, flavor) {
