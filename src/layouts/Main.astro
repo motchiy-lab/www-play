@@ -12,6 +12,7 @@ const {
     tags,
     pageClass,
     hideSiteChrome = false,
+    preloadScripts = [],
 } = Astro.props;
 ---
 
@@ -24,6 +25,12 @@ const {
         <meta name="description" content={description} />
         <meta name="keywords" content={tags} />
         <link rel="icon" href="/site_assets/favicon.png" type="image/png" />
+
+        <!-- スクリプト事前読み込み -->
+        {preloadScripts.map((src) => (
+            <link rel="preload" href={src} as="script" />
+        ))}
+
 
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
