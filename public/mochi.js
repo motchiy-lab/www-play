@@ -1687,135 +1687,6 @@ function autoClickStop() {
   clearInterval(autoClickInterval);
   autoClickInterval = null;
 }
-
-/* 時間操作デバッグ機能 */
-
-let timeAlterNumerator = 1n;
-let timeAlterDenominator = 1n;
-
-const timeAlterState = {
-  realElapsed: 0,
-  gameElapsed: 0,
-  lastTime: performance.now(),
-};
-
-function timeAlterFraction(value) {
-  const s = String(value);
-  const match = s.match(
-    /^(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i
-  );
-
-  if (!match) {
-    throw new RangeError("speedは0以上の有限数にしてください");
-  }
-
-  const decimals = match[2] || "";
-  const exponent = Number(match[3] || 0);
-  let numerator = BigInt(match[1] + decimals);
-  let denominator = 10n ** BigInt(decimals.length);
-
-  if (exponent > 0) {
-    numerator *= 10n ** BigInt(exponent);
-  } else if (exponent < 0) {
-    denominator *= 10n ** BigInt(-exponent);
-  }
-
-  return [numerator, denominator];
-}
-
-
-/* 時間操作デバッグ機能 */
-
-function gcdBigInt(a, b) {
-  while (b !== 0n) {
-    [a, b] = [b, a % b];
-  }
-  return a;
-}
-
-// 十進表記を正確な有理数へ変換
-function timeAlterFraction(value) {
-  const match = String(value).match(
-    /^(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i
-  );
-
-  if (!match) {
-    throw new RangeError("speedには0以上の有限数を指定してください");
-  }
-
-  const decimals = match[2] || "";
-  const exponent = Number(match[3] || 0);
-
-  let numerator = BigInt(match[1] + decimals);
-  let denominator = 10n ** BigInt(decimals.length);
-
-  if (exponent >= 0) {
-    numerator *= 10n ** BigInt(exponent);
-  } else {
-    denominator *= 10n ** BigInt(-exponent);
-  }
-
-  const gcd = gcdBigInt(numerator, denominator);
-  return [numerator / gcd, denominator / gcd];
-}
-
-// 2つの有理数を加算
-function addFractions(aNum, aDen, bNum, bDen) {
-  const gcd = gcdBigInt(aDen, bDen);
-  const aFactor = bDen / gcd;
-  const bFactor = aDen / gcd;
-
-  let numerator = aNum * aFactor + bNum * bFactor;
-  let denominator = aDen * aFactor;
-
-  const reduce = gcdBigInt(numerator, denominator);
-  numerator /= reduce;
-  denominator /= reduce;
-
-  return [numerator, denominator];
-}
-
-let timeAlterSpeed = 1;
-let timeAlterDenominator = 1n;
-
-const timeAlterState = {
-  realElapsed: 0,
-  gameElapsed: 0,
-  lastTime: performance.now(),
-};
-
-//時間情報
-function timeInfo(display = true) {
-  const now = performance.now();
-  const delta = now - timeAlterState.lastTime;
-  timeAlterState.realElapsed += delta;
-  timeAlterState.gameElapsed += delta * timeAlterSpeed;
-  timeAlterState.lastTime = now;
-  const result = {
-    realElapsedSeconds: timeAlterState.realElapsed / 1000,
-    gameElapsedSeconds: timeAlterState.gameElapsed / 1000,
-    speed: timeAlterSpeed,
-  };
-  if (display) console.table(result);
-  return result;
-}
-
-//固有時制御
-function timeAlter(speed) {
-  speed = Number(speed);
-  if (!Number.isFinite(speed) || speed < 0) {
-    throw new RangeError("speedには0以上の有限数を指定してください");
-  }
-  timeInfo(false);
-  const [numerator, denominator] = timeAlterFraction(speed);
-  timeAlterNumerator = numerator;
-  timeAlterDenominator = denominator;
-  timeAlterSpeed = speed;
-  console.log(`時間倍率を ${speed} 倍に変更しました`);
-  timeInfo();
-}
-window.timeAlter = timeAlter;
-window.timeInfo = timeInfo;
 // ひたすら　デバッグ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const tooltip = document.getElementById("tooltip");
@@ -2357,37 +2228,24 @@ function updateCounter() {
   mps.textContent = formatNumber(getmps()) + " / sec";
 }
 
+let cookieRemainder = 0n; // 余りを保持
 
-let cookieRemainderNumerator = 0n;
-let cookieRemainderDenominator = 1n;
+const tick = 50; // 50ms
 
-const tick = 50;
-let lastProductionTimeUs =
-  BigInt(Math.round(performance.now() * 1000));
 setInterval(() => {
-  const nowUs =
-    BigInt(Math.round(performance.now() * 1000));
-  const elapsedUs = nowUs - lastProductionTimeUs;
-  lastProductionTimeUs = nowUs;
-  const mps = getmps();
-  const productionNumerator =
-    mps * elapsedUs * timeAlterNumerator;
-  const productionDenominator =
-    1000000000n * timeAlterDenominator;
-  [
-    cookieRemainderNumerator,
-    cookieRemainderDenominator,
-  ] = addFractions(
-    cookieRemainderNumerator,
-    cookieRemainderDenominator,
-    productionNumerator,
-    productionDenominator
-  );
-  const increment =
-    cookieRemainderNumerator /
-    cookieRemainderDenominator;
+  // 1秒あたりのmpsを tick に換算して BigInt に変換
+  let mps = getmps(); // BigInt
+  let increment = (mps * BigInt(tick)) / 1000n;
+  let remainder = (mps * BigInt(tick)) % 1000n;
+
   game.cookies += increment;
-  cookieRemainderNumerator %= cookieRemainderDenominator;
+  cookieRemainder += remainder;
+
+  // 余りが1000以上になったら cookies に加算
+  if (cookieRemainder >= 1000n) {
+    game.cookies += cookieRemainder / 1000n;
+    cookieRemainder %= 1000n;
+  }
   updateUnlocks();
   updateCounter();
 }, tick);
