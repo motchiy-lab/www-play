@@ -614,11 +614,11 @@ let game = {
       },
       effect() {
         game.buildings.slice(0, 17).forEach(building => {
-          building.multiplier += 100000n;
+          building.multiplier += 300000n;
         });
       },
       unlocked: false,
-      desc: "すべての通常レアの設備の生産力+10%。",
+      desc: "すべての通常レアの設備の生産力+30%。",
       flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。緑の箱に赤色のリボンが巻かれている。",
     },
     {
@@ -630,11 +630,11 @@ let game = {
       },
       effect() {
         game.buildings.slice(0, 17).forEach(building => {
-          building.multiplier += 300000n;
+          building.multiplier += 750000n;
         });
       },
       unlocked: false,
-      desc: "すべての通常レアの設備の生産力+30%。",
+      desc: "すべての通常レアの設備の生産力+75%。",
       flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。黄色の箱に白色のリボンが巻かれている。",
     },
   
@@ -1148,6 +1148,66 @@ let game = {
       unlocked: false,
       desc: "最高裁判所の生産性+7%。",
       flavor: "けっこうな価値のあるコイン。少ない枚数でも持っていれば判決が有利になるとされ、裏社会では常に高値で取引される。",
+    },
+    
+    {
+      name: "S級最高裁コイン",
+      cost: 1000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[12].owned >= 1;
+      },
+      effect() {
+        game.buildings[12].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "裏・最高裁判所の生産性+5%。",
+      flavor: "非常に高い価値を持つコイン、一般販売がされる機会は少ない。支払えばほぼ確実に無罪になる。",
+    },
+    {
+      name: "SSS級最高裁コイン",
+      cost: 2500000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[12].owned >= 1;
+      },
+      effect() {
+        game.buildings[12].multiplier += 120000n;
+      },
+      unlocked: false,
+      desc: "裏・最高裁判所の生産性+12%。",
+      flavor: "司法を一日間全部奪えるぐらいすごいコイン。",
+    },
+    
+    {
+      name: "なんかすごそうなカフェオレ",
+      cost: 2750000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[13].owned >= 1;
+      },
+      effect() {
+        game.buildings[13].multiplier += 100000n;
+      },
+      unlocked: false,
+      desc: "山本の研究所の生産性+10%。",
+      flavor: "山本の研究所で作られた、飲めばたちどころに心拍数が五千を超えるすごいカフェオレ。普通の人が飲めばしぬ。",
+    },
+    {
+      name: "なんか怪しいチップ",
+      cost: 2750000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[13].owned >= 1;
+      },
+      effect() {
+        game.buildings.slice(0, 14).forEach(building => {
+          building.multiplier += 50000n;
+        });
+      },
+      unlocked: false,
+      desc: "山本の研究所以前のすべての設備の生産性+5%。",
+      flavor: "山本の研究所で作られた、紫色に輝く謎のチップ。見るからにヤバそうだが、性能アップが図れるらしい……壊れたりしないよね？",
     },
 
     {
