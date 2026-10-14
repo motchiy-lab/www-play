@@ -1687,6 +1687,52 @@ function autoClickStop() {
   clearInterval(autoClickInterval);
   autoClickInterval = null;
 }
+
+const timeAlterState = {
+  speed: 1,
+  realElapsedMs: 0,
+  gameElapsedMs: 0,
+  lastRealTime: performance.now(),
+};
+function updateAlteredTime() {
+  const now = performance.now();
+  const delta = now - timeAlterState.lastRealTime;
+  timeAlterState.realElapsedMs += delta;
+  timeAlterState.gameElapsedMs += delta * timeAlterState.speed;
+  timeAlterState.lastRealTime = now;
+}
+function timeAlter(speed) {
+  if (
+    typeof speed !== "number" ||
+    !Number.isFinite(speed) ||
+    speed < 0
+  ) {
+    throw new RangeError(
+      "speed must be a finite number >= 0"
+    );
+  }
+  timeAlterSpeed = speed;
+  console.log(
+    `時間倍率を ${speed}x に変更しました`,
+    timeAlterStatus()
+  );
+}
+function timeAlterStatus() {
+  const realElapsedMs =
+    performance.now() - timeAlterStartedAt;
+  return {
+    speed: timeAlterSpeed,
+    realElapsedMs,
+    simulatedElapsedMs:
+      Number(timeAlterTickCount) * tick,
+    effectiveElapsedMs:
+      (Number(timeAlterTickCount) + timeAlterCredit) * tick,
+    pendingTicks: timeAlterCredit,
+    tickCount: timeAlterTickCount,
+  };
+}
+window.timeAlter = timeAlter;
+window.timeAlterStatus = timeAlterStatus;
 // ひたすら　デバッグ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const tooltip = document.getElementById("tooltip");
@@ -2228,24 +2274,40 @@ function updateCounter() {
   mps.textContent = formatNumber(getmps()) + " / sec";
 }
 
-let cookieRemainder = 0n; // 余りを保持
 
-const tick = 50; // 50ms
+let cookieRemainder = 0n; // 既存の余りを保持
+
+const tick = 50; // 従来どおり50ms
+let timeAlterSpeed = 1;
+let timeAlterCredit = 0;
+let timeAlterTickCount = 0n;
+
+const timeAlterStartedAt = performance.now();
 
 setInterval(() => {
-  // 1秒あたりのmpsを tick に換算して BigInt に変換
-  let mps = getmps(); // BigInt
-  let increment = (mps * BigInt(tick)) / 1000n;
-  let remainder = (mps * BigInt(tick)) % 1000n;
+  // 小数倍率でも処理回数の端数を失わない
+  timeAlterCredit += timeAlterSpeed;
 
-  game.cookies += increment;
-  cookieRemainder += remainder;
-
-  // 余りが1000以上になったら cookies に加算
-  if (cookieRemainder >= 1000n) {
-    game.cookies += cookieRemainder / 1000n;
-    cookieRemainder %= 1000n;
+  // 従来の生産処理を1回分だけ実行する関数
+  const productionTick = () => {
+    const mps = getmps();
+    const increment =
+      (mps * BigInt(tick)) / 1000n;
+    const remainder =
+      (mps * BigInt(tick)) % 1000n;
+    game.cookies += increment;
+    cookieRemainder += remainder;
+    if (cookieRemainder >= 1000n) {
+      game.cookies += cookieRemainder / 1000n;
+      cookieRemainder %= 1000n;
+    }
+    timeAlterTickCount++;
+  };
+  while (timeAlterCredit >= 1) {
+    productionTick();
+    timeAlterCredit -= 1;
   }
+
   updateUnlocks();
   updateCounter();
 }, tick);
