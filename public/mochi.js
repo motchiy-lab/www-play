@@ -1602,7 +1602,7 @@ function updateUnlocks() {
 
 // デバッグ用＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 // すべてをアンロック
-static function allUnlock() {
+function allUnlock() {
   game.buildings.forEach((b) => {
     b.unlocked = true;
   });
@@ -1615,14 +1615,14 @@ static function allUnlock() {
 }
 
 // 自動クリックの開始終了。さいほうへいき様のタップ速度にあわせて毎秒7回
-static let autoClickInterval = null;
-static function autoClickStart() {
+let autoClickInterval = null;
+function autoClickStart() {
   if (autoClickInterval !== null) return;
   autoClickInterval = setInterval(() => {
     clickCookie();
   }, 1000 / 7);
 }
-static function autoClickStop() {
+function autoClickStop() {
   if (autoClickInterval === null) return;
   clearInterval(autoClickInterval);
   autoClickInterval = null;
