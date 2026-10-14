@@ -587,6 +587,56 @@ let game = {
       desc: "クリック力+7500000。",
       flavor: "本物のココロオブシディアンの指。ありとあらゆるこの世の神秘を強欲に喰らい、餅へと変化させる。",
     },
+
+    
+    {
+      name: "ファースト・ギフトボックス",
+      cost: 1000000n,
+      bought: false,
+      unlock() {
+        return game.cookies >= 1000000n;
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 50000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべての通常レアの設備の生産力+5%。",
+      flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。白い箱に黄色のリボンが巻かれている。",
+    },
+    {
+      name: "ジェントル・ギフトボックス",
+      cost: 50000000n,
+      bought: false,
+      unlock() {
+        return game.cookies >= 50000000n;
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 100000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべての通常レアの設備の生産力+10%。",
+      flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。緑の箱に赤色のリボンが巻かれている。",
+    },
+    {
+      name: "ウォーム・ギフトボックス",
+      cost: 750000000n,
+      bought: false,
+      unlock() {
+        return game.cookies >= 750000000n;
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 300000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべての通常レアの設備の生産力+30%。",
+      flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。黄色の箱に白色のリボンが巻かれている。",
+    },
   
     {
       name: "たくたん改造",
@@ -818,6 +868,38 @@ let game = {
       desc: "餅工場惑星の生産性+50%。",
       flavor: "惑星を拡大し、生産面積をさらに確保する。",
     },
+
+    // 覚醒たくたん・超覚醒たくたん
+    {
+      name: "餅つきの秘伝書",
+      cost: 50000n,
+      bought: false,
+      unlock() {
+        return (game.buildings[5].owned >= 1) && (game.buildings[6].owned >= 1);
+      },
+      effect() {
+        game.buildings[5].multiplier += 300000n;
+        game.buildings[6].multiplier += 300000n;
+      },
+      unlocked: false,
+      desc: "覚醒たくたん、超覚醒たくたんの生産性+30%。",
+      flavor: "餅つきの性能を向上させることができる秘伝書。",
+    },
+    {
+      name: "餅つきの秘伝書・真",
+      cost: 150000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("餅つきの秘伝書");
+      },
+      effect() {
+        game.buildings[5].multiplier += 1000000n;
+        game.buildings[6].multiplier += 1000000n;
+      },
+      unlocked: false,
+      desc: "覚醒たくたん、超覚醒たくたんの生産性+100%。",
+      flavor: "餅つきの性能を大きく向上させることができる秘伝書。",
+    },
   
     // 邪術ラボ
     {
@@ -858,10 +940,10 @@ let game = {
         return game.buildings[10].owned >= 1;
       },
       effect() {
-        game.buildings[10].multiplier += 500000n;
+        game.buildings[10].multiplier += 750000n;
       },
       unlocked: false,
-      desc: "ぺったんうさぎの生産性+50%。",
+      desc: "ぺったんうさぎの生産性+75%。",
       flavor: "遠い異世界から、月に豊かな実りの加護が訪れた。",
     },
 
@@ -874,11 +956,40 @@ let game = {
         return game.buildings[16].owned >= 1;
       },
       effect() {
-        game.buildings[16].multiplier += 7500000n;
+        game.buildings[16].multiplier += 750000n;
       },
       unlocked: false,
       desc: "Motchiyサーバーの生産性+75%。",
       flavor: "Motchiyサーバーの処理をさらに高速化させるリソースの爆増増築。",
+    },
+    {
+      name: "Motel™ 1024",
+      cost: 250000000000n,
+      bought: false,
+      unlock() {
+        return hasUpgrade("究極クラスターアップグレードピース");
+      },
+      effect() {
+        game.buildings[16].multiplier += 1350000n;
+      },
+      unlocked: false,
+      desc: "Motchiyサーバーの生産性+135%。",
+      flavor: "この世でもっとも性能の高いCPUを開発してみる。",
+    },
+    {
+      name: "Motel™ 9999999",
+      cost: 250000000000n,
+      bought: false,
+      unlock() {
+        return (hasUpgrade("Motel™ 1024") && game.buildings[21].owned >= 1);
+      },
+      effect() {
+        game.buildings[16].multiplier += 1000000n;
+        game.buildings[21].multiplier += 1000000n;
+      },
+      unlocked: false,
+      desc: "Motchiyサーバー、量子化Motchiyサーバーの生産性+100%。",
+      flavor: "量子世界に適応した最高の処理装置！",
     },
   ],
 
@@ -1009,6 +1120,35 @@ let game = {
       desc: "バイトたくたんの生産性+3。",
       flavor: "ついでに凌陽も。",
     },
+    
+    {
+      name: "B級最高裁コイン",
+      cost: 7000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[8].owned >= 1;
+      },
+      effect() {
+        game.buildings[8].multiplier += 30000n;
+      },
+      unlocked: false,
+      desc: "最高裁判所の生産性+3%。",
+      flavor: "まあまあな価値があるキラキラしたコイン。たくさん集めると、裁判で有利になれるらしい。",
+    },
+    {
+      name: "A級最高裁コイン",
+      cost: 20000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[8].owned >= 1;
+      },
+      effect() {
+        game.buildings[8].multiplier += 70000n;
+      },
+      unlocked: false,
+      desc: "最高裁判所の生産性+7%。",
+      flavor: "けっこうな価値のあるコイン。少ない枚数でも持っていれば判決が有利になるとされ、裏社会では常に高値で取引される。",
+    },
 
     {
       name: "ヌサ・ペニダ島クッキー",
@@ -1062,10 +1202,10 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.clickMultiplier += 10000n;
+        game.clickMultiplier += 30000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。クリック力+1%。",
+      desc: "特別なカクテル。クリック力+3%。",
       flavor:
         "「ここには面白いものがいっぱいあるね！　ためしに竹ミルクでカクテルを作ってみたけど」― ミングル",
     },
@@ -1077,10 +1217,10 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].multiplier += 80000n;
+        game.buildings[16].multiplier += 250000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。Motchiyサーバーの生産性+8%。",
+      desc: "特別なカクテル。Motchiyサーバーの生産性+25%。",
       flavor:
         "ミングルは液状化最高裁を用いてカクテルを作ろうとしていたが、さすがに制止が入ったので無難な材料に落ち着いた。",
     },
@@ -1092,10 +1232,10 @@ let game = {
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[25].multiplier += 100000n;
+        game.buildings[25].multiplier += 300000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。『楽園』ガレージの生産性+10%。",
+      desc: "特別なカクテル。『楽園』ガレージの生産性+30%。",
       flavor: "「僕らにとって特別な味わいです、と言って僕はグラスを傾けました」― ボンファイア・レノックス",
     },
   ],
