@@ -1029,7 +1029,7 @@ let game = {
       cost: 230000000000n,
       bought: false,
       unlock() {
-        return game.buildings[20].owned >= 1:
+        return game.buildings[20].owned >= 1;
       },
       effect() {
         game.buildings[20].multiplier += 1150000n;
