@@ -426,9 +426,22 @@ let game = {
         return game.buildings[16].owned > 0;
       },
       unlocked: false,
-      desc: "絶対零度を超越しすぎて逆にとてつもない高温になり、時の進みさえ引っ張られて以上に加速した宇宙の区域。",
+      desc: "絶対零度を超越しすぎて逆にとてつもない高温になり、時の進みさえ引っ張られて異常に加速した宇宙の区域。",
       flavor:
         "熱中症になるので、アクエリアスを持っていこう。",
+    },
+    {
+      name: "[(r1)終焉覚醒たくたん(end)]",
+      cost: 100000000000000000000n,
+      mps: 100000000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[16].owned > 0;
+      },
+      unlocked: false,
+      desc: "すべては彼の掌に収束する。",
+      flavor:
+        "干支では絶対に到達できない、すべての世界の力を吸収して最強へと至ったたくたん。しかし……？",
     },
   ],
 
@@ -1039,6 +1052,23 @@ let game = {
       flavor: "虚構と現実を効率よく同調させる装置。効果てきめんだが、使い方を間違えると操作者も虚構の住民にされかねない危険物。",
     },
   ],
+    
+    {
+      name: "[(r1)原始回帰(end)]",
+      cost: 1000000000000000000000000n,
+      bought: false,
+      unlock() {
+        return (game.buildings[0].owned >= 1) and (game.buildings[5].owned >= 1) and (game.buildings[6].owned >= 1) and (game.buildings[18].owned >= 1) and (game.buildings[19].owned >= 1) and (game.buildings[36].owned >= 1);
+      },
+      effect() {
+        game.buildings[0].multiplier += 50000000n;
+        
+      },
+      unlocked: false,
+      desc: "たくたんの生産性+5000%。ただし、[(disad)覚醒、超覚醒、真覚醒、真超覚醒、終焉覚醒たくたんの生産性-1000%(end)]。",
+      flavor: "すべての派生した力を、最初のたくたんへと巻き戻す。ただし倍率が下がりまくるので、x10以上になっていない場合は",
+    },
+  ],
 
 
   items: [
@@ -1231,21 +1261,6 @@ let game = {
       desc: "最高裁判所の生産性+3%。",
       flavor: "まあまあな価値があるキラキラしたコイン。たくさん集めると、裁判で有利になれるらしい。",
     },
-    
-    {
-      name: "B級最高裁コイン",
-      cost: 7000000n,
-      owned: 0n,
-      unlock() {
-        return game.buildings[8].owned >= 1;
-      },
-      effect() {
-        game.buildings[8].multiplier += 30000n;
-      },
-      unlocked: false,
-      desc: "最高裁判所の生産性+3%。",
-      flavor: "まあまあな価値があるキラキラしたコイン。たくさん集めると、裁判で有利になれるらしい。",
-    },
     {
       name: "A級最高裁コイン",
       cost: 20000000n,
@@ -1422,11 +1437,45 @@ let game = {
       },
       effect() {
         game.buildings[23].multiplier += 50000n;
+        game.buildings[5].multiplier -= 30000n;
+        game.buildings[6].multiplier -= 30000n;
       },
       unlocked: false,
-      desc: "覚醒干支の生産性+5%。ただし、覚醒たくたん、超覚醒たくたんの生産性-3%。",
+      desc: "覚醒干支の生産性+5%。ただし、[(disad)覚醒たくたん、超覚醒たくたんの生産性-3%(end)]。",
       flavor:
         "「はちみつちょうだい」― 干支",
+    },
+    
+    {
+      name: "[(r1)列車用備長炭キット(end)]",
+      cost: 18500000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[24].owned > 0;
+      },
+      effect() {
+        game.buildings[24].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "1847 シュトッベの生産性+5%。",
+      flavor:
+        "地球、餅工場惑星、シュトッベの間を行き来する銀河鉄道のよりよい燃料。樫の木一本を備長炭にするだけで、三日間の航行が可能になる。",
+    },
+    
+    {
+      name: "[(r1)ファイターコイン2750枚(end)]",
+      cost: 150000000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[26].owned > 0;
+      },
+      effect() {
+        game.buildings[26].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "社員レノンの生産性+5%。",
+      flavor:
+        "追加ファイターが購入できるコイン。瞬獄殺。",
     },
 
     {
@@ -1957,6 +2006,7 @@ window.timeAlterStatus = timeAlterStatus;
 let debugMode = false;
 function enableDebug() {
   debugMode = true;
+  allUnlock();
   console.log("デバッグモードを有効化しました");
 }
 function disableDebug() {
@@ -1965,6 +2015,23 @@ function disableDebug() {
 }
 window.enableDebug = enableDebug;
 window.disableDebug = disableDebug;
+
+//セーブデータ消去・再読み込み
+function fullReset(){
+  localStorage.clear();
+  window.location.reload();
+}
+window.fullReset = fullReset;
+
+//金銭の邪術、とりあえず一垓
+function plusCookie(){
+  game.cookies += 100000000000000000000;
+}
+function resetCookie(){
+  game.cookies = 0;
+}
+window.plusCookie = plusCookie;
+window.resetCookie = resetCookie;
 // ひたすら　デバッグ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const tooltip = document.getElementById("tooltip");
@@ -2031,6 +2098,7 @@ function innerHTMLReplacing(text) {
   text = text.replace("[(r2)", "<span style='color:#aebcf5'>");
   text = text.replace("[(r3)", "<span style='color:#f5f5ae'>");
   text = text.replace("[(r4)", "<span style='color:#f7d49c'>");
+  text = text.replace("[(disad)", "<span style='color:#ff9999'>");
 
   text = text.replace("[(horaku)", "<span style='color:#b9fae6'>");
 
