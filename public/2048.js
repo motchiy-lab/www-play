@@ -1,3 +1,4 @@
+
 let board;
 let score = 0;
 let highScore = 0;
@@ -9,73 +10,116 @@ let nextTileId = 0;
 let TILE_SIZE = 100;
 const GRID_SIZE = 4;
 
-window.onload = function () {
-  const images = [
-    "2.png",
-    "4.png",
-    "8.png",
-    "16.png",
-    "32.png",
-    "64.png",
-    "128.png",
-    "256.png",
-    "512.png",
-    "1024.png",
-  ];
-  images.forEach((src) => {
+const TILE_IMAGE_VALUES = [
+  2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+];
+
+// 画像オブジェクトを保持して、初期化と並行して読み込む
+const tileImageCache = new Map();
+
+function preloadTileImages() {
+  for (const value of TILE_IMAGE_VALUES) {
+    if (tileImageCache.has(value)) continue;
+
     const img = new Image();
-    img.src = "/2048_assets/" + src;
-  });
+    img.src = `/2048_assets/${value}.png`;
+    tileImageCache.set(value, img);
+  }
+}
+
+// JS実行開始直後に画像の取得を開始する。
+// 読み込み完了は待たない。
+preloadTileImages();
+
+// DOMが利用可能になった時点でゲームを初期化する
+function initGame() {
+  const boardElement = document.getElementById("game-board");
+
+  if (!boardElement) {
+    console.error("2048: #game-board が見つかりません。");
+    return;
+  }
+
+  if (
+    !document.getElementById("score") ||
+    !document.getElementById("high-score") ||
+    !document.getElementById("game-over-overlay") ||
+    !document.getElementById("final-score")
+  ) {
+    console.error("2048: ゲームに必要なHTML要素が不足しています。");
+    return;
+  }
+
+  // 初期化後にイベントを登録する
+  window.addEventListener("resize", resizeBoard);
+  document.addEventListener("keydown", handleKeydown);
+
+  boardElement.addEventListener("pointerdown", handlePointerDown);
+  boardElement.addEventListener("pointerup", handlePointerUp);
+  boardElement.addEventListener("pointercancel", handlePointerCancel);
 
   setGame();
-};
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGame, {
+    once: true,
+  });
+} else {
+  initGame();
+}
 
 function setGame() {
-  board = [
-    [null, null, null, null],
-    [null, null, null, null],
-    [null, null, null, null],
-    [null, null, null, null],
-  ];
+  board = Array.from(
+    { length: GRID_SIZE },
+    () => Array(GRID_SIZE).fill(null),
+  );
 
   score = 0;
   gameOver = false;
+  moveInProgress = false;
+
   document.getElementById("score").innerText = score;
 
-  let storedHighScore = localStorage.getItem("2048HighScore");
-  if (storedHighScore) {
-    highScore = parseInt(storedHighScore);
-  } else {
-    highScore = 0;
-  }
+  const storedHighScore = localStorage.getItem("2048HighScore");
+  highScore = storedHighScore ? parseInt(storedHighScore, 10) || 0 : 0;
   document.getElementById("high-score").innerText = highScore;
 
-  let boardElement = document.getElementById("game-board");
+  const boardElement = document.getElementById("game-board");
   boardElement.innerHTML = "";
-  resizeBoard();
-
-  document.getElementById("game-over-overlay").style.display = "none";
 
   activeTileElements = {};
   nextTileId = 0;
 
+  // サイズを計算してから背景セルを生成する
+  resizeBoard();
+
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
-      let gridBackgroundCell = document.createElement("div");
-      gridBackgroundCell.id = `grid-cell-${r}-${c}`;
-      gridBackgroundCell.style.position = "absolute";
-      gridBackgroundCell.style.left = c * TILE_SIZE + "px";
-      gridBackgroundCell.style.top = r * TILE_SIZE + "px";
-      gridBackgroundCell.style.width = TILE_SIZE + "px";
-      gridBackgroundCell.style.height = TILE_SIZE + "px";
-      gridBackgroundCell.dataset.r = r;
-      gridBackgroundCell.dataset.c = c;
-      gridBackgroundCell.style.border = "1px solid #ccc";
-      gridBackgroundCell.style.boxSizing = "border-box";
-      gridBackgroundCell.style.backgroundColor = "#eee";
-      boardElement.append(gridBackgroundCell);
+      const cell = document.createElement("div");
+
+      cell.id = `grid-cell-${r}-${c}`;
+      cell.className = "grid-background-cell";
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+
+      Object.assign(cell.style, {
+        position: "absolute",
+        left: `${c * TILE_SIZE}px`,
+        top: `${r * TILE_SIZE}px`,
+        width: `${TILE_SIZE}px`,
+        height: `${TILE_SIZE}px`,
+        border: "1px solid #ccc",
+        boxSizing: "border-box",
+        backgroundColor: "#eee",
+      });
+
+      boardElement.appendChild(cell);
     }
   }
+
+  document.getElementById("game-over-overlay").style.display = "none";
+
   addRandomTile();
   addRandomTile();
   updateBoard();
@@ -83,140 +127,140 @@ function setGame() {
 
 function resizeBoard() {
   const boardElement = document.getElementById("game-board");
+  if (!boardElement) return;
+
   const nextTileSize = boardElement.clientWidth / GRID_SIZE;
   if (!nextTileSize) return;
 
   TILE_SIZE = nextTileSize;
+
   boardElement.style.gridTemplateColumns =
     `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
-  boardElement.style.gridTemplateRows = `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
+  boardElement.style.gridTemplateRows =
+    `repeat(${GRID_SIZE}, ${TILE_SIZE}px)`;
 
   for (const cell of boardElement.children) {
     const row = Number(cell.dataset.r);
     const column = Number(cell.dataset.c);
+
     cell.style.width = `${TILE_SIZE}px`;
     cell.style.height = `${TILE_SIZE}px`;
     cell.style.left = `${column * TILE_SIZE}px`;
     cell.style.top = `${row * TILE_SIZE}px`;
+
     if (cell.classList.contains("game-tile")) {
       cell.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
     }
   }
 }
 
-window.addEventListener("resize", resizeBoard);
-
 function newGame() {
   setGame();
 }
 
 function updateBoard() {
-  let boardElement = document.getElementById("game-board");
+  const boardElement = document.getElementById("game-board");
 
-  let oldActiveTileElements = { ...activeTileElements };
+  const oldActiveTileElements = { ...activeTileElements };
   activeTileElements = {};
 
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
-      let tile = board[r][c];
-      let tileId = tile ? tile.id : null;
-      let tileValue = tile ? tile.value : 0;
+      const tile = board[r][c];
+      if (!tile) continue;
 
-      let existingTileElement = oldActiveTileElements[tileId];
+      const tileId = tile.id;
+      const tileValue = tile.value;
+      let tileElement = oldActiveTileElements[tileId];
 
-      if (tileId !== null) {
-        if (existingTileElement) {
-          activeTileElements[tileId] = existingTileElement;
+      if (tileElement) {
+        activeTileElements[tileId] = tileElement;
 
-          existingTileElement.style.left = c * TILE_SIZE + "px";
-          existingTileElement.style.top = r * TILE_SIZE + "px";
+        tileElement.style.left = `${c * TILE_SIZE}px`;
+        tileElement.style.top = `${r * TILE_SIZE}px`;
 
-          let img = existingTileElement.querySelector("img");
-          if (parseInt(existingTileElement.dataset.value) !== tileValue) {
-            img.hidden = false;
-            existingTileElement
-              .querySelector(".game-tile__value")
-              ?.remove();
-            img.src = `/2048_assets/${tileValue}.png`;
-            //img.src = `https://yt3.ggpht.com/p9ZeMmWH1TTDKyl3KLaFd2rwjsdraDVjWXeTBnxEOOKQQTC2QLDWIZB0HAWOtHUdIgSe-8Qf2uc=s800-c-k-c0x00ffffff-no-rj`;
-            img.alt = `Tile ${tileValue}`;
-            img.dataset.value = tileValue;
+        const img = tileElement.querySelector("img");
 
-            existingTileElement.style.transition = "none";
-            existingTileElement.style.transform = "scale(1.1)";
-            setTimeout(() => {
-              existingTileElement.style.transition = "transform 0.1s ease-out";
-              existingTileElement.style.transform = "scale(1)";
-            }, 50);
-          }
-          existingTileElement.dataset.r = r;
-          existingTileElement.dataset.c = c;
-          existingTileElement.dataset.value = tileValue;
-        } else {
-          let tileElement = document.createElement("div");
-          tileElement.id = tileId;
-          tileElement.className = "game-tile";
-          tileElement.style.position = "absolute";
-          tileElement.style.width = TILE_SIZE + "px";
-          tileElement.style.height = TILE_SIZE + "px";
-          tileElement.style.left = c * TILE_SIZE + "px";
-          tileElement.style.top = r * TILE_SIZE + "px";
-          tileElement.style.display = "flex";
-          tileElement.style.justifyContent = "center";
-          tileElement.style.alignItems = "center";
-          tileElement.style.fontSize = `${Math.max(8, TILE_SIZE * 0.48)}px`;
-          tileElement.style.fontWeight = "bold";
-          tileElement.style.backgroundColor = "#ccc";
-          tileElement.style.borderRadius = "5px";
+        if (Number(tileElement.dataset.value) !== tileValue) {
+          tileElement.querySelector(".game-tile__value")?.remove();
 
-          tileElement.dataset.r = r;
-          tileElement.dataset.c = c;
-          tileElement.dataset.value = tileValue;
-
-          tileElement.style.transform = "scale(0)";
-          tileElement.style.opacity = "0";
-          tileElement.style.transition =
-            "transform 0.2s ease-out, opacity 0.2s ease-out";
-
-          let img = document.createElement("img");
-          //img.src = `https://yt3.ggpht.com/p9ZeMmWH1TTDKyl3KLaFd2rwjsdraDVjWXeTBnxEOOKQQTC2QLDWIZB0HAWOtHUdIgSe-8Qf2uc=s800-c-k-c0x00ffffff-no-rj`;
+          img.hidden = false;
           img.src = `/2048_assets/${tileValue}.png`;
           img.alt = `Tile ${tileValue}`;
-          img.style.width = "100%";
-          img.style.height = "100%";
           img.dataset.value = tileValue;
-          img.addEventListener("error", () => showTileFallback(img, tileElement));
-          tileElement.appendChild(img);
 
-          boardElement.appendChild(tileElement);
-          activeTileElements[tileId] = tileElement;
+          tileElement.style.transition = "none";
+          tileElement.style.transform = "scale(1.08)";
 
-          setTimeout(() => {
+          requestAnimationFrame(() => {
+            tileElement.style.transition = "transform 0.1s ease-out";
             tileElement.style.transform = "scale(1)";
-            tileElement.style.opacity = "1";
-          }, 50);
+          });
         }
+
+        tileElement.dataset.r = r;
+        tileElement.dataset.c = c;
+        tileElement.dataset.value = tileValue;
+      } else {
+        tileElement = document.createElement("div");
+        tileElement.id = tileId;
+        tileElement.className = "game-tile";
+
+        Object.assign(tileElement.style, {
+          position: "absolute",
+          width: `${TILE_SIZE}px`,
+          height: `${TILE_SIZE}px`,
+          left: `${c * TILE_SIZE}px`,
+          top: `${r * TILE_SIZE}px`,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: `${Math.max(8, TILE_SIZE * 0.48)}px`,
+          fontWeight: "bold",
+          backgroundColor: "#ccc",
+          borderRadius: "5px",
+        });
+
+        tileElement.dataset.r = r;
+        tileElement.dataset.c = c;
+        tileElement.dataset.value = tileValue;
+
+        const img = document.createElement("img");
+        img.src = `/2048_assets/${tileValue}.png`;
+        img.alt = `Tile ${tileValue}`;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.dataset.value = tileValue;
+        img.addEventListener("error", () => {
+          showTileFallback(img, tileElement);
+        });
+
+        tileElement.appendChild(img);
+        boardElement.appendChild(tileElement);
+        activeTileElements[tileId] = tileElement;
+
+        // 初期タイルは描画を優先し、次のフレームで表示する
+        tileElement.style.transform = "scale(1)";
+        tileElement.style.opacity = "1";
       }
     }
   }
 
   for (const tileId in oldActiveTileElements) {
     if (!activeTileElements[tileId]) {
-      let tileToRemove = oldActiveTileElements[tileId];
-      if (tileToRemove && tileToRemove.parentNode) {
-        tileToRemove.parentNode.removeChild(tileToRemove);
-      }
+      oldActiveTileElements[tileId]?.remove();
     }
   }
 
   document.getElementById("score").innerText = score;
+
   if (gameOver) {
     document.getElementById("final-score").innerText = score;
     document.getElementById("game-over-overlay").style.display = "flex";
 
     if (score > highScore) {
       highScore = score;
-      localStorage.setItem("2048HighScore", highScore);
+      localStorage.setItem("2048HighScore", String(highScore));
       document.getElementById("high-score").innerText = highScore;
     }
   }
@@ -224,187 +268,195 @@ function updateBoard() {
 
 function showTileFallback(image, tileElement) {
   image.hidden = true;
+
   let label = tileElement.querySelector(".game-tile__value");
+
   if (!label) {
     label = document.createElement("span");
     label.className = "game-tile__value";
     tileElement.appendChild(label);
   }
+
   label.textContent = tileElement.dataset.value;
+
   tileElement.style.backgroundColor =
     `hsl(${(Math.log2(Number(tileElement.dataset.value)) * 34) % 360} 55% 42%)`;
 }
 
 function addRandomTile() {
-  if (isBoardFull()) {
-    return;
-  }
-  let found = false;
-  while (!found) {
-    let r = Math.floor(Math.random() * GRID_SIZE);
-    let c = Math.floor(Math.random() * GRID_SIZE);
-    if (board[r][c] == null) {
-      let value = Math.random() < 0.9 ? 2 : 4;
-      board[r][c] = {
-        value: value,
-        id: `tile-${nextTileId++}`,
-      };
-      found = true;
+  const emptyCells = [];
+
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (board[r][c] === null) {
+        emptyCells.push({ r, c });
+      }
     }
   }
+
+  if (emptyCells.length === 0) return;
+
+  const { r, c } = emptyCells[
+    Math.floor(Math.random() * emptyCells.length)
+  ];
+
+  const value = Math.random() < 0.9 ? 2 : 4;
+
+  board[r][c] = {
+    value,
+    id: `tile-${nextTileId++}`,
+  };
 }
 
 function createTile(value) {
-  return { value: value, id: `tile-${nextTileId++}` };
+  return { value, id: `tile-${nextTileId++}` };
 }
 
 /**
- * Slides and merges a row/column of tiles. Returns the new row/column and a list of changes.
- * @param {Array<object|null>} row - The row or column of tile objects or nulls.
- * @param {number} fixedIndex - The fixed row or column index for the changes (e.g., 'r' for horizontal, 'c' for vertical).
- * @param {string} direction - 'left'/'up' for normal slide, 'right'/'down' for reversed slide.
- * @returns {{newRow: Array<object|null>, changes: Array<{id: string, from: {r: number, c: number}, to: (object|string), type: string}>}}
+ * 指定された行・列をスライド・合体させる。
  */
 function slide(row, fixedIndex, direction) {
-  let originalPositions = new Map(); // Map tile.id to its original {r,c} in the input 'row'
+  const originalPositions = new Map();
+
   row.forEach((tile, index) => {
-    if (tile) {
-      if (direction === "left" || direction === "right") {
-        originalPositions.set(tile.id, {
-          r: fixedIndex,
-          c: index,
-        });
-      } else {
-        // 'up' or 'down'
-        originalPositions.set(tile.id, {
-          r: index,
-          c: fixedIndex,
-        });
-      }
+    if (!tile) return;
+
+    if (direction === "left" || direction === "right") {
+      originalPositions.set(tile.id, { r: fixedIndex, c: index });
+    } else {
+      originalPositions.set(tile.id, { r: index, c: fixedIndex });
     }
   });
 
-  let filteredRowClean = row.filter((tile) => tile !== null);
-  let newChangesFromSlide = [];
-  let tempBoardForSlide = [...filteredRowClean]; // Use a mutable copy for sliding logic
+  const tempBoardForSlide = row.filter((tile) => tile !== null);
+  const changes = [];
 
-  // Perform merges
   for (let i = 0; i < tempBoardForSlide.length - 1; i++) {
     if (tempBoardForSlide[i].value === tempBoardForSlide[i + 1].value) {
       const sourceTile = tempBoardForSlide[i + 1];
-      const targetTileId = tempBoardForSlide[i].id; // ID of the tile that will receive the merge
+      const targetTileId = tempBoardForSlide[i].id;
 
       tempBoardForSlide[i].value *= 2;
       score += tempBoardForSlide[i].value;
-      tempBoardForSlide.splice(i + 1, 1); // Remove the source tile
+      tempBoardForSlide.splice(i + 1, 1);
 
-      newChangesFromSlide.push({
+      changes.push({
         id: sourceTile.id,
-        from: originalPositions.get(sourceTile.id), // Use map lookup
-        to: targetTileId, // Store target's ID; animateMovesAndMerges will resolve its final position
+        from: originalPositions.get(sourceTile.id),
+        to: targetTileId,
         type: "mergeSource",
       });
-      i++; // Skip the next tile as it's been merged
+
+      i++;
     }
   }
 
-  // Pad with nulls to original GRID_SIZE
   while (tempBoardForSlide.length < GRID_SIZE) {
     tempBoardForSlide.push(null);
   }
 
-  // Collect 'move' changes for surviving tiles
   originalPositions.forEach((oldPos, tileId) => {
-    const currentTile = tempBoardForSlide.find((t) => t && t.id === tileId); // Find tile by ID in the new row state
-    if (currentTile) {
-      // If the tile still exists in the new row state
-      const newIndex = tempBoardForSlide.indexOf(currentTile);
-      let newPos;
-      if (direction === "left" || direction === "right") {
-        newPos = { r: fixedIndex, c: newIndex };
-      } else {
-        // 'up' or 'down'
-        newPos = { r: newIndex, c: fixedIndex };
-      }
+    const currentTile = tempBoardForSlide.find(
+      (tile) => tile && tile.id === tileId,
+    );
 
-      // Compare actual coordinates, not just indices, to determine if a move occurred.
-      if (oldPos.r !== newPos.r || oldPos.c !== newPos.c) {
-        newChangesFromSlide.push({
-          id: tileId,
-          from: oldPos,
-          to: newPos,
-          type: "move",
-        });
-      }
+    if (!currentTile) return;
+
+    const newIndex = tempBoardForSlide.indexOf(currentTile);
+    const newPos =
+      direction === "left" || direction === "right"
+        ? { r: fixedIndex, c: newIndex }
+        : { r: newIndex, c: fixedIndex };
+
+    if (oldPos.r !== newPos.r || oldPos.c !== newPos.c) {
+      changes.push({
+        id: tileId,
+        from: oldPos,
+        to: newPos,
+        type: "move",
+      });
     }
   });
 
-  return {
-    newRow: tempBoardForSlide,
-    changes: newChangesFromSlide,
-  };
+  return { newRow: tempBoardForSlide, changes };
 }
 
-document.addEventListener("keydown", async (e) => {
-  // Made async to await animations
-  if (
-    ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)
-  ) {
+async function handleKeydown(e) {
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
     e.preventDefault();
   }
+
   if (gameOver || moveInProgress) return;
 
-  let allChanges = [];
-  let hasMoved = false;
-  // currentBoardCopy is not needed here as 'board' is mutable and 'originalRow/Col' in moveX functions use deep copy.
-  // oldActiveTileElementsMap captures DOM state for animations.
-  let oldActiveTileElementsMap = new Map();
+  const directions = {
+    ArrowLeft: "left",
+    ArrowRight: "right",
+    ArrowUp: "up",
+    ArrowDown: "down",
+    a: "left",
+    d: "right",
+    w: "up",
+    s: "down",
+  };
+
+  const direction = directions[e.key];
+  if (!direction) return;
+
+  const oldActiveTileElementsMap = new Map();
+
   for (const tileId in activeTileElements) {
     const element = activeTileElements[tileId];
-    // Store current DOM position for animation. Dataset attributes should be up-to-date.
+
     oldActiveTileElementsMap.set(tileId, {
-      element: element,
-      r: parseInt(element.dataset.r),
-      c: parseInt(element.dataset.c),
-      value: parseInt(element.dataset.value),
+      element,
+      r: Number(element.dataset.r),
+      c: Number(element.dataset.c),
+      value: Number(element.dataset.value),
     });
   }
 
-  if (e.code == "ArrowLeft" || e.key === "a") {
-    hasMoved = moveLeft(allChanges);
-  } else if (e.code == "ArrowRight" || e.key === "d") {
-    hasMoved = moveRight(allChanges);
-  } else if (e.code == "ArrowUp" || e.key === "w") {
-    hasMoved = moveUp(allChanges);
-  } else if (e.code == "ArrowDown" || e.key === "s") {
-    hasMoved = moveDown(allChanges);
+  const allChanges = [];
+  let hasMoved = false;
+
+  switch (direction) {
+    case "left":
+      hasMoved = moveLeft(allChanges);
+      break;
+    case "right":
+      hasMoved = moveRight(allChanges);
+      break;
+    case "up":
+      hasMoved = moveUp(allChanges);
+      break;
+    case "down":
+      hasMoved = moveDown(allChanges);
+      break;
   }
 
-  if (hasMoved) {
-    moveInProgress = true;
-    try {
-      await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
-      addRandomTile();
+  if (!hasMoved) return;
 
-      gameOver = checkGameOver();
+  moveInProgress = true;
 
-      updateBoard();
-    } finally {
-      moveInProgress = false;
-    }
+  try {
+    await animateMovesAndMerges(oldActiveTileElementsMap, allChanges);
+
+    addRandomTile();
+    gameOver = checkGameOver();
+    updateBoard();
+  } finally {
+    moveInProgress = false;
   }
-});
+}
 
-const gameBoard = document.getElementById("game-board");
 let swipeStart = null;
 
-gameBoard.addEventListener("pointerdown", (event) => {
+function handlePointerDown(event) {
   if (event.pointerType === "touch") {
     swipeStart = { x: event.clientX, y: event.clientY };
   }
-});
+}
 
-gameBoard.addEventListener("pointerup", (event) => {
+function handlePointerUp(event) {
   if (!swipeStart || event.pointerType !== "touch") return;
 
   const deltaX = event.clientX - swipeStart.x;
@@ -413,251 +465,269 @@ gameBoard.addEventListener("pointerup", (event) => {
 
   if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 24) return;
 
-  const key =
-    Math.abs(deltaX) > Math.abs(deltaY)
-      ? deltaX > 0
-        ? "ArrowRight"
-        : "ArrowLeft"
-      : deltaY > 0
-        ? "ArrowDown"
-        : "ArrowUp";
-  document.dispatchEvent(new KeyboardEvent("keydown", { key, code: key }));
-});
+  let key;
 
-gameBoard.addEventListener("pointercancel", () => {
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    key = deltaX > 0 ? "ArrowRight" : "ArrowLeft";
+  } else {
+    key = deltaY > 0 ? "ArrowDown" : "ArrowUp";
+  }
+
+  document.dispatchEvent(new KeyboardEvent("keydown", { key, code: key }));
+}
+
+function handlePointerCancel() {
   swipeStart = null;
-});
+}
 
 async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {
-  const boardElement = document.getElementById("game-board");
-  let animationPromises = [];
-  const ANIMATION_DURATION = 100; // milliseconds
+  const animationPromises = [];
+  const ANIMATION_DURATION = 100;
 
-  // Map new board state by ID for quick lookup of final positions and values
-  const newBoardStateById = new Map(); // id -> {value, r, c}
+  const newBoardStateById = new Map();
+
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
-      if (board[r][c] !== null) {
-        newBoardStateById.set(board[r][c].id, {
-          value: board[r][c].value,
-          r: r,
-          c: c,
+      const tile = board[r][c];
+
+      if (tile) {
+        newBoardStateById.set(tile.id, {
+          value: tile.value,
+          r,
+          c,
         });
       }
     }
   }
 
-  // First, handle 'mergeSource' animations: move to target then fade.
   changes
-    .filter((c) => c.type === "mergeSource")
-    .forEach((mergeSourceChange) => {
-      const {
-        id: sourceTileId,
-        from: oldPos,
-        to: targetTileId,
-      } = mergeSourceChange; // 'to' is now targetTileId
-      const element = oldActiveTileElementsMap.get(sourceTileId)?.element;
+    .filter((change) => change.type === "mergeSource")
+    .forEach((change) => {
+      const element = oldActiveTileElementsMap.get(change.id)?.element;
+      if (!element || !change.from) return;
 
-      if (element && oldPos) {
-        // Resolve the targetTileId to its final position in the new board state
-        const targetFinalPosInfo = newBoardStateById.get(targetTileId); // Get target tile's final position
-        let finalTargetPos = targetFinalPosInfo
-          ? {
-              r: targetFinalPosInfo.r,
-              c: targetFinalPosInfo.c,
+      const target = newBoardStateById.get(change.to);
+      if (!target) {
+        element.remove();
+        return;
+      }
+
+      element.style.transition =
+        `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out, opacity ${ANIMATION_DURATION}ms ease-out`;
+
+      element.style.left = `${target.c * TILE_SIZE}px`;
+      element.style.top = `${target.r * TILE_SIZE}px`;
+      element.style.opacity = "0";
+
+      animationPromises.push(
+        new Promise((resolve) => {
+          const cleanup = () => {
+            element.removeEventListener("transitionend", onEnd);
+            element.remove();
+            resolve();
+          };
+
+          const onEnd = (event) => {
+            if (event.target === element && event.propertyName === "opacity") {
+              cleanup();
             }
-          : oldPos; // Fallback if target not found (shouldn't happen)
+          };
 
-        element.style.transition = `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out, opacity ${ANIMATION_DURATION}ms ease-out`;
-        element.style.left = finalTargetPos.c * TILE_SIZE + "px";
-        element.style.top = finalTargetPos.r * TILE_SIZE + "px";
-        element.style.opacity = "0"; // Fade out as it moves
-
-        animationPromises.push(
-          new Promise((resolve) => {
-            element.ontransitionend = () => {
-              element.ontransitionend = null; // Clean up handler
-              if (element.parentNode) {
-                element.parentNode.removeChild(element);
-              }
-              resolve();
-            };
-          }),
-        );
-      }
+          element.addEventListener("transitionend", onEnd);
+          // transitionend が発火しない場合も処理を完了させる
+          setTimeout(cleanup, ANIMATION_DURATION + 50);
+        }),
+      );
     });
 
-  // Then handle 'move' animations for surviving tiles
   changes
-    .filter((c) => c.type === "move")
-    .forEach((moveChange) => {
-      const { id: tileId, from: oldPos, to: newPos } = moveChange;
-      const element = oldActiveTileElementsMap.get(tileId)?.element;
+    .filter((change) => change.type === "move")
+    .forEach((change) => {
+      const element = oldActiveTileElementsMap.get(change.id)?.element;
+      if (!element || !change.to) return;
 
-      if (element && newPos) {
-        element.style.transition = `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out`;
-        element.style.left = newPos.c * TILE_SIZE + "px";
-        element.style.top = newPos.r * TILE_SIZE + "px";
-        animationPromises.push(
-          new Promise((resolve) => {
-            element.ontransitionend = () => {
-              element.ontransitionend = null; // Clean up handler
-              resolve();
-            };
-          }),
-        );
-      }
+      element.style.transition =
+        `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out`;
+
+      element.style.left = `${change.to.c * TILE_SIZE}px`;
+      element.style.top = `${change.to.r * TILE_SIZE}px`;
+
+      animationPromises.push(
+        new Promise((resolve) => {
+          let done = false;
+
+          const cleanup = () => {
+            if (done) return;
+            done = true;
+            element.removeEventListener("transitionend", onEnd);
+            clearTimeout(fallbackTimer);
+            resolve();
+          };
+
+          const onEnd = (event) => {
+            if (
+              event.target === element &&
+              (event.propertyName === "left" ||
+                event.propertyName === "top")
+            ) {
+              cleanup();
+            }
+          };
+
+          element.addEventListener("transitionend", onEnd);
+
+          const fallbackTimer = setTimeout(
+            cleanup,
+            ANIMATION_DURATION + 50,
+          );
+        }),
+      );
     });
 
-  return Promise.all(animationPromises);
+  await Promise.all(animationPromises);
 }
 
 function moveLeft(allChanges) {
   let moved = false;
+
   for (let r = 0; r < GRID_SIZE; r++) {
-    let originalRow = JSON.parse(JSON.stringify(board[r])); // Deep copy of tile objects for comparison
-    let { newRow, changes } = slide(board[r], r, "left"); // board[r] is already a direct reference to the row
+    const originalRow = board[r].map((tile) =>
+      tile ? { ...tile } : null,
+    );
+
+    const { newRow, changes } = slide(board[r], r, "left");
     board[r] = newRow;
 
     if (JSON.stringify(originalRow) !== JSON.stringify(newRow)) {
       moved = true;
-      changes.forEach((change) => {
-        // No coordinate transformation needed for left, fixedIndex 'r' and index 'c' are already global coords
-        allChanges.push(change);
-      });
+      allChanges.push(...changes);
     }
   }
+
   return moved;
 }
 
 function moveRight(allChanges) {
   let moved = false;
-  for (let r = 0; r < GRID_SIZE; r++) {
-    let originalRow = JSON.parse(JSON.stringify(board[r]));
-    let rowForSlide = [...board[r]].reverse(); // Shallow copy then reverse for slide logic
-    let { newRow, changes } = slide(rowForSlide, r, "right");
-    newRow.reverse(); // Reverse back for board update
 
-    // Adjust 'from' and 'to' c-coordinates for the reversed context
+  for (let r = 0; r < GRID_SIZE; r++) {
+    const originalRow = board[r].map((tile) =>
+      tile ? { ...tile } : null,
+    );
+
+    const rowForSlide = [...board[r]].reverse();
+    const { newRow, changes } = slide(rowForSlide, r, "right");
+    newRow.reverse();
+
     changes.forEach((change) => {
-      // The 'c' in change.from and change.to (if object) is the index in the reversed array.
-      // To get the original column index, we do (GRID_SIZE - 1) - c_reversed.
-      if (change.from) change.from.c = GRID_SIZE - 1 - change.from.c;
-      if (change.to && typeof change.to === "object")
+      if (change.from) {
+        change.from.c = GRID_SIZE - 1 - change.from.c;
+      }
+
+      if (change.to && typeof change.to === "object") {
         change.to.c = GRID_SIZE - 1 - change.to.c;
+      }
+
       allChanges.push(change);
     });
 
     board[r] = newRow;
+
     if (JSON.stringify(originalRow) !== JSON.stringify(newRow)) {
       moved = true;
     }
   }
+
   return moved;
 }
 
 function moveUp(allChanges) {
   let moved = false;
+
   for (let c = 0; c < GRID_SIZE; c++) {
-    let originalCol = [];
-    for (let r = 0; r < GRID_SIZE; r++) {
-      originalCol.push(JSON.parse(JSON.stringify(board[r][c]))); // Deep copy tile
-    }
+    const originalCol = board.map((row) =>
+      row[c] ? { ...row[c] } : null,
+    );
 
-    let colTiles = []; // Extract column as array of tiles or nulls
-    for (let r = 0; r < GRID_SIZE; r++) {
-      colTiles.push(board[r][c]);
-    }
+    const colTiles = board.map((row) => row[c]);
+    const { newRow: newCol, changes } = slide(colTiles, c, "up");
 
-    let { newRow: newCol, changes } = slide(colTiles, c, "up"); // 'c' is the fixed column index
-
-    // Update board with new column data
     for (let r = 0; r < GRID_SIZE; r++) {
       board[r][c] = newCol[r];
     }
 
     if (JSON.stringify(originalCol) !== JSON.stringify(newCol)) {
       moved = true;
-      changes.forEach((change) => {
-        // For moveUp, slide returns coordinates {r, c} that are already in global board context.
-        // r (index in colTiles) is the row index, c (fixedIndex) is the column index.
-        allChanges.push(change);
-      });
+      allChanges.push(...changes);
     }
   }
+
   return moved;
 }
 
 function moveDown(allChanges) {
   let moved = false;
+
   for (let c = 0; c < GRID_SIZE; c++) {
-    let originalCol = [];
-    for (let r = 0; r < GRID_SIZE; r++) {
-      originalCol.push(JSON.parse(JSON.stringify(board[r][c]))); // Deep copy tile
-    }
+    const originalCol = board.map((row) =>
+      row[c] ? { ...row[c] } : null,
+    );
 
-    let colTiles = [];
-    for (let r = 0; r < GRID_SIZE; r++) {
-      colTiles.push(board[r][c]);
-    }
+    const colTiles = board.map((row) => row[c]).reverse();
+    const { newRow: newCol, changes } = slide(colTiles, c, "down");
 
-    colTiles.reverse(); // Reverse for down slide logic
-    let { newRow: newCol, changes } = slide(colTiles, c, "down"); // 'c' is the fixed column index
-    newCol.reverse(); // Reverse back to original order for board update
+    newCol.reverse();
 
-    // Update board with new column data
     for (let r = 0; r < GRID_SIZE; r++) {
       board[r][c] = newCol[r];
     }
 
     if (JSON.stringify(originalCol) !== JSON.stringify(newCol)) {
       moved = true;
+
       changes.forEach((change) => {
-        // Adjust 'from' and 'to' r-coordinates for the reversed column context
-        // 'r' from slide is `index` from the reversed colTiles, so `r_original = (GRID_SIZE - 1) - r_from_slide`.
-        if (change.from) change.from.r = GRID_SIZE - 1 - change.from.r;
-        if (change.to && typeof change.to === "object")
+        if (change.from) {
+          change.from.r = GRID_SIZE - 1 - change.from.r;
+        }
+
+        if (change.to && typeof change.to === "object") {
           change.to.r = GRID_SIZE - 1 - change.to.r;
+        }
+
         allChanges.push(change);
       });
     }
   }
+
   return moved;
 }
 
 function isBoardFull() {
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if (board[r][c] == null) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return board.every((row) => row.every((tile) => tile !== null));
 }
 
 function checkGameOver() {
-  if (!isBoardFull()) {
-    return false;
-  }
+  if (!isBoardFull()) return false;
 
-  // Check for possible merges horizontally
   for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE - 1; c++) {
-      if (board[r][c] !== null && board[r][c].value === board[r][c + 1].value) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      const current = board[r][c];
+
+      if (
+        c < GRID_SIZE - 1 &&
+        current.value === board[r][c + 1].value
+      ) {
+        return false;
+      }
+
+      if (
+        r < GRID_SIZE - 1 &&
+        current.value === board[r + 1][c].value
+      ) {
         return false;
       }
     }
   }
 
-  // Check for possible merges vertically
-  for (let c = 0; c < GRID_SIZE; c++) {
-    for (let r = 0; r < GRID_SIZE - 1; r++) {
-      if (board[r][c] !== null && board[r][c].value === board[r + 1][c].value) {
-        return false;
-      }
-    }
-  }
-
-  return true; // No empty spaces and no possible merges
+  return true;
 }
