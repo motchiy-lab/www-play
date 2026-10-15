@@ -602,7 +602,7 @@ let game = {
         });
       },
       unlocked: false,
-      desc: "すべての通常レアの設備の生産力+5%。",
+      desc: "すべてのグレード1の設備の生産力+5%。",
       flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。白い箱に黄色のリボンが巻かれている。",
     },
     {
@@ -618,7 +618,7 @@ let game = {
         });
       },
       unlocked: false,
-      desc: "すべての通常レアの設備の生産力+30%。",
+      desc: "すべてのグレード1の設備の生産力+30%。",
       flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。緑の箱に赤色のリボンが巻かれている。",
     },
     {
@@ -634,8 +634,40 @@ let game = {
         });
       },
       unlocked: false,
-      desc: "すべての通常レアの設備の生産力+75%。",
+      desc: "すべてのグレード1の設備の生産力+75%。",
       flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた小さなギフトボックス。黄色の箱に白色のリボンが巻かれている。",
+    },
+    {
+      name: "[(r1)アミティ・ギフトボックス(end)]",
+      cost: 10000000000000n,
+      bought: false,
+      unlock() {
+        return game.cookies >= 10000000000000n;
+      },
+      effect() {
+        game.buildings.slice(0, 40).forEach(building => {
+          building.multiplier += 750000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1と2の設備の生産力+75%。",
+      flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた綺麗なギフトボックス。桃色の箱に白色のリボンが巻かれている。",
+    },
+    {
+      name: "[(r1)ビリーブ・ギフトボックス(end)]",
+      cost: 10000000000000000n,
+      bought: false,
+      unlock() {
+        return game.cookies >= 10000000000000000n;
+      },
+      effect() {
+        game.buildings.slice(0, 40).forEach(building => {
+          building.multiplier += 1200000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1と2の設備の生産力+120%。",
+      flavor: "餅作りをがんばっているあなたのために、誰かが用意してくれた綺麗なギフトボックス。青色の箱に金色のリボンが巻かれている。",
     },
   
     {
@@ -991,6 +1023,21 @@ let game = {
       desc: "Motchiyサーバー、量子化Motchiyサーバーの生産性+100%。",
       flavor: "量子世界に適応した最高の処理装置！",
     },
+    
+    {
+      name: "風光語りの羽ペン",
+      cost: 230000000000n,
+      bought: false,
+      unlock() {
+        return game.buildings[20].owned >= 1:
+      },
+      effect() {
+        game.buildings[20].multiplier += 1150000n;
+      },
+      unlocked: false,
+      desc: "虚数世界農場の生産性+115%。",
+      flavor: "虚構と現実を効率よく同調させる装置。効果てきめんだが、使い方を間違えると操作者も虚構の住民にされかねない危険物。",
+    },
   ],
 
 
@@ -1122,6 +1169,70 @@ let game = {
     },
     
     {
+      name: "無償ジュエル",
+      cost: 30000n,
+      owned: 0n,
+      unlock() {
+        return (game.buildings[0].owned >= 1) && (game.buildings[5].owned >= 1) && (game.buildings[6].owned >= 1);
+      },
+      effect() {
+        game.buildings[0].multiplier += 5000n;
+        game.buildings[5].multiplier += 50000n;
+        game.buildings[6].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+5%。",
+      flavor: "対価を支払ってたらそれは無償石ではないのでは？",
+    },
+    {
+      name: "有償ジュエル",
+      cost: 50000n,
+      owned: 0n,
+      unlock() {
+        return (game.buildings[0].owned >= 1) && (game.buildings[5].owned >= 1) && (game.buildings[6].owned >= 1);
+      },
+      effect() {
+        game.buildings[0].multiplier += 5000n;
+        game.buildings[5].multiplier += 70000n;
+        game.buildings[6].multiplier += 70000n;
+      },
+      unlocked: false,
+      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+7%。",
+      flavor: "まあ時は金なりと言いますしね。",
+    },
+    {
+      name: "凌陽ぬいぐるみ",
+      cost: 150000n,
+      owned: 0n,
+      unlock() {
+        return (game.buildings[0].owned >= 1) && (game.buildings[5].owned >= 1) && (game.buildings[6].owned >= 1);
+      },
+      effect() {
+        game.buildings[0].multiplier += 10000n;
+        game.buildings[5].multiplier += 160000n;
+        game.buildings[6].multiplier += 160000n;
+      },
+      unlocked: false,
+      desc: "バイトたくたんの生産性+1%、覚醒たくたんと超覚醒たくたんの生産性+16%。",
+      flavor: "凌陽、鳴潮におけるたくたんの推しキャラのひとり。……あれ違ったっけ？",
+    },
+    
+    {
+      name: "B級最高裁コイン",
+      cost: 7000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[8].owned >= 1;
+      },
+      effect() {
+        game.buildings[8].multiplier += 30000n;
+      },
+      unlocked: false,
+      desc: "最高裁判所の生産性+3%。",
+      flavor: "まあまあな価値があるキラキラしたコイン。たくさん集めると、裁判で有利になれるらしい。",
+    },
+    
+    {
       name: "B級最高裁コイン",
       cost: 7000000n,
       owned: 0n,
@@ -1151,8 +1262,23 @@ let game = {
     },
     
     {
+      name: "金のニンジン",
+      cost: 50000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[10].owned >= 1;
+      },
+      effect() {
+        game.buildings[10].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "金のニンジンの生産性+5%。",
+      flavor: "キラキラしたニンジン。すごそうに見えるが、食べても安全なのか不安にも思えてくる。",
+    },
+    
+    {
       name: "S級最高裁コイン",
-      cost: 1000000000n,
+      cost: 550000000n,
       owned: 0n,
       unlock() {
         return game.buildings[12].owned >= 1;
@@ -1166,7 +1292,7 @@ let game = {
     },
     {
       name: "SSS級最高裁コイン",
-      cost: 2500000000n,
+      cost: 1000000000n,
       owned: 0n,
       unlock() {
         return game.buildings[12].owned >= 1;
@@ -1187,10 +1313,10 @@ let game = {
         return game.buildings[13].owned >= 1;
       },
       effect() {
-        game.buildings[13].multiplier += 100000n;
+        game.buildings[13].multiplier += 120000n;
       },
       unlocked: false,
-      desc: "山本の研究所の生産性+10%。",
+      desc: "山本の研究所の生産性+12%。",
       flavor: "山本の研究所で作られた、飲めばたちどころに心拍数が五千を超えるすごいカフェオレ。普通の人が飲めばしぬ。",
     },
     {
@@ -1208,6 +1334,51 @@ let game = {
       unlocked: false,
       desc: "山本の研究所以前のすべての設備の生産性+5%。",
       flavor: "山本の研究所で作られた、紫色に輝く謎のチップ。見るからにヤバそうだが、性能アップが図れるらしい……壊れたりしないよね？",
+    },
+    
+    {
+      name: "[(r1)王造の相反酒(end)]",
+      cost: 6000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[17].owned >= 1;
+      },
+      effect() {
+        game.buildings[17].multiplier += 100000n;
+      },
+      unlocked: false,
+      desc: "神域の二元庭の生産性+10%。",
+      flavor: "「酒ですよ。市販の消毒液を水で薄めただけだけど酒ですよ」― さいほうへいき",
+    },
+    
+    {
+      name: "[(r1)ショアキーパーぬいぐるみ(end)]",
+      cost: 20000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[18].owned >= 1;
+      },
+      effect() {
+        game.buildings[18].multiplier += 100000n;
+      },
+      unlocked: false,
+      desc: "真覚醒たくたんの生産性+15%。",
+      flavor: "たくたんが自身の妻などと称している人。それについてはともかく、ぬいぐるみをあげれば喜んでくれるに違いない。",
+    },
+    
+    {
+      name: "[(r1)カルテジアぬいぐるみ(end)]",
+      cost: 50000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[19].owned >= 1;
+      },
+      effect() {
+        game.buildings[19].multiplier += 100000n;
+      },
+      unlocked: false,
+      desc: "真超覚醒たくたんの生産性+15%。",
+      flavor: "たくたんが自身の愛娘などと称している人。それについてはともかく（ry",
     },
 
     {
