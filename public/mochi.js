@@ -1025,7 +1025,7 @@ let game = {
     },
     
     {
-      name: "風光語りの羽ペン",
+      name: "[(r1)風光語りの羽ペン(end)]",
       cost: 230000000000n,
       bought: false,
       unlock() {
@@ -1177,11 +1177,11 @@ let game = {
       },
       effect() {
         game.buildings[0].multiplier += 5000n;
-        game.buildings[5].multiplier += 50000n;
-        game.buildings[6].multiplier += 50000n;
+        game.buildings[5].multiplier += 30000n;
+        game.buildings[6].multiplier += 30000n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+5%。",
+      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+3%。",
       flavor: "対価を支払ってたらそれは無償石ではないのでは？",
     },
     {
@@ -1193,11 +1193,11 @@ let game = {
       },
       effect() {
         game.buildings[0].multiplier += 5000n;
-        game.buildings[5].multiplier += 70000n;
-        game.buildings[6].multiplier += 70000n;
+        game.buildings[5].multiplier += 50000n;
+        game.buildings[6].multiplier += 50000n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+7%。",
+      desc: "バイトたくたんの生産性+0.5%、覚醒たくたんと超覚醒たくたんの生産性+5%。",
       flavor: "まあ時は金なりと言いますしね。",
     },
     {
@@ -1209,11 +1209,11 @@ let game = {
       },
       effect() {
         game.buildings[0].multiplier += 10000n;
-        game.buildings[5].multiplier += 160000n;
-        game.buildings[6].multiplier += 160000n;
+        game.buildings[5].multiplier += 80000n;
+        game.buildings[6].multiplier += 80000n;
       },
       unlocked: false,
-      desc: "バイトたくたんの生産性+1%、覚醒たくたんと超覚醒たくたんの生産性+16%。",
+      desc: "バイトたくたんの生産性+1%、覚醒たくたんと超覚醒たくたんの生産性+8%。",
       flavor: "凌陽、鳴潮におけるたくたんの推しキャラのひとり。……あれ違ったっけ？",
     },
     
@@ -1344,10 +1344,10 @@ let game = {
         return game.buildings[17].owned >= 1;
       },
       effect() {
-        game.buildings[17].multiplier += 100000n;
+        game.buildings[17].multiplier += 50000n;
       },
       unlocked: false,
-      desc: "神域の二元庭の生産性+10%。",
+      desc: "神域の二元庭の生産性+5%。",
       flavor: "「酒ですよ。市販の消毒液を水で薄めただけだけど酒ですよ」― さいほうへいき",
     },
     
@@ -1359,10 +1359,10 @@ let game = {
         return game.buildings[18].owned >= 1;
       },
       effect() {
-        game.buildings[18].multiplier += 100000n;
+        game.buildings[18].multiplier += 50000n;
       },
       unlocked: false,
-      desc: "真覚醒たくたんの生産性+15%。",
+      desc: "真覚醒たくたんの生産性+5%。",
       flavor: "たくたんが自身の妻などと称している人。それについてはともかく、ぬいぐるみをあげれば喜んでくれるに違いない。",
     },
     
@@ -1374,11 +1374,59 @@ let game = {
         return game.buildings[19].owned >= 1;
       },
       effect() {
-        game.buildings[19].multiplier += 100000n;
+        game.buildings[19].multiplier += 50000n;
       },
       unlocked: false,
-      desc: "真超覚醒たくたんの生産性+15%。",
+      desc: "真超覚醒たくたんの生産性+5%。",
       flavor: "たくたんが自身の愛娘などと称している人。それについてはともかく（ry",
+    },
+
+    {
+      name: "[(r1)旧き氷水(end)]",
+      cost: 1500000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[22].owned > 0;
+      },
+      effect() {
+        game.buildings[22].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "終末邪術ラボの生産性+5%。",
+      flavor:
+        "禁忌の邪術を利用して製造された、ひんやり冷たい氷水。捻挫した時に当てておけば、痛みがすこし和らぐ。",
+    },
+    {
+      name: "[(r1)旧き銀雪(end)]",
+      cost: 3500000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[22].owned > 0;
+      },
+      effect() {
+        game.clickMultiplier += 40000n;
+        game.buildings[22].multiplier += 40000n;
+      },
+      unlocked: false,
+      desc: "クリック力、終末邪術ラボの生産性+4%。",
+      flavor:
+        "禁忌の邪術を利用して製造された、真っ白でフワフワの雪。スキーにとても向いている上質な素材だが、製造コストの問題でスキー場を賄うのは難しそうだ。",
+    },
+    
+    {
+      name: "[(r1)はちみつ(end)]",
+      cost: 600000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[23].owned > 0;
+      },
+      effect() {
+        game.buildings[23].multiplier += 50000n;
+      },
+      unlocked: false,
+      desc: "覚醒干支の生産性+5%。ただし、覚醒たくたん、超覚醒たくたんの生産性-3%。",
+      flavor:
+        "「はちみつちょうだい」― 干支",
     },
 
     {
@@ -1830,7 +1878,6 @@ function updateUnlocks() {
 
   if (unlockedAnything) render();
 }
-
 // デバッグ用＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 // すべてをアンロック
 function allUnlock() {
@@ -1859,6 +1906,7 @@ function autoClickStop() {
   autoClickInterval = null;
 }
 
+// 衛宮切嗣になる
 const timeAlterState = {
   speed: 1,
   realElapsedMs: 0,
@@ -1904,28 +1952,48 @@ function timeAlterStatus() {
 }
 window.timeAlter = timeAlter;
 window.timeAlterStatus = timeAlterStatus;
+
+// デバッグモード
+let debugMode = false;
+function enableDebug() {
+  debugMode = true;
+  console.log("デバッグモードを有効化しました");
+}
+function disableDebug() {
+  debugMode = false;
+  console.log("デバッグモードを無効化しました");
+}
+window.enableDebug = enableDebug;
+window.disableDebug = disableDebug;
 // ひたすら　デバッグ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const tooltip = document.getElementById("tooltip");
 
-function showTooltip(e, title, desc, flavor) {
+function showTooltip(e, title, desc, flavor, index) {
   tooltip.innerHTML =
     "<b>" +
     title +
     "</b><br>" +
     desc +
-    (flavor ? "<span class='flavor'>" + flavor + "</span>" : "");
+    (flavor ? "<span class='flavor'>" + flavor + "</span>" : "") +
+    (
+      debugMode && index !== undefined
+        ? `<br><small style="color:#888">Index: ${index}</small>`
+        : ""
+    );
+
   tooltip.style.opacity = 0;
   tooltip.style.display = "block";
 
   let tooltipWidth = tooltip.offsetWidth;
   let screenWidth = window.innerWidth;
-
   let x = e.pageX + 10;
   let y = e.pageY + 10;
+
   if (x + tooltipWidth > screenWidth) {
     x = e.pageX - tooltipWidth - 10;
   }
+
   tooltip.style.left = x + "px";
   tooltip.style.top = y + "px";
   tooltip.style.opacity = 1;
@@ -2214,6 +2282,7 @@ function renderBuildings() {
         innerHTMLReplacing(b.name),
         innerHTMLReplacing(b.desc),
         b.flavor,
+        i,
       );
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
@@ -2298,6 +2367,7 @@ function renderUpgrades() {
         innerHTMLReplacing(u.name),
         innerHTMLReplacing(u.desc),
         u.flavor,
+        i,
       );
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
@@ -2356,6 +2426,7 @@ function renderItems() {
         innerHTMLReplacing(it.name),
         innerHTMLReplacing(it.desc),
         it.flavor,
+        i,
       );
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
