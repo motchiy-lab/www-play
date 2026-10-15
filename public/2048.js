@@ -182,25 +182,24 @@ function updateBoard() {
 
         if (Number(tileElement.dataset.value) !== tileValue) {
           tileElement.querySelector(".game-tile__value")?.remove();
-
           img.hidden = false;
           img.src = `/2048_assets/${tileValue}.png`;
           img.alt = `Tile ${tileValue}`;
           img.dataset.value = tileValue;
-
+        
+          // 一瞬だけ縮めて、素早く弾ませる
           tileElement.style.transition = "none";
           tileElement.style.transform = "scale(0.88)";
-          
+        
           requestAnimationFrame(() => {
             tileElement.style.transition =
-              "transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1)";
-            tileElement.style.transform = "scale(1.14)";
-          
+              "transform 110ms cubic-bezier(0.2, 1.4, 0.5, 1)";
+            tileElement.style.transform = "scale(1.1)";
+        
             setTimeout(() => {
-              tileElement.style.transition =
-                "transform 100ms ease-out";
+              tileElement.style.transition = "transform 60ms ease-out";
               tileElement.style.transform = "scale(1)";
-            }, 150);
+            }, 75);
           });
         }
 
@@ -245,13 +244,14 @@ function updateBoard() {
         boardElement.appendChild(tileElement);
         activeTileElements[tileId] = tileElement;
 
-        // 新しいタイルを小さい状態から弾ませて表示
-        tileElement.style.transform = "scale(0.65)";
-        tileElement.style.opacity = "0";
+        // 新しいタイルを素早くポンッと出す
+        tileElement.style.transition = "none";
+        tileElement.style.transform = "scale(0.75)";
+        tileElement.style.opacity = "0.7";
         
         requestAnimationFrame(() => {
           tileElement.style.transition =
-            "transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 120ms ease-out";
+            "transform 90ms cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 70ms ease-out";
           tileElement.style.transform = "scale(1)";
           tileElement.style.opacity = "1";
         });
