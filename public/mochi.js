@@ -2023,10 +2023,10 @@ window.fullReset = fullReset;
 
 //金銭の邪術、とりあえず一垓
 function plusCookie(){
-  game.cookies += 100000000000000000000;
+  game.cookies += 100000000000000000000n;
 }
 function resetCookie(){
-  game.cookies = 0;
+  game.cookies = 0n;
 }
 window.plusCookie = plusCookie;
 window.resetCookie = resetCookie;
