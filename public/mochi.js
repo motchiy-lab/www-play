@@ -1057,7 +1057,7 @@ let game = {
       cost: 1000000000000000000000000n,
       bought: false,
       unlock() {
-        return (game.buildings[0].owned >= 1) and (game.buildings[5].owned >= 1) and (game.buildings[6].owned >= 1) and (game.buildings[18].owned >= 1) and (game.buildings[19].owned >= 1) and (game.buildings[36].owned >= 1);
+        return (game.buildings[0].owned >= 1) && (game.buildings[5].owned >= 1) && (game.buildings[6].owned >= 1) && (game.buildings[18].owned >= 1) && (game.buildings[19].owned >= 1) && (game.buildings[36].owned >= 1);
       },
       effect() {
         game.buildings[0].multiplier += 50000000n;
