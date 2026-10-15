@@ -190,16 +190,19 @@ function updateBoard() {
           // 一瞬だけ縮めて、素早く弾ませる
           tileElement.style.transition = "none";
           tileElement.style.transform = "scale(0.88)";
-        
+          
+          // 縮小状態を即座に確定させる
+          tileElement.getBoundingClientRect();
+          
           requestAnimationFrame(() => {
             tileElement.style.transition =
-              "transform 110ms cubic-bezier(0.2, 1.4, 0.5, 1)";
+              "transform 100ms cubic-bezier(0.2, 1.3, 0.4, 1)";
             tileElement.style.transform = "scale(1.1)";
-        
+          
             setTimeout(() => {
-              tileElement.style.transition = "transform 60ms ease-out";
+              tileElement.style.transition = "transform 50ms ease-out";
               tileElement.style.transform = "scale(1)";
-            }, 75);
+            }, 100);
           });
         }
 
@@ -241,17 +244,20 @@ function updateBoard() {
         });
 
         tileElement.appendChild(img);
+        // アニメーション開始状態を、DOMに追加する前に設定する
+        tileElement.style.transform = "scale(0.65)";
+        tileElement.style.opacity = "0";
+        tileElement.style.transition = "none";
+        
         boardElement.appendChild(tileElement);
         activeTileElements[tileId] = tileElement;
-
-        // 新しいタイルを素早くポンッと出す
-        tileElement.style.transition = "none";
-        tileElement.style.transform = "scale(0.75)";
-        tileElement.style.opacity = "0.7";
+        
+        // 初期状態をブラウザに反映してから、アニメーションを開始
+        tileElement.getBoundingClientRect();
         
         requestAnimationFrame(() => {
           tileElement.style.transition =
-            "transform 90ms cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 70ms ease-out";
+            "transform 120ms cubic-bezier(0.2, 1.3, 0.4, 1), opacity 90ms ease-out";
           tileElement.style.transform = "scale(1)";
           tileElement.style.opacity = "1";
         });
