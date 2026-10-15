@@ -21,12 +21,6 @@ window.onload = function () {
     "256.png",
     "512.png",
     "1024.png",
-    "2048.png",
-    "4096.png",
-    "8192.png",
-    "16384.png",
-    "32768.png",
-    "65536.png",
   ];
   images.forEach((src) => {
     const img = new Image();
