@@ -1,4 +1,3 @@
-
 let board;
 let score = 0;
 let highScore = 0;
@@ -190,11 +189,18 @@ function updateBoard() {
           img.dataset.value = tileValue;
 
           tileElement.style.transition = "none";
-          tileElement.style.transform = "scale(1.08)";
-
+          tileElement.style.transform = "scale(0.88)";
+          
           requestAnimationFrame(() => {
-            tileElement.style.transition = "transform 0.1s ease-out";
-            tileElement.style.transform = "scale(1)";
+            tileElement.style.transition =
+              "transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1)";
+            tileElement.style.transform = "scale(1.14)";
+          
+            setTimeout(() => {
+              tileElement.style.transition =
+                "transform 100ms ease-out";
+              tileElement.style.transform = "scale(1)";
+            }, 150);
           });
         }
 
@@ -239,9 +245,16 @@ function updateBoard() {
         boardElement.appendChild(tileElement);
         activeTileElements[tileId] = tileElement;
 
-        // 初期タイルは描画を優先し、次のフレームで表示する
-        tileElement.style.transform = "scale(1)";
-        tileElement.style.opacity = "1";
+        // 新しいタイルを小さい状態から弾ませて表示
+        tileElement.style.transform = "scale(0.65)";
+        tileElement.style.opacity = "0";
+        
+        requestAnimationFrame(() => {
+          tileElement.style.transition =
+            "transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 120ms ease-out";
+          tileElement.style.transform = "scale(1)";
+          tileElement.style.opacity = "1";
+        });
       }
     }
   }
@@ -482,7 +495,7 @@ function handlePointerCancel() {
 
 async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {
   const animationPromises = [];
-  const ANIMATION_DURATION = 100;
+  const ANIMATION_DURATION = 140;
 
   const newBoardStateById = new Map();
 
@@ -511,13 +524,16 @@ async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {
         element.remove();
         return;
       }
-
       element.style.transition =
-        `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out, opacity ${ANIMATION_DURATION}ms ease-out`;
-
+        `left ${ANIMATION_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1),
+         top ${ANIMATION_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1),
+         opacity ${ANIMATION_DURATION}ms ease-out,
+         transform ${ANIMATION_DURATION}ms ease-out`;
+      
       element.style.left = `${target.c * TILE_SIZE}px`;
       element.style.top = `${target.r * TILE_SIZE}px`;
       element.style.opacity = "0";
+      element.style.transform = "scale(0.85)";
 
       animationPromises.push(
         new Promise((resolve) => {
@@ -547,8 +563,9 @@ async function animateMovesAndMerges(oldActiveTileElementsMap, changes) {
       if (!element || !change.to) return;
 
       element.style.transition =
-        `left ${ANIMATION_DURATION}ms ease-out, top ${ANIMATION_DURATION}ms ease-out`;
-
+        `left ${ANIMATION_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1),
+         top ${ANIMATION_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+      
       element.style.left = `${change.to.c * TILE_SIZE}px`;
       element.style.top = `${change.to.r * TILE_SIZE}px`;
 
