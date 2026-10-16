@@ -122,7 +122,7 @@ let game = {
         game.reinClickMultiplier += 3000000n;
       },
       unlock() {
-        return hasDevineUpgrade("日本の神の導き・I");
+        return hasDivineUpgrade("日本の神の導き・I");
       },
       unlocked: false,
       desc: "クリック力を+300%する。",
@@ -136,7 +136,7 @@ let game = {
         game.reinClickMultiplier += 5000000n;
       },
       unlock() {
-        return hasDevineUpgrade("日本の神の導き・II");
+        return hasDivineUpgrade("日本の神の導き・II");
       },
       unlocked: false,
       desc: "クリック力を+500%する。",
@@ -150,7 +150,7 @@ let game = {
         game.reinClickMultiplier += 10000000n;
       },
       unlock() {
-        return hasDevineUpgrade("日本の神の導き・III");
+        return hasDivineUpgrade("日本の神の導き・III");
       },
       unlocked: false,
       desc: "クリック力を+1000%する。",
@@ -164,7 +164,7 @@ let game = {
         game.reinClickMultiplier += 30000000n;
       },
       unlock() {
-        return hasDevineUpgrade("日本の神の導き・IV");
+        return hasDivineUpgrade("日本の神の導き・IV");
       },
       unlocked: false,
       desc: "クリック力を+3000%する。",
@@ -3033,7 +3033,7 @@ function updateStatusDisplay() {
     ${
       hasReincarnated
         ? `
-          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber(game.reinClickPower / MULTIPLIER_SCALE)} %）</div>
+          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber((game.reinClickMultiplier - MULTIPLIER_SCALE) / MULTIPLIER_SCALE * 100)} %）</div>
           <div>みかん：${formatNumber(game.mikan)} 個</div>
           <div>転生回数：${game.reincarnations} 回</div>
           <div>邪術度：${game.reinJajutsu}%</div>
