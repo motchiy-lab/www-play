@@ -2858,7 +2858,6 @@ function renderItems() {
     ? game.jajutsuItems
     : game.items;
 
-  items.forEach((it, i) => {
   subtabs.className = "subtabs";
 
   function addSubtab(label, value) {
