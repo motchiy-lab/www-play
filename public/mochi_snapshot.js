@@ -2606,8 +2606,8 @@ function render() {
   count.textContent = formatNumber(game.cookies);
   mps.textContent = formatNumber(getFinalMps()) + " / sec";
   updateStatusDisplay();
-
   renderUpgradeSubtabs();
+  renderItemSubtabs();
 
   if (tab === "buildings") renderBuildings();
   if (tab === "upgrades") renderUpgrades();
@@ -2853,14 +2853,12 @@ function buyUpgrade(i, e) {
 function renderItems() {
   panel.innerHTML = "";
 
-  const showJajutsu = game.reinJajutsu >= 1;
+  const jajutsu = itemSubtab === "jajutsu";
+  const items = jajutsu
+    ? game.jajutsuItems
+    : game.items;
 
-  if (!showJajutsu) {
-    itemSubtab = "normal";
-  }
-
-  // サブタブ
-  const subtabs = document.createElement("div");
+  items.forEach((it, i) => {
   subtabs.className = "subtabs";
 
   function addSubtab(label, value) {
@@ -2912,7 +2910,7 @@ function renderItems() {
       showTooltip(
         e,
         innerHTMLReplacing(it.name),
-        innerHTMLReplacing(it.desc),
+        desc,
         it.flavor,
         i,
       );
@@ -3106,7 +3104,61 @@ let upgradeSubtab = "normal";
 let itemSubtab = "normal";
 
 // 通常・神界サブタブを、メインタブ列の直下に配置する
-const upgradeSubtabBar = document.createElement("div");
+const upgradeSubtabBar = document.createElement("div");// 通常・邪術サブタブをメインタブ列の直下に配置
+const itemSubtabBar = document.createElement("div");
+itemSubtabBar.id = "item-subtab-bar";
+itemSubtabBar.style.cssText = `
+  display: none;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+`;
+
+panel.parentNode.insertBefore(itemSubtabBar, panel);
+
+function renderItemSubtabs() {
+  const visible =
+    tab === "items" && game.reinJajutsu >= 1;
+
+  itemSubtabBar.style.display = visible ? "flex" : "none";
+
+  if (!visible) {
+    itemSubtab = "normal";
+    return;
+  }
+
+  itemSubtabBar.innerHTML = "";
+
+  const subtabs = [
+    { label: "通常", key: "normal" },
+    { label: "邪術", key: "jajutsu" },
+  ];
+
+  for (const subtab of subtabs) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      "tab" + (itemSubtab === subtab.key ? " active" : "");
+    button.textContent = subtab.label;
+    button.style.flex = "1";
+    button.style.minWidth = "0";
+    button.style.boxSizing = "border-box";
+
+    button.setAttribute(
+      "aria-pressed",
+      String(itemSubtab === subtab.key)
+    );
+
+    button.onclick = () => {
+      itemSubtab = subtab.key;
+      render();
+    };
+
+    itemSubtabBar.appendChild(button);
+  }
+
 
 upgradeSubtabBar.id = "upgrade-subtab-bar";
 upgradeSubtabBar.style.cssText = `
