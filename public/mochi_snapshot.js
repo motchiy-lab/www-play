@@ -3,6 +3,18 @@ const count = document.getElementById("count");
 const mps = document.getElementById("mps");
 const cookie = document.getElementById("cookie");
 
+const statusDisplay = document.createElement("div");
+statusDisplay.id = "game-status";
+statusDisplay.style.cssText = `
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 0.9em;
+  line-height: 1.7;
+  opacity: 0.9;
+`;
+
+mps.insertAdjacentElement("afterend", statusDisplay);
+
 const MULTIPLIER_SCALE = 1000000n;
 
 function formatNumber(n) {
@@ -2413,7 +2425,8 @@ function checkAchievements() {
 
 function render() {
   count.textContent = formatNumber(game.cookies);
-  mps.textContent = formatNumber(getmps()) + " / sec";
+  mps.textContent = formatNumber(getFinalMps()) + " / sec";
+  updateStatusDisplay();
 
   renderUpgradeSubtabs();
 
@@ -2487,24 +2500,32 @@ function buyBuilding(i, e) {
 }
 
 function buyItem(i, e) {
-  let it = game.items[i];
+  const it = game.items[i];
+  const price = getItemPrice(it);
 
-  if (game.cookies < (it.cost * game.reinItemPriceMultiplier / MULTIPLIER_SCALE)) {
-    toast(`餅が足りません（あと${formatNumber(it.cost - game.cookies)}）`);
+  if (game.cookies < price) {
+    toast(
+      `餅が足りません（あと${formatNumber(price - game.cookies)}）`
+    );
     return;
   }
 
-  game.cookies -= it.cost;
-  particle(e.clientX, e.clientY, "-" + formatNumber(it.cost), true);
-  it.owned++;
+  game.cookies -= price;
 
+  particle(
+    e.clientX,
+    e.clientY,
+    "-" + formatNumber(price),
+    true
+  );
+
+  it.owned++;
   it.effect();
 
-  // Buildings風に価格上昇
   it.cost = (it.cost * 115n + 50n) / 100n;
-
   toast("Item: " + innerHTMLRemoving(it.name));
 
+  save();
   render();
 }
 
@@ -2612,7 +2633,7 @@ function renderItems() {
   game.items.forEach((it, i) => {
     if (it.unlock && !it.unlocked) return;
 
-    let d = document.createElement("button");
+    const d = document.createElement("button");
     d.type = "button";
     d.className = "card";
 
@@ -2624,8 +2645,11 @@ function renderItems() {
         it.flavor,
         i,
       );
+
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
+
+    const price = getItemPrice(it);
 
     d.innerHTML =
       "<b>" +
@@ -2634,7 +2658,7 @@ function renderItems() {
       "Owned: " +
       it.owned +
       "<br>Cost: " +
-      formatNumber(it.cost);
+      formatNumber(price);
 
     d.onclick = (e) => buyItem(i, e);
 
@@ -2659,7 +2683,7 @@ function renderAchievements() {
 }
 
 cookie.onclick = (e) => {
-  const power = getClickPower() * (game.reinClickMultiplier / MULTIPLIER_SCALE);
+  const power = getClickPower();
   game.cookies += power;
   game.stats.clicks++;
 
@@ -2687,14 +2711,18 @@ function particle(x, y, text, spent = false) {
   setTimeout(() => p.remove(), 1000);
 }
 
-// 最終的なクリック力
+// 神界倍率込みの最終クリック力
 function getClickPower() {
   return (
-    (game.clickPower * game.clickMultiplier) /
+    game.clickPower *
+    game.clickMultiplier *
+    game.reinClickMultiplier /
+    MULTIPLIER_SCALE /
     MULTIPLIER_SCALE
   );
 }
 
+// 通常倍率込みの建物生産力
 function getmps() {
   let total = 0n;
 
@@ -2707,12 +2735,42 @@ function getmps() {
   return total;
 }
 
-function updateCounter() {
-  count.textContent = formatNumber(game.cookies);
-  mps.textContent = formatNumber(getmps()) + " / sec";
-  updateReincarnationUI();
+// 神界倍率込みの最終生産力
+function getFinalMps() {
+  return (
+    getmps() *
+    game.reinBuildingsMultiplier /
+    MULTIPLIER_SCALE
+  );
 }
 
+function getItemPrice(item) {
+  const numerator =
+    item.cost * game.reinItemPriceMultiplier;
+
+  const price =
+    (numerator + MULTIPLIER_SCALE - 1n) /
+    MULTIPLIER_SCALE;
+
+  return price > 0n ? price : 1n;
+}
+
+function updateStatusDisplay() {
+  statusDisplay.innerHTML = `
+    <div>クリック力：${formatNumber(getClickPower())} / クリック</div>
+    <div>みかん：${formatNumber(game.mikan)} 個</div>
+    <div>転生回数：${game.reincarnations} 回</div>
+    <div>邪術度：${game.reinJajutsu}%</div>
+  `;
+}
+
+function updateCounter() {
+  count.textContent = formatNumber(game.cookies);
+  mps.textContent = formatNumber(getFinalMps()) + " / sec";
+
+  updateStatusDisplay();
+  updateReincarnationUI();
+}
 
 let cookieRemainder = 0n; // 既存の余りを保持
 
@@ -2728,7 +2786,7 @@ setInterval(() => {
   timeAlterCredit += timeAlterSpeed;
 
   const productionTick = () => {
-    const mps = getmps() * (reinBuildingsMultiplier / MULTIPLIER_SCALE);
+    const mps = getFinalMps();
     const increment =
       (mps * BigInt(tick)) / 1000n;
     const remainder =
@@ -2931,6 +2989,10 @@ function reincarnate() {
     timeAlterCredit = 0;
     timeAlterTickCount = 0n;
     autoClickStop();
+    game.reinClickMultiplier = MULTIPLIER_SCALE;
+    game.reinBuildingsMultiplier = MULTIPLIER_SCALE;
+    game.reinItemPriceMultiplier = MULTIPLIER_SCALE;
+    game.reinJajutsu = 0;
 
     for (const upgrade of game.divineUpgrades) {
       if (upgrade.bought) {
@@ -2972,6 +3034,9 @@ function save() {
     reincarnations: game.reincarnations,
 
     reinClickMultiplier: game.reinClickMultiplier.toString(),
+    reinBuildingsMultiplier: game.reinBuildingskMultiplier.toString(),
+    reinItemPriceMultiplier: game.reinItemPriceMultiplier.toString(),
+    reinJajutsu: game.reinJajustu.toString(),
 
     stats: {
       clicks: game.stats.clicks.toString(),
