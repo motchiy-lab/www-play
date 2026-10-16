@@ -11,6 +11,7 @@ statusDisplay.style.cssText = `
   font-size: 0.9em;
   line-height: 1.7;
   opacity: 0.9;
+  text-align: center;
 `;
 
 mps.insertAdjacentElement("afterend", statusDisplay);
@@ -2756,11 +2757,18 @@ function getItemPrice(item) {
 }
 
 function updateStatusDisplay() {
+  const hasReincarnated = game.reincarnations > 0;
   statusDisplay.innerHTML = `
-    <div>クリック力：${formatNumber(getClickPower())} / クリック</div>
-    <div>みかん：${formatNumber(game.mikan)} 個</div>
-    <div>転生回数：${game.reincarnations} 回</div>
-    <div>邪術度：${game.reinJajutsu}%</div>
+    <div>クリック力：${formatNumber(getClickPower())}</div>
+    ${
+      hasReincarnated
+        ? `
+          <div>みかん：${formatNumber(game.mikan)} 個</div>
+          <div>転生回数：${game.reincarnations} 回</div>
+          <div>邪術度：${game.reinJajutsu}%</div>
+        `
+        : ""
+    }
   `;
 }
 
@@ -3034,7 +3042,7 @@ function save() {
     reincarnations: game.reincarnations,
 
     reinClickMultiplier: game.reinClickMultiplier.toString(),
-    reinBuildingsMultiplier: game.reinBuildingskMultiplier.toString(),
+    reinBuildingsMultiplier: game.reinBuildingsMultiplier.toString(),
     reinItemPriceMultiplier: game.reinItemPriceMultiplier.toString(),
     reinJajutsu: game.reinJajustu.toString(),
 
