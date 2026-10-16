@@ -2857,7 +2857,7 @@ function updateStatusDisplay() {
           <div>転生回数：${game.reincarnations} 回</div>
           <div>邪術度：${game.reinJajutsu}%</div>
         `
-        : "<div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber(game.reinClickPower / MULTIPLIER_SCALE} %）</div>"
+        : `<div>クリック力：${formatNumber(getClickPower())}</div>`
     }
   `;
 }
