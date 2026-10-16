@@ -3126,7 +3126,7 @@ function renderItemSubtabs() {
 
   const subtabs = [
     { label: "通常", key: "normal" },
-    { label: "邪術", key: "jajutsu" },
+    { label: "矢術", key: "jajutsu" },
   ];
 
   for (const subtab of subtabs) {
