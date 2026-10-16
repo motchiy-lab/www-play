@@ -1566,16 +1566,6 @@ let game = {
     },
     
     {
-      name: "[(disad)マイトネリウムの匣(end)]",
-      cost: 100n,
-      owned: 0n,
-      effect() {
-      },
-      unlocked: true,
-      desc: "テスト用のアイテム。",
-      flavor: "マイトネリウム。原子番号109番、元素記号Mt。名前の由来は研究者リーゼ・マイトナーから。",
-    },
-    {
       name: "[(disad)ガドリニウムの匣(end)]",
       cost: 100n,
       owned: 0n,
@@ -1584,6 +1574,16 @@ let game = {
       unlocked: true,
       desc: "テスト用のアイテム。",
       flavor: "ガドリニウム。原子番号64番、元素記号Gd。名前の由来は研究者ヨハン・ガドリンから。",
+    },
+    {
+      name: "[(disad)マイトネリウムの匣(end)]",
+      cost: 100n,
+      owned: 0n,
+      effect() {
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "マイトネリウム。原子番号109番、元素記号Mt。名前の由来は研究者リーゼ・マイトナーから。",
     },
   ],
 
