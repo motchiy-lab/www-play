@@ -2489,7 +2489,7 @@ function buyBuilding(i, e) {
 function buyItem(i, e) {
   let it = game.items[i];
 
-  if (game.cookies < (it.cost * reinItemPriceMultiplier / MULTIPLIER_SCALE)) {
+  if (game.cookies < (it.cost * game.reinItemPriceMultiplier / MULTIPLIER_SCALE)) {
     toast(`餅が足りません（あと${formatNumber(it.cost - game.cookies)}）`);
     return;
   }
@@ -2659,7 +2659,7 @@ function renderAchievements() {
 }
 
 cookie.onclick = (e) => {
-  const power = getClickPower() * (reinClickMultiplier / MULTIPLIER_SCALE);
+  const power = getClickPower() * (game.reinClickMultiplier / MULTIPLIER_SCALE);
   game.cookies += power;
   game.stats.clicks++;
 
