@@ -2878,7 +2878,7 @@ function renderItems() {
 
   addSubtab("通常", "normal");
 
-  if (showJajutsu) {
+  if (game.reinJajutsu >= 1) {
     addSubtab("邪術", "jajutsu");
   }
 
