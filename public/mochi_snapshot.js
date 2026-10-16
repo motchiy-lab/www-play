@@ -3033,7 +3033,7 @@ function updateStatusDisplay() {
     ${
       hasReincarnated
         ? `
-          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber((game.reinClickMultiplier - MULTIPLIER_SCALE) / MULTIPLIER_SCALE * 100)} %）</div>
+          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber((game.reinClickMultiplier - MULTIPLIER_SCALE) * 100n / MULTIPLIER_SCALE)} %）</div>
           <div>みかん：${formatNumber(game.mikan)} 個</div>
           <div>転生回数：${game.reincarnations} 回</div>
           <div>邪術度：${game.reinJajutsu}%</div>
