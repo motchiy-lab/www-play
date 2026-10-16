@@ -3,6 +3,56 @@ const count = document.getElementById("count");
 const mps = document.getElementById("mps");
 const cookie = document.getElementById("cookie");
 
+const jajutsuGlowStyle = document.createElement("style");
+
+jajutsuGlowStyle.textContent = `
+  @keyframes jajutsu-failure-glow {
+    0% {
+      filter: drop-shadow(0 0 0 rgba(255, 0, 0, 0));
+    }
+    40% {
+      filter: drop-shadow(0 0 18px rgba(255, 0, 0, 0.65));
+    }
+    100% {
+      filter: drop-shadow(0 0 0 rgba(255, 0, 0, 0));
+    }
+  }
+
+  .jajutsu-failure-glow {
+    animation: jajutsu-failure-glow 900ms ease-out;
+  }
+`;
+
+document.head.appendChild(jajutsuGlowStyle);
+
+function flashJajutsuFailure() {
+  cookie.classList.remove("jajutsu-failure-glow");
+
+  // 連続して失敗した場合にもアニメーションを再実行する
+  void cookie.offsetWidth;
+
+  cookie.classList.add("jajutsu-failure-glow");
+
+  cookie.addEventListener(
+    "animationend",
+    () => cookie.classList.remove("jajutsu-failure-glow"),
+    { once: true }
+  );
+}
+
+const statusDisplay = document.createElement("div");
+statusDisplay.id = "game-status";
+statusDisplay.style.cssText = `
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 0.9em;
+  line-height: 1.7;
+  opacity: 0.9;
+  text-align: center;
+`;
+
+mps.insertAdjacentElement("afterend", statusDisplay);
+
 const MULTIPLIER_SCALE = 1000000n;
 
 function formatNumber(n) {
@@ -42,6 +92,135 @@ let game = {
   cookies: 0n,
   clickPower: 1n,
   clickMultiplier: MULTIPLIER_SCALE,
+
+    // 転生による永続データと強化
+  mikan: 0n,
+  reincarnations: 0,
+  reinClickMultiplier: MULTIPLIER_SCALE,
+  reinBuildingsMultiplier: MULTIPLIER_SCALE,
+  reinItemPriceMultiplier: MULTIPLIER_SCALE,
+  reinJajutsu: 0,
+
+  // 神界アップグレード（通常アップグレードとは別配列）
+  divineUpgrades: [
+    {
+      name: "日本の神の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 1000000n;
+      },
+      unlocked: true,
+      desc: "クリック力を+100%する。",
+      flavor: "日本の神から授けられた、最初の加護。",
+    },
+    {
+      name: "日本の神の導き・II",
+      cost: 5n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 3000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・I");
+      },
+      unlocked: false,
+      desc: "クリック力を+300%する。",
+      flavor: "輝く星のように闇を切り裂く。",
+    },
+    {
+      name: "日本の神の導き・III",
+      cost: 15n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 5000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・II");
+      },
+      unlocked: false,
+      desc: "クリック力を+500%する。",
+      flavor: "天空を駆ける、光の翼広げ。",
+    },
+    {
+      name: "日本の神の導き・IV",
+      cost: 50n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 10000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・III");
+      },
+      unlocked: false,
+      desc: "クリック力を+1000%する。",
+      flavor: "運命の戦士、その名を呼び覚ませ。",
+    },
+    {
+      name: "日本の神の導き・V",
+      cost: 250n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 30000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・IV");
+      },
+      unlocked: false,
+      desc: "クリック力を+3000%する。",
+      flavor: "Motchiy　Motchiy　日本の神！",
+    },
+    
+    {
+      name: "最高裁の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinItemPriceMultiplier -= 100000n;
+      },
+      unlocked: true,
+      desc: "アイテムの値段を-10%する。",
+      flavor: "最高裁から授けられた、最初の加護。",
+    },
+    
+    {
+      name: "山本の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      unlocked: true,
+      desc: "建物の生産力を+100%する。",
+      flavor: "山本から授けられた、最初の加護。",
+    },
+    
+    {
+      name: "邪術神の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinJajutsu += 1;
+      },
+      unlocked: true,
+      desc: "邪術度を+1%する。",
+      flavor: "「ファーw」― さいほうへいき",
+    },
+    {
+      name: "邪術神の導き・II",
+      cost: 5n,
+      bought: false,
+      effect() {
+        game.reinJajutsu += 4;
+      },
+      unlock() {
+        return hasDivineUpgrade("邪術神の導き・I");
+      },
+      unlocked: false,
+      desc: "邪術度を+4%する。",
+      flavor: "「ところで邪術の使い方には慣れました？　アイテムタブから邪術を使えますよ！」― さいほうへいき",
+    },
+  ],
 
   stats: {
     clicks: 0n,
@@ -1587,6 +1766,45 @@ let game = {
     },
   ],
 
+  jajutsuItems: [
+    {
+      name: "[(disad)錬成：巡回する橋(end)]",
+      cost: 100n,
+      owned: 0n,
+      baseJajutsu: -999,
+      effect() {
+        alert("グッジョブ！　成功したよ");
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "なぜか、なぜか、なぜか。問う声は消えずにいる。",
+    },
+    {
+      name: "[(disad)錬成：枢軸の種(end)]",
+      cost: 100n,
+      owned: 0n,
+      baseJajutsu: 50,
+      effect() {
+        alert("グッジョブ！　成功したよ");
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "もしもその種が、滅びゆく国に根ざしたならば――。",
+    },
+    {
+      name: "[(disad)錬成：均衡の筆(end)]",
+      cost: 100n,
+      owned: 0n,
+      baseJajutsu: 100,
+      effect() {
+        alert("グッジョブ！　成功したよ");
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "あるいは、それを『希望』と呼ぼう。",
+    },
+  ],
+
   achievements: [
     {
       id: "click1",
@@ -1904,7 +2122,25 @@ game.buildings.forEach((b) => {
   b.multiplier ??= MULTIPLIER_SCALE;
 });
 
+const reincarnationInitialState = {
+  cookies: game.cookies,
+  clickPower: game.clickPower,
+  clickMultiplier: game.clickMultiplier,
+
+  stats: { ...game.stats },
+
+  buildings: game.buildings.map((x) => ({ ...x })),
+  upgrades: game.upgrades.map((x) => ({ ...x })),
+  items: game.items.map((x) => ({ ...x })),
+  achievements: game.achievements.map((x) => ({ ...x })),
+  jajutsuItems: game.jajutsuItems.map((x) => ({ ...x })),
+};
+
 let tab = "buildings";
+
+function getJajutsuChance(item) {
+  return game.reinJajutsu + item.baseJajutsu;
+}
 
 function isUnlocked(obj) {
   if (!obj.unlock) return true;
@@ -1915,8 +2151,26 @@ function getUpgrade(name) {
   return game.upgrades.find(upgrade => upgrade.name === name);
 }
 
+function getDivineUpgrade(name) {
+  return game.divineUpgrades.find(
+    (upgrade) => upgrade.name === name
+  );
+}
+
+function getItem(name) {
+  return game.items.find(upgrade => upgrade.name === name);
+}
+
 function hasUpgrade(name) {
   return getUpgrade(name)?.bought ?? false;
+}
+
+function hasDivineUpgrade(name) {
+  return getDivineUpgrade(name)?.bought ?? false;
+}
+
+function hasItem(name) {
+  return getItem(name)?.bought ?? false;
 }
 
 
@@ -1943,7 +2197,12 @@ function updateUnlocks() {
       unlockedAnything = true;
     }
   });
-
+  game.divineUpgrades.forEach((u) => {
+    if (!u.unlocked && u.unlock && u.unlock()) {
+      u.unlocked = true;
+      unlockedAnything = true;
+    }
+  });
   if (unlockedAnything) render();
 }
 // デバッグ用＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -2345,7 +2604,10 @@ function checkAchievements() {
 
 function render() {
   count.textContent = formatNumber(game.cookies);
-  mps.textContent = formatNumber(getmps()) + " / sec";
+  mps.textContent = formatNumber(getFinalMps()) + " / sec";
+  updateStatusDisplay();
+  renderUpgradeSubtabs();
+  renderItemSubtabs();
 
   if (tab === "buildings") renderBuildings();
   if (tab === "upgrades") renderUpgrades();
@@ -2417,34 +2679,92 @@ function buyBuilding(i, e) {
 }
 
 function buyItem(i, e) {
-  let it = game.items[i];
+  const it = game.items[i];
+  const price = getItemPrice(it);
 
-  if (game.cookies < it.cost) {
-    toast(`餅が足りません（あと${formatNumber(it.cost - game.cookies)}）`);
+  if (game.cookies < price) {
+    toast(
+      `餅が足りません（あと${formatNumber(price - game.cookies)}）`
+    );
     return;
   }
 
-  game.cookies -= it.cost;
-  particle(e.clientX, e.clientY, "-" + formatNumber(it.cost), true);
-  it.owned++;
+  game.cookies -= price;
 
+  particle(
+    e.clientX,
+    e.clientY,
+    "-" + formatNumber(price),
+    true
+  );
+
+  it.owned++;
   it.effect();
 
-  // Buildings風に価格上昇
   it.cost = (it.cost * 115n + 50n) / 100n;
-
   toast("Item: " + innerHTMLRemoving(it.name));
 
+  save();
+  render();
+}
+
+function buyJajutsuItem(i, e) {
+  const it = game.jajutsuItems[i];
+
+  if (!it || (it.unlock && !it.unlocked)) return;
+
+  const price = getItemPrice(it);
+
+  if (game.cookies < price) {
+    toast(
+      `餅が足りません（あと${formatNumber(price - game.cookies)}）`
+    );
+    return;
+  }
+
+  // 購入処理
+  game.cookies -= price;
+  it.owned++;
+  it.cost = (it.cost * 115n + 50n) / 100n;
+
+  // 合計邪術度で成功判定
+  const chance = getJajutsuChance(it);
+  const success = Math.random() * 100 < chance;
+
+  if (!success) {
+    // 失敗時は効果を発動せず、餅を赤く光らせる
+    flashJajutsuFailure();
+    save();
+    render();
+    return;
+  }
+
+  // 成功時のみ効果を発動
+  it.effect();
+
+  toast("邪術成功：" + innerHTMLRemoving(it.name));
+
+  save();
   render();
 }
 
 function renderUpgrades() {
   panel.innerHTML = "";
 
-  game.upgrades.forEach((u, i) => {
+  // 転生前に神界タブが選ばれていた場合の安全策
+  if (game.reincarnations <= 0) {
+    upgradeSubtab = "normal";
+  }
+
+  const divine = upgradeSubtab === "divine";
+  const upgrades = divine
+    ? game.divineUpgrades
+    : game.upgrades;
+
+  upgrades.forEach((u, i) => {
     if (u.unlock && !u.unlocked) return;
 
-    let d = document.createElement("button");
+    const d = document.createElement("button");
     d.type = "button";
     d.className = "card";
 
@@ -2456,6 +2776,7 @@ function renderUpgrades() {
         u.flavor,
         i,
       );
+
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
 
@@ -2465,12 +2786,44 @@ function renderUpgrades() {
       "<b>" +
       innerHTMLReplacing(u.name) +
       "</b><br>Cost: " +
-      formatNumber(u.cost);
+      formatNumber(u.cost) +
+      (divine ? " みかん" : " 餅");
 
-    d.onclick = (e) => buyUpgrade(i, e);
+    d.onclick = (e) => {
+      if (divine) {
+        buyDivineUpgrade(i, e);
+      } else {
+        buyUpgrade(i, e);
+      }
+    };
 
     panel.appendChild(d);
   });
+}
+
+function buyDivineUpgrade(i, e) {
+  const u = game.divineUpgrades[i];
+  if (!u || !u.unlocked) {
+    toast("この神界アップグレードはまだ解放されていません");
+    return;
+  }
+  if (u.bought) {
+    toast("この神界アップグレードは購入済みです");
+    return;
+  }
+  if (game.mikan < u.cost) {
+    toast(`みかんが足りません😭（あと${formatNumber(u.cost - game.mikan)}個）`);
+    return;
+  }
+
+  game.mikan -= u.cost;
+  u.effect();
+  u.bought = true;
+
+  save();
+
+  toast("神界アップグレードを購入：" + u.name);
+  render();
 }
 
 function buyUpgrade(i, e) {
@@ -2499,35 +2852,82 @@ function buyUpgrade(i, e) {
 
 function renderItems() {
   panel.innerHTML = "";
+  const subtabs = document.createElement("div");
 
-  game.items.forEach((it, i) => {
+  const jajutsu = itemSubtab === "jajutsu";
+  const items = jajutsu
+    ? game.jajutsuItems
+    : game.items;
+/*
+  subtabs.className = "subtabs";
+
+  function addSubtab(label, value) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.className =
+      itemSubtab === value ? "active" : "";
+
+    button.onclick = () => {
+      itemSubtab = value;
+      render();
+    };
+
+    subtabs.appendChild(button);
+  }
+
+  addSubtab("通常", "normal");
+
+  if (game.reinJajutsu >= 1) {
+    addSubtab("邪術", "jajutsu");
+  }
+
+  panel.appendChild(subtabs);
+
+  */
+
+  items.forEach((it, i) => {
     if (it.unlock && !it.unlocked) return;
 
-    let d = document.createElement("button");
+    const d = document.createElement("button");
     d.type = "button";
     d.className = "card";
+
+    const desc = jajutsu
+      ? innerHTMLReplacing(it.desc) +
+        "<br><br>邪術度：" +
+        getJajutsuChance(it) +
+        "%（基礎邪術度" +
+        it.baseJajutsu +
+        "%）"
+      : innerHTMLReplacing(it.desc);
 
     d.onmouseenter = (e) =>
       showTooltip(
         e,
         innerHTMLReplacing(it.name),
-        innerHTMLReplacing(it.desc),
+        desc,
         it.flavor,
         i,
       );
+
     d.onmousemove = moveTooltip;
     d.onmouseleave = hideTooltip;
 
-    d.innerHTML =
-      "<b>" +
-      innerHTMLReplacing(it.name) +
-      "</b><br>" +
-      "Owned: " +
-      it.owned +
-      "<br>Cost: " +
-      formatNumber(it.cost);
+    const price = getItemPrice(it);
 
-    d.onclick = (e) => buyItem(i, e);
+    d.innerHTML =
+      "<b>" + innerHTMLReplacing(it.name) + "</b><br>" +
+      "Owned: " + it.owned +
+      "<br>Cost: " + formatNumber(price);
+
+    d.onclick = (e) => {
+      if (itemSubtab === "jajutsu") {
+        buyJajutsuItem(i, e);
+      } else {
+        buyItem(i, e);
+      }
+    };
 
     panel.appendChild(d);
   });
@@ -2578,14 +2978,18 @@ function particle(x, y, text, spent = false) {
   setTimeout(() => p.remove(), 1000);
 }
 
-// 最終的なクリック力
+// 神界倍率込みの最終クリック力
 function getClickPower() {
   return (
-    (game.clickPower * game.clickMultiplier) /
+    game.clickPower *
+    game.clickMultiplier *
+    game.reinClickMultiplier /
+    MULTIPLIER_SCALE /
     MULTIPLIER_SCALE
   );
 }
 
+// 通常倍率込みの建物生産力
 function getmps() {
   let total = 0n;
 
@@ -2598,11 +3002,49 @@ function getmps() {
   return total;
 }
 
-function updateCounter() {
-  count.textContent = formatNumber(game.cookies);
-  mps.textContent = formatNumber(getmps()) + " / sec";
+// 神界倍率込みの最終生産力
+function getFinalMps() {
+  return (
+    getmps() *
+    game.reinBuildingsMultiplier /
+    MULTIPLIER_SCALE
+  );
 }
 
+function getItemPrice(item) {
+  const numerator =
+    item.cost * game.reinItemPriceMultiplier;
+
+  const price =
+    (numerator + MULTIPLIER_SCALE - 1n) /
+    MULTIPLIER_SCALE;
+
+  return price > 0n ? price : 1n;
+}
+
+function updateStatusDisplay() {
+  const hasReincarnated = game.reincarnations > 0;
+  statusDisplay.innerHTML = `
+    ${
+      hasReincarnated
+        ? `
+          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber((game.reinClickMultiplier - MULTIPLIER_SCALE) * 100n / MULTIPLIER_SCALE)} %）</div>
+          <div>みかん：${formatNumber(game.mikan)} 個</div>
+          <div>転生回数：${game.reincarnations} 回</div>
+          <div>邪術度：${game.reinJajutsu}%</div>
+        `
+        : `<div>クリック力：${formatNumber(getClickPower())}</div>`
+    }
+  `;
+}
+
+function updateCounter() {
+  count.textContent = formatNumber(game.cookies);
+  mps.textContent = formatNumber(getFinalMps()) + " / sec";
+
+  updateStatusDisplay();
+  updateReincarnationUI();
+}
 
 let cookieRemainder = 0n; // 既存の余りを保持
 
@@ -2614,12 +3056,11 @@ let timeAlterTickCount = 0n;
 const timeAlterStartedAt = performance.now();
 
 setInterval(() => {
-  // 小数倍率でも処理回数の端数を失わない
+  if (reincarnationInProgress) return;
   timeAlterCredit += timeAlterSpeed;
 
-  // 従来の生産処理を1回分だけ実行する関数
   const productionTick = () => {
-    const mps = getmps();
+    const mps = getFinalMps();
     const increment =
       (mps * BigInt(tick)) / 1000n;
     const remainder =
@@ -2651,17 +3092,288 @@ function toast(msg) {
 }
 
 
-/* SAVE */
+/* REINCARNATION */
 
+const REINCARNATION_THRESHOLD = 10_000_000_000n;
+let reincarnationInProgress = false;
+let upgradeSubtab = "normal";
+let itemSubtab = "normal";
+
+// 通常・神界サブタブを、メインタブ列の直下に配置する
+const upgradeSubtabBar = document.createElement("div");// 通常・邪術サブタブをメインタブ列の直下に配置
+const itemSubtabBar = document.createElement("div");
+itemSubtabBar.id = "item-subtab-bar";
+itemSubtabBar.style.cssText = `
+  display: none;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+`;
+
+panel.parentNode.insertBefore(itemSubtabBar, panel);
+
+function renderItemSubtabs() {
+  const visible =
+    tab === "items" && game.reinJajutsu >= 1;
+
+  itemSubtabBar.style.display = visible ? "flex" : "none";
+
+  if (!visible) {
+    itemSubtab = "normal";
+    return;
+  }
+
+  itemSubtabBar.innerHTML = "";
+
+  const subtabs = [
+    { label: "通常", key: "normal" },
+    { label: "邪術", key: "jajutsu" }, // 真
+  ];
+
+  for (const subtab of subtabs) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      "tab" + (itemSubtab === subtab.key ? " active" : "");
+    button.textContent = subtab.label;
+    button.style.flex = "1";
+    button.style.minWidth = "0";
+    button.style.boxSizing = "border-box";
+
+    button.setAttribute(
+      "aria-pressed",
+      String(itemSubtab === subtab.key)
+    );
+
+    button.onclick = () => {
+      itemSubtab = subtab.key;
+      render();
+    };
+
+    itemSubtabBar.appendChild(button);
+  }
+}
+
+upgradeSubtabBar.id = "upgrade-subtab-bar";
+upgradeSubtabBar.style.cssText = `
+  display: none;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+`;
+
+panel.parentNode.insertBefore(upgradeSubtabBar, panel);
+
+function renderUpgradeSubtabs() {
+  const visible =
+    tab === "upgrades" && game.reincarnations > 0;
+
+  upgradeSubtabBar.style.display = visible ? "flex" : "none";
+
+  if (!visible) return;
+
+  upgradeSubtabBar.innerHTML = "";
+
+  const subtabs = [
+    { label: "通常", key: "normal" },
+    { label: "神界", key: "divine" },
+  ];
+
+  for (const subtab of subtabs) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      "tab" + (upgradeSubtab === subtab.key ? " active" : "");
+    button.textContent = subtab.label;
+
+    // メインタブ列と同じ幅を2等分する
+    button.style.flex = "1";
+    button.style.minWidth = "0";
+    button.style.boxSizing = "border-box";
+
+    button.setAttribute(
+      "aria-pressed",
+      String(upgradeSubtab === subtab.key)
+    );
+
+    button.onclick = () => {
+      upgradeSubtab = subtab.key;
+      render();
+    };
+
+    upgradeSubtabBar.appendChild(button);
+  }
+}
+
+// 桁数方式：100億で1個、1000億で2個、1兆で3個……
+function getMikanGain(cookies) {
+  cookies = BigInt(cookies);
+
+  if (cookies < REINCARNATION_THRESHOLD) {
+    return 0n;
+  }
+
+  return BigInt(cookies.toString().length - 10);
+}
+
+// 左上の転生ポップアップ
+const reincarnationPopup = document.createElement("button");
+
+reincarnationPopup.id = "reincarnation-popup";
+reincarnationPopup.type = "button";
+reincarnationPopup.style.cssText = `
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10000;
+  display: none;
+  padding: 12px 16px;
+  border: 2px solid #e6a23c;
+  border-radius: 12px;
+  background: #fff4d6;
+  color: #5c3700;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 16px #0003;
+`;
+
+document.body.appendChild(reincarnationPopup);
+
+// 暗転オーバーレイ
+const reincarnationOverlay = document.createElement("div");
+
+reincarnationOverlay.id = "reincarnation-overlay";
+reincarnationOverlay.style.cssText = `
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 450ms ease;
+`;
+
+document.body.appendChild(reincarnationOverlay);
+
+function updateReincarnationUI() {
+  if (!reincarnationPopup.isConnected) return;
+
+  const gain = getMikanGain(game.cookies);
+  const available = gain > 0n;
+
+  reincarnationPopup.style.display = available ? "block" : "none";
+
+  if (available) {
+    reincarnationPopup.textContent =
+      `転生可能！ ダブルクリックで転生（みかん +${gain}個）`;
+  }
+}
+
+// ポップアップをダブルクリックした場合のみ転生
+reincarnationPopup.addEventListener("dblclick", reincarnate);
+
+function reincarnate() {
+  if (reincarnationInProgress) return;
+
+  const gain = getMikanGain(game.cookies);
+
+  if (gain <= 0n) {
+    toast("転生には100億餅以上が必要です😭");
+    return;
+  }
+
+  reincarnationInProgress = true;
+
+  // 暗転開始
+  reincarnationOverlay.style.pointerEvents = "auto";
+  reincarnationOverlay.style.opacity = "1";
+
+  setTimeout(() => {
+    game.mikan += gain;
+    game.reincarnations++;
+    game.cookies = reincarnationInitialState.cookies;
+    game.clickPower = reincarnationInitialState.clickPower;
+    game.clickMultiplier =
+      reincarnationInitialState.clickMultiplier;
+
+    game.stats = { ...reincarnationInitialState.stats };
+
+    game.buildings =
+      reincarnationInitialState.buildings.map((x) => ({ ...x }));
+
+    game.upgrades =
+      reincarnationInitialState.upgrades.map((x) => ({ ...x }));
+
+    game.items =
+      reincarnationInitialState.items.map((x) => ({ ...x }));
+
+    game.jajutsuItems =
+  reincarnationInitialState.jajutsuItems.map((x) => ({ ...x }));
+
+    game.achievements =
+      reincarnationInitialState.achievements.map((x) => ({ ...x }));
+    cookieRemainder = 0n;
+    timeAlterSpeed = 1;
+    timeAlterCredit = 0;
+    timeAlterTickCount = 0n;
+    autoClickStop();
+    game.reinClickMultiplier = MULTIPLIER_SCALE;
+    game.reinBuildingsMultiplier = MULTIPLIER_SCALE;
+    game.reinItemPriceMultiplier = MULTIPLIER_SCALE;
+    game.reinJajutsu = 0;
+
+    for (const upgrade of game.divineUpgrades) {
+      if (upgrade.bought) {
+        upgrade.effect();
+      }
+    }
+    if (game.reincarnations > 0) {
+      upgradeSubtab = "divine";
+    }
+
+    save();
+    updateCounter();
+    render();
+    updateReincarnationUI();
+
+    toast(`転生！　みかんを${gain}個獲得しました`);
+
+    // 暗転解除
+    requestAnimationFrame(() => {
+      reincarnationOverlay.style.opacity = "0";
+      setTimeout(() => {
+        reincarnationOverlay.style.pointerEvents = "none";
+        reincarnationInProgress = false;
+      }, 450);
+    });
+  }, 450);
+}
+
+/* SAVE */
 function save() {
   const data = {
     version: 2,
 
     cookies: game.cookies.toString(),
     clickPower: game.clickPower.toString(),
+    clickMultiplier: game.clickMultiplier.toString(),
+
+    mikan: game.mikan.toString(),
+    reincarnations: game.reincarnations,
+
+    reinClickMultiplier: game.reinClickMultiplier.toString(),
+    reinBuildingsMultiplier: game.reinBuildingsMultiplier.toString(),
+    reinItemPriceMultiplier: game.reinItemPriceMultiplier.toString(),
+    reinJajutsu: game.reinJajutsu,
 
     stats: {
       clicks: game.stats.clicks.toString(),
+      buildingsBought: game.stats.buildingsBought.toString(),
+      upgradesBought: game.stats.upgradesBought.toString(),
     },
 
     buildings: Object.fromEntries(
@@ -2672,6 +3384,7 @@ function save() {
           cost: b.cost.toString(),
           mps: b.mps.toString(),
           multiplier: b.multiplier.toString(),
+          unlocked: b.unlocked ?? false,
         },
       ])
     ),
@@ -2679,7 +3392,10 @@ function save() {
     upgrades: Object.fromEntries(
       game.upgrades.map((u) => [
         u.name,
-        { bought: u.bought },
+        {
+          bought: u.bought,
+          unlocked: u.unlocked ?? false,
+        },
       ])
     ),
 
@@ -2689,6 +3405,18 @@ function save() {
         {
           owned: it.owned.toString(),
           cost: it.cost.toString(),
+          unlocked: it.unlocked ?? false,
+        },
+      ])
+    ),
+
+    jajutsuItems: Object.fromEntries(
+      game.jajutsuItems.map((it) => [
+        it.name,
+        {
+          owned: it.owned.toString(),
+          cost: it.cost.toString(),
+          unlocked: it.unlocked ?? false,
         },
       ])
     ),
@@ -2700,129 +3428,147 @@ function save() {
       ])
     ),
 
-    clickMultiplier: game.clickMultiplier.toString(),
+    divineUpgrades: Object.fromEntries(
+      game.divineUpgrades.map((u) => [
+        u.name,
+        { bought: u.bought },
+      ])
+    ),
   };
 
-  localStorage.setItem(
-    "cookieEmpirePro",
-    JSON.stringify(data)
-  );
+  localStorage.setItem("cookieEmpirePro_Snapshot", JSON.stringify(data));
 }
 
 /* LOAD */
 
 function load() {
-  const s = localStorage.getItem("cookieEmpirePro");
+  const s = localStorage.getItem("cookieEmpirePro_Snapshot");
   if (!s) return;
 
   const data = JSON.parse(s);
 
-  if (data.cookies != null) {
-    game.cookies = BigInt(data.cookies);
+  if (data.cookies != null) game.cookies = BigInt(data.cookies);
+  if (data.clickPower != null) game.clickPower = BigInt(data.clickPower);
+  if (data.clickMultiplier != null) {
+    game.clickMultiplier = BigInt(data.clickMultiplier);
   }
 
-  if (data.clickPower != null) {
-    game.clickPower = BigInt(data.clickPower);
+  if (data.mikan != null) game.mikan = BigInt(data.mikan);
+  if (data.reincarnations != null) {
+    game.reincarnations = Number(data.reincarnations);
+  }
+  
+  if (data.reinClickMultiplier != null) game.reinClickMultiplier = BigInt(data.reinClickMultiplier);
+  if (data.reinBuildingsMultiplier != null) game.reinBuildingsMultiplier = BigInt(data.reinBuildingsMultiplier);
+  if (data.reinItemPriceMultiplier != null) game.reinItemPriceMultiplier = BigInt(data.reinItemPriceMultiplier);
+  if (data.reinJajutsu != null) game.reinJajutsu = Number(data.reinJajutsu);
+
+  if (data.stats) {
+    if (data.stats.clicks != null) {
+      game.stats.clicks = BigInt(data.stats.clicks);
+    }
+    if (data.stats.buildingsBought != null) {
+      game.stats.buildingsBought = BigInt(data.stats.buildingsBought);
+    }
+    if (data.stats.upgradesBought != null) {
+      game.stats.upgradesBought = BigInt(data.stats.upgradesBought);
+    }
   }
 
-  if (data.stats?.clicks != null) {
-    game.stats.clicks = BigInt(data.stats.clicks);
-  }
-
-  // 旧形式の配列にも対応する
-  function toNamedObject(saved, current, key) {
-    if (!saved) return {};
+  // 旧配列形式と新しい名前キー形式の両方に対応
+  function savedEntry(saved, current, key) {
+    if (!saved) return undefined;
 
     if (Array.isArray(saved)) {
-      return Object.fromEntries(
-        saved.map((value, i) => [
-          current[i]?.[key],
-          value,
-        ]).filter(([name]) => name != null)
-      );
+      const index = current.indexOf(key);
+      return index >= 0 ? saved[index] : undefined;
     }
 
-    return saved;
+    return saved[key];
   }
 
   // 建物
-  const buildings = toNamedObject(
-    data.buildings,
-    game.buildings,
-    "name"
-  );
-
   for (const b of game.buildings) {
-    const saved = buildings[b.name];
+    const saved = savedEntry(
+      data.buildings,
+      game.buildings.map((x) => x.name),
+      b.name
+    );
+
     if (!saved) continue;
 
-    if (saved.owned != null) {
-      b.owned = BigInt(saved.owned);
-    }
-    if (saved.cost != null) {
-      b.cost = BigInt(saved.cost);
-    }
-    if (saved.mps != null) {
-      b.mps = BigInt(saved.mps);
-    }
+    if (saved.owned != null) b.owned = BigInt(saved.owned);
+    if (saved.cost != null) b.cost = BigInt(saved.cost);
+    if (saved.mps != null) b.mps = BigInt(saved.mps);
     if (saved.multiplier != null) {
       b.multiplier = BigInt(saved.multiplier);
     }
+    if (saved.unlocked != null) b.unlocked = saved.unlocked;
   }
 
-  // アップグレード
-  const upgrades = toNamedObject(
-    data.upgrades,
-    game.upgrades,
-    "name"
-  );
-
+  // 通常アップグレード
   for (const u of game.upgrades) {
-    const saved = upgrades[u.name];
+    const saved = savedEntry(
+      data.upgrades,
+      game.upgrades.map((x) => x.name),
+      u.name
+    );
+
     if (!saved) continue;
 
-    if (saved.bought != null) {
-      u.bought = saved.bought;
-    }
+    if (saved.bought != null) u.bought = saved.bought;
+    if (saved.unlocked != null) u.unlocked = saved.unlocked;
   }
 
   // アイテム
-  const items = toNamedObject(
-    data.items,
-    game.items,
-    "name"
-  );
-
   for (const it of game.items) {
-    const saved = items[it.name];
+    const saved = savedEntry(
+      data.items,
+      game.items.map((x) => x.name),
+      it.name
+    );
+
     if (!saved) continue;
 
-    if (saved.owned != null) {
-      it.owned = BigInt(saved.owned);
-    }
-    if (saved.cost != null) {
-      it.cost = BigInt(saved.cost);
-    }
+    if (saved.owned != null) it.owned = BigInt(saved.owned);
+    if (saved.cost != null) it.cost = BigInt(saved.cost);
+    if (saved.unlocked != null) it.unlocked = saved.unlocked;
   }
 
-  // 実績は既存の固有IDを使う
-  const achievements = toNamedObject(
-    data.achievements,
-    game.achievements,
-    "id"
-  );
+  for (const it of game.jajutsuItems) {
+    const saved = savedEntry(
+      data.jajutsuItems,
+      game.jajutsuItems.map((x) => x.name),
+      it.name
+    );
 
-  for (const a of game.achievements) {
-    const saved = achievements[a.id];
     if (!saved) continue;
 
-    if (saved.unlocked != null) {
+    if (saved.owned != null) it.owned = BigInt(saved.owned);
+    if (saved.cost != null) it.cost = BigInt(saved.cost);
+    if (saved.unlocked != null) it.unlocked = saved.unlocked;
+  }
+
+  // 実績はIDで管理
+  for (const a of game.achievements) {
+    const saved = savedEntry(
+      data.achievements,
+      game.achievements.map((x) => x.id),
+      a.id
+    );
+
+    if (saved && saved.unlocked != null) {
       a.unlocked = saved.unlocked;
     }
   }
 
-  if (data.clickMultiplier != null) {
-    game.clickMultiplier = BigInt(data.clickMultiplier);
+  // 神界アップグレード
+  for (const u of game.divineUpgrades) {
+    const saved = data.divineUpgrades?.[u.name];
+
+    if (saved && saved.bought != null) {
+      u.bought = saved.bought;
+    }
   }
 }
 
@@ -2830,4 +3576,3 @@ setInterval(save, 5000);
 
 load();
 render();
-
