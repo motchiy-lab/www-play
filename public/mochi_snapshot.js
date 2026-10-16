@@ -2852,6 +2852,7 @@ function buyUpgrade(i, e) {
 
 function renderItems() {
   panel.innerHTML = "";
+  const subtabs = document.createElement("div");
 
   const jajutsu = itemSubtab === "jajutsu";
   const items = jajutsu
