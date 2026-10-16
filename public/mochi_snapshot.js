@@ -43,9 +43,13 @@ let game = {
   clickPower: 1n,
   clickMultiplier: MULTIPLIER_SCALE,
 
-    // 転生による永続データ
+    // 転生による永続データと強化
   mikan: 0n,
   reincarnations: 0,
+  reinClickMultiplier: MULTIPLIER_SCALE,
+  reinBuildingsMultiplier: MULTIPLIER_SCALE,
+  reinItemPriceMultiplier: MULTIPLIER_SCALE,
+  reinJajutsu: 0,
 
   // 神界アップグレード（通常アップグレードとは別配列）
   divineUpgrades: [
@@ -54,10 +58,43 @@ let game = {
       cost: 1n,
       bought: false,
       effect() {
-        game.clickMultiplier *= n;
+        game.reinClickMultiplier += 1000000n;
       },
-      desc: "クリック力を永続的に2倍にする。",
-      flavor: "神界から授けられた、最初の加護。",
+      desc: "クリック力を+100%する。",
+      flavor: "日本の神から授けられた、最初の加護。",
+    },
+    
+    {
+      name: "最高裁の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinItemPriceMultiplier -= 100000n;
+      },
+      desc: "アイテムの値段を-10%する。",
+      flavor: "最高裁から授けられた、最初の加護。",
+    },
+    
+    {
+      name: "山本の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      desc: "建物の生産力を+100%する。",
+      flavor: "山本から授けられた、最初の加護。",
+    },
+    
+    {
+      name: "邪術神の導き・I",
+      cost: 1n,
+      bought: false,
+      effect() {
+        game.reinJajutsu += 1;
+      },
+      desc: "邪術度を+1%する。",
+      flavor: "「ファーw」― さいほうへいき",
     },
   ],
 
@@ -2378,6 +2415,8 @@ function render() {
   count.textContent = formatNumber(game.cookies);
   mps.textContent = formatNumber(getmps()) + " / sec";
 
+  renderUpgradeSubtabs();
+
   if (tab === "buildings") renderBuildings();
   if (tab === "upgrades") renderUpgrades();
   if (tab === "items") renderItems();
@@ -2450,7 +2489,7 @@ function buyBuilding(i, e) {
 function buyItem(i, e) {
   let it = game.items[i];
 
-  if (game.cookies < it.cost) {
+  if (game.cookies < (it.cost * reinItemPriceMultiplier / MULTIPLIER_SCALE)) {
     toast(`餅が足りません（あと${formatNumber(it.cost - game.cookies)}）`);
     return;
   }
@@ -2469,46 +2508,13 @@ function buyItem(i, e) {
   render();
 }
 
-
 function renderUpgrades() {
   panel.innerHTML = "";
 
-  // サブタブ
-  const subtabs = document.createElement("div");
-  subtabs.style.cssText =
-    "display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;";
-
-  function createSubtab(label, key) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = label;
-    button.style.cssText = `
-      padding: 8px 16px;
-      border: 1px solid #888;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      opacity: ${upgradeSubtab === key ? "1" : ".65"};
-    `;
-
-    button.onclick = () => {
-      upgradeSubtab = key;
-      render();
-    };
-
-    subtabs.appendChild(button);
-  }
-
-  createSubtab("通常", "normal");
-
-  // 一度でも転生した場合のみ表示
-  if (game.reincarnations > 0) {
-    createSubtab("神界", "divine");
-  } else if (upgradeSubtab === "divine") {
+  // 転生前に神界タブが選ばれていた場合の安全策
+  if (game.reincarnations <= 0) {
     upgradeSubtab = "normal";
   }
-
-  panel.appendChild(subtabs);
 
   const divine = upgradeSubtab === "divine";
   const upgrades = divine
@@ -2653,7 +2659,7 @@ function renderAchievements() {
 }
 
 cookie.onclick = (e) => {
-  const power = getClickPower();
+  const power = getClickPower() * (reinClickMultiplier / MULTIPLIER_SCALE);
   game.cookies += power;
   game.stats.clicks++;
 
@@ -2719,12 +2725,10 @@ const timeAlterStartedAt = performance.now();
 
 setInterval(() => {
   if (reincarnationInProgress) return;
-  // 小数倍率でも処理回数の端数を失わない
   timeAlterCredit += timeAlterSpeed;
 
-  // 従来の生産処理を1回分だけ実行する関数
   const productionTick = () => {
-    const mps = getmps();
+    const mps = getmps() * (reinBuildingMultiplier / MULTIPLIER_SCALE);
     const increment =
       (mps * BigInt(tick)) / 1000n;
     const remainder =
@@ -2761,6 +2765,62 @@ function toast(msg) {
 const REINCARNATION_THRESHOLD = 10_000_000_000n;
 let reincarnationInProgress = false;
 let upgradeSubtab = "normal";
+
+// 通常・神界サブタブを、メインタブ列の直下に配置する
+const upgradeSubtabBar = document.createElement("div");
+
+upgradeSubtabBar.id = "upgrade-subtab-bar";
+upgradeSubtabBar.style.cssText = `
+  display: none;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+`;
+
+panel.parentNode.insertBefore(upgradeSubtabBar, panel);
+
+function renderUpgradeSubtabs() {
+  const visible =
+    tab === "upgrades" && game.reincarnations > 0;
+
+  upgradeSubtabBar.style.display = visible ? "flex" : "none";
+
+  if (!visible) return;
+
+  upgradeSubtabBar.innerHTML = "";
+
+  const subtabs = [
+    { label: "通常", key: "normal" },
+    { label: "神界", key: "divine" },
+  ];
+
+  for (const subtab of subtabs) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      "tab" + (upgradeSubtab === subtab.key ? " active" : "");
+    button.textContent = subtab.label;
+
+    // メインタブ列と同じ幅を2等分する
+    button.style.flex = "1";
+    button.style.minWidth = "0";
+    button.style.boxSizing = "border-box";
+
+    button.setAttribute(
+      "aria-pressed",
+      String(upgradeSubtab === subtab.key)
+    );
+
+    button.onclick = () => {
+      upgradeSubtab = subtab.key;
+      render();
+    };
+
+    upgradeSubtabBar.appendChild(button);
+  }
+}
 
 // 桁数方式：100億で1個、1000億で2個、1兆で3個……
 function getMikanGain(cookies) {
@@ -2900,9 +2960,6 @@ function reincarnate() {
 }
 
 /* SAVE */
-
-/* SAVE */
-
 function save() {
   const data = {
     version: 2,
@@ -2913,6 +2970,8 @@ function save() {
 
     mikan: game.mikan.toString(),
     reincarnations: game.reincarnations,
+
+    reinClickMultiplier: game.reinClickMultiplier.toString(),
 
     stats: {
       clicks: game.stats.clicks.toString(),
@@ -2969,13 +3028,13 @@ function save() {
     ),
   };
 
-  localStorage.setItem("cookieEmpirePro", JSON.stringify(data));
+  localStorage.setItem("cookieEmpirePro_Snapshot", JSON.stringify(data));
 }
 
 /* LOAD */
 
 function load() {
-  const s = localStorage.getItem("cookieEmpirePro");
+  const s = localStorage.getItem("cookieEmpirePro_Snapshot");
   if (!s) return;
 
   const data = JSON.parse(s);
@@ -2990,6 +3049,11 @@ function load() {
   if (data.reincarnations != null) {
     game.reincarnations = Number(data.reincarnations);
   }
+  
+  if (data.reinClickMultiplier != null) game.reinClickMultiplier = BigInt(data.reinClickMultiplier);
+  if (data.reinBuildingsMultiplier != null) game.reinBuildingsMultiplier = BigInt(data.reinBuildingsMultiplier);
+  if (data.reinItemPriceMultiplier != null) game.reinItemPriceMultiplier = BigInt(data.reinItemPriceMultiplier);
+  if (data.reinJajutsu != null) game.reinJajutsu = Number(data.reinJajutsu);
 
   if (data.stats) {
     if (data.stats.clicks != null) {
