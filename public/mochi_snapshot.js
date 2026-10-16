@@ -2885,6 +2885,7 @@ function renderItems() {
   }
 
   panel.appendChild(subtabs);
+  const jajutsu = itemSubtab === "jajutsu";
 
   const items =
     itemSubtab === "jajutsu"
