@@ -3372,7 +3372,7 @@ function save() {
     reinClickMultiplier: game.reinClickMultiplier.toString(),
     reinBuildingsMultiplier: game.reinBuildingsMultiplier.toString(),
     reinItemPriceMultiplier: game.reinItemPriceMultiplier.toString(),
-    reinJajutsu: game.reinJajustu,
+    reinJajutsu: game.reinJajutsu,
 
     stats: {
       clicks: game.stats.clicks.toString(),
