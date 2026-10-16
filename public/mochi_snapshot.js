@@ -2858,7 +2858,7 @@ function renderItems() {
   const items = jajutsu
     ? game.jajutsuItems
     : game.items;
-
+/*
   subtabs.className = "subtabs";
 
   function addSubtab(label, value) {
@@ -2883,6 +2883,8 @@ function renderItems() {
   }
 
   panel.appendChild(subtabs);
+
+  */
 
   items.forEach((it, i) => {
     if (it.unlock && !it.unlocked) return;
@@ -3126,7 +3128,7 @@ function renderItemSubtabs() {
 
   const subtabs = [
     { label: "通常", key: "normal" },
-    { label: "矢術", key: "jajutsu" },
+    { label: "邪術", key: "jajutsu" }, // 真
   ];
 
   for (const subtab of subtabs) {
