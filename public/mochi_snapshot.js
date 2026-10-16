@@ -73,8 +73,65 @@ let game = {
       effect() {
         game.reinClickMultiplier += 1000000n;
       },
+      unlocked: true,
       desc: "クリック力を+100%する。",
       flavor: "日本の神から授けられた、最初の加護。",
+    },
+    {
+      name: "日本の神の導き・II",
+      cost: 5n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 3000000n;
+      },
+      unlock() {
+        return hasDevineUpgrade("日本の神の導き・I");
+      },
+      unlocked: true,
+      desc: "クリック力を+300%する。",
+      flavor: "輝く星のように闇を切り裂く。",
+    },
+    {
+      name: "日本の神の導き・III",
+      cost: 15n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 5000000n;
+      },
+      unlock() {
+        return hasDevineUpgrade("日本の神の導き・II");
+      },
+      unlocked: true,
+      desc: "クリック力を+500%する。",
+      flavor: "天空を駆ける、光の翼広げ。",
+    },
+    {
+      name: "日本の神の導き・IV",
+      cost: 50n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 10000000n;
+      },
+      unlock() {
+        return hasDevineUpgrade("日本の神の導き・III");
+      },
+      unlocked: true,
+      desc: "クリック力を+1000%する。",
+      flavor: "運命の戦士、その名を呼び覚ませ。",
+    },
+    {
+      name: "日本の神の導き・V",
+      cost: 250n,
+      bought: false,
+      effect() {
+        game.reinClickMultiplier += 30000000n;
+      },
+      unlock() {
+        return hasDevineUpgrade("日本の神の導き・IV");
+      },
+      unlocked: true,
+      desc: "クリック力を+3000%する。",
+      flavor: "Motchiy　Motchiy　日本の神！",
     },
     
     {
@@ -84,6 +141,7 @@ let game = {
       effect() {
         game.reinItemPriceMultiplier -= 100000n;
       },
+      unlocked: true,
       desc: "アイテムの値段を-10%する。",
       flavor: "最高裁から授けられた、最初の加護。",
     },
@@ -95,6 +153,7 @@ let game = {
       effect() {
         game.reinBuildingsMultiplier += 1000000n;
       },
+      unlocked: true,
       desc: "建物の生産力を+100%する。",
       flavor: "山本から授けられた、最初の加護。",
     },
@@ -106,8 +165,23 @@ let game = {
       effect() {
         game.reinJajutsu += 1;
       },
+      unlocked: true,
       desc: "邪術度を+1%する。",
       flavor: "「ファーw」― さいほうへいき",
+    },
+    {
+      name: "邪術神の導き・II",
+      cost: 5n,
+      bought: false,
+      effect() {
+        game.reinJajutsu += 4;
+      },
+      unlock() {
+        hasDivineUpgrade("邪術神の導き・I");
+      },
+      unlocked: false,
+      desc: "邪術度を+4%する。",
+      flavor: "「ところで邪術の使い方には慣れました？　アイテムタブから邪術を使えますよ！」― さいほうへいき",
     },
   ],
 
@@ -1996,8 +2070,24 @@ function getUpgrade(name) {
   return game.upgrades.find(upgrade => upgrade.name === name);
 }
 
+function getDevineUpgrade(name) {
+  return game.devineUpgrades.find(upgrade => upgrade.name === name);
+}
+
+function getItem(name) {
+  return game.items.find(upgrade => upgrade.name === name);
+}
+
 function hasUpgrade(name) {
   return getUpgrade(name)?.bought ?? false;
+}
+
+function hasDevineUpgrade(name) {
+  return getDevineUpgrade(name)?.bought ?? false;
+}
+
+function hasItem(name) {
+  return getItem(name)?.bought ?? false;
 }
 
 
@@ -2759,15 +2849,15 @@ function getItemPrice(item) {
 function updateStatusDisplay() {
   const hasReincarnated = game.reincarnations > 0;
   statusDisplay.innerHTML = `
-    <div>クリック力：${formatNumber(getClickPower())}</div>
     ${
       hasReincarnated
         ? `
+          <div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber(game.reinClickPower / MULTIPLIER_SCALE} %）</div>
           <div>みかん：${formatNumber(game.mikan)} 個</div>
           <div>転生回数：${game.reincarnations} 回</div>
           <div>邪術度：${game.reinJajutsu}%</div>
         `
-        : ""
+        : "<div>クリック力：${formatNumber(getClickPower())} （うち神界バフ${formatNumber(game.reinClickPower / MULTIPLIER_SCALE} %）</div>"
     }
   `;
 }
