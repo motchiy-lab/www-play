@@ -2728,7 +2728,7 @@ setInterval(() => {
   timeAlterCredit += timeAlterSpeed;
 
   const productionTick = () => {
-    const mps = getmps() * (reinBuildingMultiplier / MULTIPLIER_SCALE);
+    const mps = getmps() * (reinBuildingsMultiplier / MULTIPLIER_SCALE);
     const increment =
       (mps * BigInt(tick)) / 1000n;
     const remainder =
