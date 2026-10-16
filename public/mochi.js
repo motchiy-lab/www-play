@@ -3436,13 +3436,13 @@ function save() {
     ),
   };
 
-  localStorage.setItem("cookieEmpirePro_Snapshot", JSON.stringify(data));
+  localStorage.setItem("cookieEmpirePro", JSON.stringify(data));
 }
 
 /* LOAD */
 
 function load() {
-  const s = localStorage.getItem("cookieEmpirePro_Snapshot");
+  const s = localStorage.getItem("cookieEmpirePro");
   if (!s) return;
 
   const data = JSON.parse(s);
