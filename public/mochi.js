@@ -1564,6 +1564,27 @@ let game = {
       desc: "特別なカクテル。『楽園』ガレージの生産性+30%。",
       flavor: "「僕らにとって特別な味わいです、と言って僕はグラスを傾けました」― ボンファイア・レノックス",
     },
+    
+    {
+      name: "[(disad)マイトネリウムの匣(end)]",
+      cost: 100n,
+      owned: 0n,
+      effect() {
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "マイトネリウム。原子番号109番、元素記号Mt。名前の由来は研究者リーゼ・マイトナーから。",
+    },
+    {
+      name: "[(disad)ガドリニウムの匣(end)]",
+      cost: 100n,
+      owned: 0n,
+      effect() {
+      },
+      unlocked: true,
+      desc: "テスト用のアイテム。",
+      flavor: "ガドリニウム。原子番号64番、元素記号Gd。名前の由来は研究者ヨハン・ガドリンから。",
+    },
   ],
 
   achievements: [
@@ -2629,10 +2650,13 @@ function toast(msg) {
   setTimeout(() => (t.className = "toast"), 2000);
 }
 
+
 /* SAVE */
 
 function save() {
   const data = {
+    version: 2,
+
     cookies: game.cookies.toString(),
     clickPower: game.clickPower.toString(),
 
@@ -2640,84 +2664,164 @@ function save() {
       clicks: game.stats.clicks.toString(),
     },
 
-    buildings: game.buildings.map((b) => ({
-      owned: b.owned.toString(),
-      cost: b.cost.toString(),
-      mps: b.mps.toString(),
-      multiplier: b.multiplier.toString(),
-    })),
+    buildings: Object.fromEntries(
+      game.buildings.map((b) => [
+        b.name,
+        {
+          owned: b.owned.toString(),
+          cost: b.cost.toString(),
+          mps: b.mps.toString(),
+          multiplier: b.multiplier.toString(),
+        },
+      ])
+    ),
 
-    upgrades: game.upgrades.map((u) => ({
-      bought: u.bought,
-    })),
+    upgrades: Object.fromEntries(
+      game.upgrades.map((u) => [
+        u.name,
+        { bought: u.bought },
+      ])
+    ),
 
-    items: game.items.map((it) => ({
-      owned: it.owned.toString(),
-      cost: it.cost.toString(),
-    })),
+    items: Object.fromEntries(
+      game.items.map((it) => [
+        it.name,
+        {
+          owned: it.owned.toString(),
+          cost: it.cost.toString(),
+        },
+      ])
+    ),
 
-    achievements: game.achievements.map((a) => ({
-      unlocked: a.unlocked,
-    })),
-    
+    achievements: Object.fromEntries(
+      game.achievements.map((a) => [
+        a.id,
+        { unlocked: a.unlocked },
+      ])
+    ),
+
     clickMultiplier: game.clickMultiplier.toString(),
   };
 
-  localStorage.setItem("cookieEmpirePro", JSON.stringify(data));
+  localStorage.setItem(
+    "cookieEmpirePro",
+    JSON.stringify(data)
+  );
 }
 
 /* LOAD */
 
 function load() {
-  let s = localStorage.getItem("cookieEmpirePro");
+  const s = localStorage.getItem("cookieEmpirePro");
   if (!s) return;
 
-  let data = JSON.parse(s);
+  const data = JSON.parse(s);
 
-  if (data.cookies) game.cookies = BigInt(data.cookies);
-  if (data.clickPower) game.clickPower = BigInt(data.clickPower);
-
-  if (data.stats) game.stats.clicks = BigInt(data.stats.clicks);
-
-  if (data.buildings) {
-    data.buildings.forEach((b, i) => {
-      if (!game.buildings[i]) return;
-
-      game.buildings[i].owned = BigInt(b.owned);
-      game.buildings[i].cost = BigInt(b.cost);
-      game.buildings[i].mps = BigInt(b.mps);
-      if (b.multiplier) {
-        game.buildings[i].multiplier =
-        BigInt(b.multiplier);
-      }
-    });
+  if (data.cookies != null) {
+    game.cookies = BigInt(data.cookies);
   }
 
-  if (data.upgrades) {
-    data.upgrades.forEach((u, i) => {
-      if (!game.upgrades[i]) return;
-      game.upgrades[i].bought = u.bought;
-    });
+  if (data.clickPower != null) {
+    game.clickPower = BigInt(data.clickPower);
   }
 
-  if (data.items) {
-    data.items.forEach((it, i) => {
-      if (!game.items[i]) return;
-
-      game.items[i].owned = BigInt(it.owned);
-      game.items[i].cost = BigInt(it.cost);
-    });
+  if (data.stats?.clicks != null) {
+    game.stats.clicks = BigInt(data.stats.clicks);
   }
 
-  if (data.achievements) {
-    data.achievements.forEach((a, i) => {
-      if (!game.achievements[i]) return;
+  // 旧形式の配列にも対応する
+  function toNamedObject(saved, current, key) {
+    if (!saved) return {};
 
-      game.achievements[i].unlocked = a.unlocked;
-    });
+    if (Array.isArray(saved)) {
+      return Object.fromEntries(
+        saved.map((value, i) => [
+          current[i]?.[key],
+          value,
+        ]).filter(([name]) => name != null)
+      );
+    }
+
+    return saved;
   }
 
-  if (data.clickMultiplier) {
+  // 建物
+  const buildings = toNamedObject(
+    data.buildings,
+    game.buildings,
+    "name"
+  );
+
+  for (const b of game.buildings) {
+    const saved = buildings[b.name];
+    if (!saved) continue;
+
+    if (saved.owned != null) {
+      b.owned = BigInt(saved.owned);
+    }
+    if (saved.cost != null) {
+      b.cost = BigInt(saved.cost);
+    }
+    if (saved.mps != null) {
+      b.mps = BigInt(saved.mps);
+    }
+    if (saved.multiplier != null) {
+      b.multiplier = BigInt(saved.multiplier);
+    }
+  }
+
+  // アップグレード
+  const upgrades = toNamedObject(
+    data.upgrades,
+    game.upgrades,
+    "name"
+  );
+
+  for (const u of game.upgrades) {
+    const saved = upgrades[u.name];
+    if (!saved) continue;
+
+    if (saved.bought != null) {
+      u.bought = saved.bought;
+    }
+  }
+
+  // アイテム
+  const items = toNamedObject(
+    data.items,
+    game.items,
+    "name"
+  );
+
+  for (const it of game.items) {
+    const saved = items[it.name];
+    if (!saved) continue;
+
+    if (saved.owned != null) {
+      it.owned = BigInt(saved.owned);
+    }
+    if (saved.cost != null) {
+      it.cost = BigInt(saved.cost);
+    }
+  }
+
+  // 実績は既存の固有IDを使う
+  const achievements = toNamedObject(
+    data.achievements,
+    game.achievements,
+    "id"
+  );
+
+  for (const a of game.achievements) {
+    const saved = achievements[a.id];
+    if (!saved) continue;
+
+    if (saved.unlocked != null) {
+      a.unlocked = saved.unlocked;
+    }
+  }
+
+  if (data.clickMultiplier != null) {
     game.clickMultiplier = BigInt(data.clickMultiplier);
   }
 }
@@ -2726,3 +2830,4 @@ setInterval(save, 5000);
 
 load();
 render();
+
