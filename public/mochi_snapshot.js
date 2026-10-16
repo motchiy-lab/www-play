@@ -3151,7 +3151,7 @@ function renderItemSubtabs() {
 
     itemSubtabBar.appendChild(button);
   }
-
+}
 
 upgradeSubtabBar.id = "upgrade-subtab-bar";
 upgradeSubtabBar.style.cssText = `
@@ -3573,5 +3573,3 @@ setInterval(save, 5000);
 
 load();
 render();
-
-
