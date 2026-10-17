@@ -40,7 +40,7 @@ document.addEventListener("pointerdown", (event) => {
 });
 
 function flashJajutsuFailure() {
-  const count = 8;
+  const count = 12;
 
   for (let i = 0; i < count; i++) {
     const mark = document.createElement("span");
@@ -51,7 +51,7 @@ function flashJajutsuFailure() {
     const angle = (Math.PI * 2 * i / count)
       + (Math.random() - 0.5) * 0.35;
 
-    const distance = 45 + Math.random() * 45;
+    const distance = 60 + Math.random() * 45;
     const dx = Math.cos(angle) * distance;
     const dy = Math.sin(angle) * distance;
 
