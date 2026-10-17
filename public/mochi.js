@@ -25,19 +25,52 @@ jajutsuGlowStyle.textContent = `
 
 document.head.appendChild(jajutsuGlowStyle);
 
+// 最後に確認したカーソルの位置
+let jajutsuPointerX = window.innerWidth / 2;
+let jajutsuPointerY = window.innerHeight / 2;
+
+document.addEventListener("pointermove", (event) => {
+  jajutsuPointerX = event.clientX;
+  jajutsuPointerY = event.clientY;
+});
+
+document.addEventListener("pointerdown", (event) => {
+  jajutsuPointerX = event.clientX;
+  jajutsuPointerY = event.clientY;
+});
+
 function flashJajutsuFailure() {
-  cookie.classList.remove("jajutsu-failure-glow");
+  const count = 12;
 
-  // 連続して失敗した場合にもアニメーションを再実行する
-  void cookie.offsetWidth;
+  for (let i = 0; i < count; i++) {
+    const mark = document.createElement("span");
+    mark.className = "jajutsu-failure-particle";
+    mark.textContent = "❌";
 
-  cookie.classList.add("jajutsu-failure-glow");
+    // 円周方向に飛び散らせる
+    const angle = (Math.PI * 2 * i / count)
+      + (Math.random() - 0.5) * 0.35;
 
-  cookie.addEventListener(
-    "animationend",
-    () => cookie.classList.remove("jajutsu-failure-glow"),
-    { once: true }
-  );
+    const distance = 60 + Math.random() * 45;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+
+    mark.style.left = `${jajutsuPointerX}px`;
+    mark.style.top = `${jajutsuPointerY}px`;
+    mark.style.setProperty("--dx", `${dx}px`);
+    mark.style.setProperty("--dy", `${dy}px`);
+    mark.style.setProperty(
+      "--rotation",
+      `${Math.random() * 70 - 35}deg`
+    );
+    mark.style.animationDelay = `${Math.random() * 60}ms`;
+
+    document.body.appendChild(mark);
+
+    mark.addEventListener("animationend", () => {
+      mark.remove();
+    }, { once: true });
+  }
 }
 
 const statusDisplay = document.createElement("div");
@@ -2732,10 +2765,12 @@ function buyJajutsuItem(i, e) {
   const success = Math.random() * 100 < chance;
 
   if (!success) {
-    // 失敗時は効果を発動せず、餅を赤く光らせる
-    flashJajutsuFailure();
     save();
     render();
+    // 再描画後にアニメーションを開始
+    requestAnimationFrame(() => {
+      flashJajutsuFailure();
+    });
     return;
   }
 
