@@ -25,15 +25,52 @@ jajutsuGlowStyle.textContent = `
 
 document.head.appendChild(jajutsuGlowStyle);
 
+// 最後に確認したカーソルの位置
+let jajutsuPointerX = window.innerWidth / 2;
+let jajutsuPointerY = window.innerHeight / 2;
+
+document.addEventListener("pointermove", (event) => {
+  jajutsuPointerX = event.clientX;
+  jajutsuPointerY = event.clientY;
+});
+
+document.addEventListener("pointerdown", (event) => {
+  jajutsuPointerX = event.clientX;
+  jajutsuPointerY = event.clientY;
+});
+
 function flashJajutsuFailure() {
-  if (!cookie || !cookie.isConnected) return;
+  const count = 8;
 
-  cookie.classList.remove("jajutsu-failure-glow");
+  for (let i = 0; i < count; i++) {
+    const mark = document.createElement("span");
+    mark.className = "jajutsu-failure-particle";
+    mark.textContent = "❌";
 
-  // アニメーションを再実行
-  void cookie.offsetWidth;
+    // 円周方向に飛び散らせる
+    const angle = (Math.PI * 2 * i / count)
+      + (Math.random() - 0.5) * 0.35;
 
-  cookie.classList.add("jajutsu-failure-glow");
+    const distance = 45 + Math.random() * 45;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+
+    mark.style.left = `${jajutsuPointerX}px`;
+    mark.style.top = `${jajutsuPointerY}px`;
+    mark.style.setProperty("--dx", `${dx}px`);
+    mark.style.setProperty("--dy", `${dy}px`);
+    mark.style.setProperty(
+      "--rotation",
+      `${Math.random() * 70 - 35}deg`
+    );
+    mark.style.animationDelay = `${Math.random() * 60}ms`;
+
+    document.body.appendChild(mark);
+
+    mark.addEventListener("animationend", () => {
+      mark.remove();
+    }, { once: true });
+  }
 }
 
 const statusDisplay = document.createElement("div");
