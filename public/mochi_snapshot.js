@@ -26,18 +26,14 @@ jajutsuGlowStyle.textContent = `
 document.head.appendChild(jajutsuGlowStyle);
 
 function flashJajutsuFailure() {
+  if (!cookie || !cookie.isConnected) return;
+
   cookie.classList.remove("jajutsu-failure-glow");
 
-  // 連続して失敗した場合にもアニメーションを再実行する
+  // アニメーションを再実行
   void cookie.offsetWidth;
 
   cookie.classList.add("jajutsu-failure-glow");
-
-  cookie.addEventListener(
-    "animationend",
-    () => cookie.classList.remove("jajutsu-failure-glow"),
-    { once: true }
-  );
 }
 
 const statusDisplay = document.createElement("div");
@@ -2732,10 +2728,12 @@ function buyJajutsuItem(i, e) {
   const success = Math.random() * 100 < chance;
 
   if (!success) {
-    // 失敗時は効果を発動せず、餅を赤く光らせる
-    flashJajutsuFailure();
     save();
     render();
+    // 再描画後にアニメーションを開始
+    requestAnimationFrame(() => {
+      flashJajutsuFailure();
+    });
     return;
   }
 
