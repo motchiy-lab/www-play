@@ -5,6 +5,23 @@
     border-radius: 10px;
 }
 
+.thumbnail {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    max-width: 600px;
+    border: 5px solid #00b;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    width: auto;
+}
+
+@media (max-width: 600px) {
+    .thumbnail {
+        max-width: 300px;
+    }
+}
+
 .game-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
