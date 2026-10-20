@@ -1,0 +1,28 @@
+---
+import SiteLayout from "../layouts/Main.astro";
+import "../styles/portal.css";
+
+interface Props {
+    pageTitle: string;
+    description: string;
+    heading: string;
+    image: string;
+    imageAlt: string;
+}
+
+const { pageTitle, description, canonicalPath, heading, image, imageAlt } =
+    Astro.props;
+---
+
+<MainLayout
+    title={pageTitle}
+    description={description}
+    canonicalPath={canonicalPath}
+>
+    <hr />
+    <div class="documents-container">
+        <h1 class="headline">{heading}</h1>
+        <img src={image} class="thumbnail" alt={imageAlt} />
+        <slot />
+    </div>
+</MainLayout>
