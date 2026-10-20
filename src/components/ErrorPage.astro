@@ -8,9 +8,10 @@ interface Props {
     heading: string;
     image: string;
     imageAlt: string;
+    pictureLink: string;
 }
 
-const { pageTitle, description, canonicalPath, heading, image, imageAlt } =
+const { pageTitle, description, canonicalPath, heading, image, imageAlt, pictureLink } =
     Astro.props;
 ---
 
@@ -21,7 +22,9 @@ const { pageTitle, description, canonicalPath, heading, image, imageAlt } =
 >
     <div class="documents-container">
         <h1 class="headline">{heading}</h1>
-        <img src={image} class="thumbnail" alt={imageAlt} />
+        <a href={pictureLink}>
+            <img src={image} class="thumbnail" alt={imageAlt} />
+        </a>
         <slot />
     </div>
 </MainLayout>
