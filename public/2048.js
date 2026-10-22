@@ -6,6 +6,8 @@ let moveInProgress = false;
 let activeTileElements = {};
 let nextTileId = 0;
 
+let baseTileValue = 2;
+
 let TILE_SIZE = 100;
 const GRID_SIZE = 4;
 
@@ -319,7 +321,7 @@ function addRandomTile() {
     Math.floor(Math.random() * emptyCells.length)
   ];
 
-  const value = Math.random() < 0.9 ? 2 : 4;
+  const value = baseTileValue * (Math.random() < 0.9 ? 1 : 2);
 
   board[r][c] = {
     value,
@@ -329,6 +331,40 @@ function addRandomTile() {
 
 function createTile(value) {
   return { value, id: `tile-${nextTileId++}` };
+}
+
+function debugAddTile(row, col, value) {
+  if (
+    !Number.isInteger(row) ||
+    !Number.isInteger(col) ||
+    row < 0 ||
+    row >= GRID_SIZE ||
+    col < 0 ||
+    col >= GRID_SIZE
+  ) {
+    console.error("行・列は0～3の整数で指定してください :(");
+    return false;
+  }
+
+  if (value == 114514) {
+    console.error("お前やりますねスギ！");
+    return false;
+  }
+  
+  if (!Number.isSafeInteger(value) || value < 2) {
+    console.error("タイルの値は2以上の安全な整数で指定してください :(");
+    return false;
+  }
+
+  if (board[row][col] !== null) {
+    console.error("指定した位置には既にタイルがあります :(");
+    return false;
+  }
+  board[row][col] = createTile(value);
+  gameOver = checkGameOver();
+  updateBoard();
+
+  return true;
 }
 
 /**
@@ -754,3 +790,17 @@ function checkGameOver() {
 
   return true;
 }
+
+// デバッグ用API
+window.debug2048 = {
+  setBaseTileValue(value) {
+    if (!Number.isSafeInteger(value) || value < 2) {
+      throw new Error("基礎値は2以上の安全な整数にしてください :(");
+    }
+
+    baseTileValue = value;
+    console.log(`新規タイルの基礎値を ${value} に設定しました。`);
+  },
+
+  addTile: debugAddTile,
+};
