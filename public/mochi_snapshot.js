@@ -422,7 +422,7 @@ let game = {
         building.multiplier = (building.multiplier ?? 0n) + 1000000n;
       },
       unlock() {
-        return hasDivineUpgrade("日本の神の導き・I") and hasDivineUpgrade("山本の導き・I") and hasDivineUpgrade("最高裁の導き・I");
+        return hasDivineUpgrade("日本の神の導き・I") && hasDivineUpgrade("山本の導き・I") && hasDivineUpgrade("最高裁の導き・I");
       },
       unlocked: false,
       desc: "転生時の初期所有たくたん+1、たくたんの生産性を+100%。",
