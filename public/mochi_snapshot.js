@@ -407,6 +407,27 @@ let game = {
       desc: "邪術度を+100000%する。",
       flavor: "「ですから、邪術の腕がいくら上がろうとも、できないことはあるのです」― さいほうへいき",
     },
+    
+    {
+      name: "たくたん王の導き・I",
+      cost: 3n,
+      bought: false,
+      effect() {
+        game.reinJajutsu += 1;
+      },
+      initialBonusEffect(bonus) {
+        bonus.buildings["バイトたくたん"] ??= {};
+        const building = bonus.buildings["バイトたくたん"];
+        building.owned = (building.owned ?? 0n) + 1n;
+        building.multiplier = (building.multiplier ?? 0n) + 1000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・I") and hasDivineUpgrade("山本の導き・I") and hasDivineUpgrade("最高裁の導き・I");
+      },
+      unlocked: false,
+      desc: "転生時の初期所有たくたん+1、たくたんの生産性を+100%。",
+      flavor: "香辛料が加速している！",
+    },
   ],
 
   stats: {
@@ -2338,6 +2359,147 @@ const reincarnationInitialState = {
   jajutsuItems: game.jajutsuItems.map((x) => ({ ...x })),
 };
 
+function createReincarnationInitialBonus() {
+  return {
+    cookies: undefined,
+    clickPower: undefined,
+    clickMultiplier: undefined,
+    buildings: {},
+    items: {},
+    upgrades: {},
+    jajutsuItems: {},
+  };
+}
+let reincarnationInitialBonus = createReincarnationInitialBonus();
+
+function rebuildReincarnationInitialBonus() {
+  reincarnationInitialBonus =
+    createReincarnationInitialBonus();
+  for (const upgrade of game.divineUpgrades) {
+    if (
+      upgrade.bought &&
+      typeof upgrade.initialBonusEffect === "function"
+    ) {
+      upgrade.initialBonusEffect(
+        reincarnationInitialBonus
+      );
+    }
+  }
+  return reincarnationInitialBonus;
+}
+function applyInitialBonusFields(
+  target,
+  bonus,
+  allowedFields
+) {
+  if (!target || !bonus) return;
+  for (const field of allowedFields) {
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        bonus,
+        field
+      )
+    ) {
+      continue;
+    }
+    const value = bonus[field];
+    target[field] =
+      typeof target[field] === "bigint"
+        ? BigInt(value)
+        : value;
+  }
+}
+function applyInitialBonusToList(
+  list,
+  bonuses,
+  allowedFields
+) {
+  const bonusEntries = Object.entries(bonuses);
+  for (const [name, bonus] of bonusEntries) {
+    const target = list.find(
+      (item) => item.name === name
+    );
+    if (!target) {
+      console.warn(
+        `転生ボーナス対象が見つかりません: ${name}`
+      );
+      continue;
+    }
+    applyInitialBonusFields(
+      target,
+      bonus,
+      allowedFields
+    );
+  }
+}
+function applyReincarnationInitialBonus() {
+  const bonus = reincarnationInitialBonus;
+  if (bonus.cookies !== undefined) {
+    game.cookies = BigInt(bonus.cookies);
+  }
+  if (bonus.clickPower !== undefined) {
+    game.clickPower = BigInt(bonus.clickPower);
+  }
+  if (bonus.clickMultiplier !== undefined) {
+    game.clickMultiplier =
+      BigInt(bonus.clickMultiplier);
+  }
+  applyInitialBonusToList(
+    game.buildings,
+    bonus.buildings,
+    [
+      "owned",
+      "mps",
+      "multiplier",
+      "cost",
+      "unlocked",
+    ]
+  );
+  applyInitialBonusToList(
+    game.items,
+    bonus.items,
+    [
+      "owned",
+      "cost",
+      "unlocked",
+    ]
+  );
+
+  applyInitialBonusToList(
+    game.upgrades,
+    bonus.upgrades,
+    [
+      "bought",
+      "unlocked",
+    ]
+  );
+  applyInitialBonusToList(
+    game.jajutsuItems,
+    bonus.jajutsuItems,
+    [
+      "owned",
+      "cost",
+      "unlocked",
+    ]
+  );
+
+  for (const upgrade of game.upgrades) {
+    if (upgrade.bought) {
+      upgrade.effect();
+    }
+  }
+  for (const item of game.items) {
+    for (let i = 0n; i < item.owned; i++) {
+      item.effect();
+    }
+  }
+  for (const item of game.jajutsuItems) {
+    for (let i = 0n; i < item.owned; i++) {
+      item.effect();
+    }
+  }
+}
+
 let tab = "buildings";
 
 function getJajutsuChance(item) {
@@ -2399,6 +2561,14 @@ function updateUnlocks() {
       unlockedAnything = true;
     }
   });
+  
+  game.jajutsuItems.forEach((it) => {
+    if (!it.unlocked && it.unlock && it.unlock()) {
+      it.unlocked = true;
+      unlockedAnything = true;
+    }
+  });
+
   game.divineUpgrades.forEach((u) => {
     if (!u.unlocked && u.unlock && u.unlock()) {
       u.unlocked = true;
@@ -3414,7 +3584,11 @@ function renderUpgradeSubtabs() {
   }
 }
 
-// 桁数方式：100億で1個、1000億で2個、1兆で3個……
+function getReincarnationBonus() {
+  const r = game.reincarnations;
+  return Math.floor(Math.pow(2, r / 5)) - 1;
+}
+
 function getMikanGain(cookies) {
   cookies = BigInt(cookies);
 
@@ -3466,8 +3640,8 @@ document.body.appendChild(reincarnationOverlay);
 
 function updateReincarnationUI() {
   if (!reincarnationPopup.isConnected) return;
-
-  const gain = getMikanGain(game.cookies);
+  
+  const gain = getMikanGain() + getReincarnationBonus();
   const available = gain > 0n;
 
   reincarnationPopup.style.display = available ? "block" : "none";
@@ -3484,13 +3658,13 @@ reincarnationPopup.addEventListener("dblclick", reincarnate);
 function reincarnate() {
   if (reincarnationInProgress) return;
 
-  const gain = getMikanGain(game.cookies);
+  const gain = getMikanGain() + getReincarnationBonus();
 
   if (gain <= 0n) {
     toast("転生には100億餅以上が必要です😭");
     return;
   }
-
+  const initialBonus = rebuildReincarnationInitialBonus();
   reincarnationInProgress = true;
 
   // 暗転開始
@@ -3530,12 +3704,15 @@ function reincarnate() {
     game.reinBuildingsMultiplier = MULTIPLIER_SCALE;
     game.reinItemPriceMultiplier = MULTIPLIER_SCALE;
     game.reinJajutsu = 0;
-
     for (const upgrade of game.divineUpgrades) {
       if (upgrade.bought) {
         upgrade.effect();
       }
     }
+    reincarnationInitialBonus = initialBonus;
+    applyReincarnationInitialBonus();
+    updateUnlocks();
+    checkAchievements();
     if (game.reincarnations > 0) {
       upgradeSubtab = "divine";
     }
