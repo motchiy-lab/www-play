@@ -3586,7 +3586,7 @@ function renderUpgradeSubtabs() {
 
 function getReincarnationBonus() {
   const r = game.reincarnations;
-  return Math.floor(Math.pow(2, r / 5)) - 1;
+  return BigInt(Math.floor(Math.pow(2, r / 5)) - 1);
 }
 
 function getMikanGain(cookies) {
