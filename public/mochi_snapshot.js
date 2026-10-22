@@ -3641,7 +3641,7 @@ document.body.appendChild(reincarnationOverlay);
 function updateReincarnationUI() {
   if (!reincarnationPopup.isConnected) return;
   
-  const gain = getMikanGain() + getReincarnationBonus();
+  const gain = getMikanGain(game.cookies) + getReincarnationBonus();
   const available = gain > 0n;
 
   reincarnationPopup.style.display = available ? "block" : "none";
@@ -3658,7 +3658,7 @@ reincarnationPopup.addEventListener("dblclick", reincarnate);
 function reincarnate() {
   if (reincarnationInProgress) return;
 
-  const gain = getMikanGain() + getReincarnationBonus();
+  const gain = getMikanGain(game.cookies) + getReincarnationBonus();
 
   if (gain <= 0n) {
     toast("転生には100億餅以上が必要です😭");
