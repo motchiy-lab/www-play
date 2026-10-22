@@ -791,16 +791,30 @@ function checkGameOver() {
   return true;
 }
 
-// デバッグ用API
-window.debug2048 = {
-  setBaseTileValue(value) {
-    if (!Number.isSafeInteger(value) || value < 2) {
-      throw new Error("基礎値は2以上の安全な整数にしてください :(");
+function demonstrationGod() {
+  const values = [
+    131072, 65536, 32768, 16384,
+    512, 1024, 2048, 4096,
+    256, 128, 64, 32,
+    2, 4, 8, 16
+  ];
+
+  let index = 0;
+
+  for (let row = 0; row < GRID_SIZE; row++) {
+    // 偶数行は左→右、奇数行は右→左
+    for (let i = 0; i < GRID_SIZE; i++) {
+      const col = row % 2 === 0
+        ? i
+        : GRID_SIZE - 1 - i;
+
+      board[row][col] = createTile(values[index++]);
     }
+  }
 
-    baseTileValue = value;
-    console.log(`新規タイルの基礎値を ${value} に設定しました。`);
-  },
+  gameOver = checkGameOver();
+  updateBoard();
+}
 
-  addTile: debugAddTile,
-};
+window.demonstrationGod = demonstrationGod;
+window.addTile = debugAddTile;
