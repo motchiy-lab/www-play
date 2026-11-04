@@ -9,16 +9,37 @@ import "styles/guidesign.css";
             <h2>プレビュー</h2>
             <div class="guidesign-preview"><canvas id="guidePreview" width="2000" height="500" aria-label="案内標識プレビュー"></canvas></div>
             <div class="guidesign-buttons">
-                <button id="guideResetBtn" type="button">初期化</button>
-                <button id="guideDownloadBtn" type="button">PNGでダウンロード</button>
-                <button id="guideStorageBtn" type="button">保存データ</button>
+              <button id="guideResetBtn" type="button">初期化</button>
+              <button id="guideSurpriseBtn" type="button">
+                私を驚かせてください！
+              </button>
+              <button id="guideDownloadBtn" type="button">PNGでダウンロード</button>
+              <button id="guideStorageBtn" type="button">保存データ</button>
             </div>
         </section>
         <aside class="guidesign-card">
             <h2>標識の設定</h2>
             <div class="guidesign-controls">
                 <label>標識の比率<select id="guideRatio"><option value="3">1:3</option><option value="4" selected>1:4</option><option value="5">1:5</option><option value="6">1:6</option></select></label>
-                <label>配色<select id="guideTheme"><option value="blue">標準的な青</option><option value="deepblue">濃青</option><option value="navy">紺</option><option value="green">緑</option><option value="brown">茶色</option><option value="white">白地・青文字</option><option value="black">黒</option></select></label>
+                <label>配色
+                  <select id="guideTheme">
+                    <option value="blue">標準的な青</option>
+                    <option value="deepblue">濃青</option>
+                    <option value="navy">紺</option>
+                    <option value="green">緑</option>
+                    <option value="brown">茶色</option>
+                    <option value="white">白地・青文字</option>
+                    <option value="black">黒</option>
+                    <option value="red">赤・白</option>
+                    <option value="yellow">黄・黒</option>
+                    <option value="orange">オレンジ・白</option>
+                    <option value="purple">紫・白</option>
+                    <option value="cyan">水色・濃紺</option>
+                    <option value="gray">灰色・白</option>
+                    <option value="lime">黄緑・濃緑</option>
+                    <option value="darkred">暗赤・白</option>
+                  </select>
+                </label>
                 <label>枠線<select id="guideFrame"><option value="none">枠なし</option><option value="outer">外周に枠線</option><option value="inner">内側に余白付きの枠線</option></select></label>
                 <label>矢印<select id="guideArrow">
                     <optgroup label="直進・方向"><option value="right">右</option><option value="left">左</option><option value="up">上</option><option value="down">下</option><option value="upRight">右上</option><option value="upLeft">左上</option><option value="downRight">右下</option><option value="downLeft">左下</option></optgroup>
