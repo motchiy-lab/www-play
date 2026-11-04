@@ -4,7 +4,92 @@
   const canvas = $("guidePreview");
   const controls = {ratio:$("guideRatio"),theme:$("guideTheme"),frame:$("guideFrame"),arrow:$("guideArrow"),name:$("guideName"),english:$("guideEnglish"),distance:$("guideDistance"),layout:$("guideLayout")};
   const STORAGE_KEY = "guidesignGeneratorSlots", SLOT_COUNT = 5;
-  const THEMES = {blue:["#0756a5","#fff"],deepblue:["#003b70","#fff"],navy:["#102747","#fff"],green:["#08783e","#fff"],brown:["#704522","#fff"],white:["#fff","#064b87"],black:["#171717","#fff"]};
+  const THEMES = {
+    blue:     ["#0756a5", "#fff"],
+    deepblue: ["#003b70", "#fff"],
+    navy:     ["#102747", "#fff"],
+    green:    ["#08783e", "#fff"],
+    brown:    ["#704522", "#fff"],
+    white:    ["#fff", "#064b87"],
+    black:    ["#171717", "#fff"],
+  
+    red:      ["#b3261e", "#fff"],
+    yellow:   ["#ffd928", "#171717"],
+    orange:   ["#e87518", "#fff"],
+    purple:   ["#542b83", "#fff"],
+    cyan:     ["#d8f2f4", "#123c50"],
+    gray:     ["#555b62", "#fff"],
+    lime:     ["#a7c957", "#173b20"],
+    darkred:  ["#681c2b", "#fff"]
+  };
+  const DESTINATIONS = [
+    { jp: "裁縫兵器坂", en: "Saihouheikizaka" },
+    { jp: "餅井岡", en: "Motchiyoka" },
+    { jp: "祭夜山本", en: "Parinai Yamamoto" },
+    { jp: "最高裁", en: "Saikosai" },
+    { jp: "蕾神社", en: "Rai Jinja" },
+    { jp: "零無山", en: "Renonzan" },
+    { jp: "干支川", en: "Etogawa" },
+    { jp: "託誕神宮", en: "Takutan Jingu" },
+    { jp: "解刃林", en: "Kaiha Bayashi" },
+    { jp: "丸亀先輩邸", en: "Marugamesenpaitei" }
+  ];
+  
+  const RANDOM_DISTANCES = [
+    "100 m", "300 m", "500 m", "800 m",
+    "1 km", "1.5 km", "2 km", "3 km",
+    "5 km", "10 km"
+  ];
+  
+  const randomItem = array =>
+    array[Math.floor(Math.random() * array.length)];
+  
+  function generateRandomDestination() {
+    const destination = randomItem(DESTINATIONS);
+    controls.name.value = destination.jp;
+    controls.english.value = destination.en;
+  }
+  
+  function generateDefault() {
+    // 行き先と配色をランダムに選択
+    generateRandomDestination();
+    controls.theme.value = randomItem(Object.keys(THEMES));
+  
+    // その他は標準設定
+    controls.ratio.value = "4";
+    controls.frame.value = "none";
+    controls.arrow.value = "right";
+    controls.distance.value = "500 m";
+    controls.layout.value = "A";
+  
+    draw();
+  }
+  
+  function generateSurprise() {
+    // 行き先
+    generateRandomDestination();
+  
+    // 配色
+    controls.theme.value = randomItem(Object.keys(THEMES));
+  
+    // 標識の設定
+    controls.ratio.value = randomItem(["3", "4", "5", "6"]);
+    controls.frame.value = randomItem(["none", "outer", "inner"]);
+    controls.arrow.value = randomItem([
+      "right", "left", "up", "down",
+      "upRight", "upLeft", "downRight", "downLeft",
+      "turnRight", "turnLeft",
+      "turnUpRight", "turnUpLeft",
+      "turnDownRight", "turnDownLeft",
+      "uRight", "uLeft",
+      "straightRight", "straightLeft", "both"
+    ]);
+  
+    controls.distance.value = randomItem(RANDOM_DISTANCES);
+    controls.layout.value = randomItem(["A", "B"]);
+  
+    draw();
+  }
   let fg = "#fff";
   const getSettings = () => Object.fromEntries(Object.entries(controls).map(([k,v])=>[k,v.value]));
   function fitFont(c,text,maxWidth,start,weight=700){let size=start;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;while(c.measureText(text).width>maxWidth&&size>12){size--;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;}return size;}
@@ -167,5 +252,6 @@
   function loadSlot(i){const item=slots()[i];if(!item||!confirm(`「${item.name}」を読み込みますか？\n現在の設定は置き換えられます。`))return;applySettings(item.settings);closeModal();}
   function deleteSlot(i){const data=slots();if(!data[i]||!confirm(`「${data[i].name}」を削除しますか？`))return;data[i]=null;if(setSlots(data))renderSlots();}
   function openModal(){renderSlots();$("guideStorageModal").hidden=false;$("guideCloseStorageBtn").focus();}function closeModal(){$("guideStorageModal").hidden=true;$("guideStorageBtn").focus();}
-  Object.values(controls).forEach(el=>el.addEventListener("input",draw));$("guideDownloadBtn").addEventListener("click",download);$("guideResetBtn").addEventListener("click",()=>{Object.assign(controls.ratio,{value:"4"});controls.theme.value="blue";controls.frame.value="none";controls.arrow.value="right";controls.name.value="望意岡";controls.english.value="Motchiy Oka";controls.distance.value="500 m";controls.layout.value="A";draw();});$("guideStorageBtn").addEventListener("click",openModal);$("guideCloseStorageBtn").addEventListener("click",closeModal);$("guideStorageModal").addEventListener("click",e=>{if(e.target===$("guideStorageModal"))closeModal();});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("guideStorageModal").hidden)closeModal();});draw();
+  Object.values(controls).forEach(el=>el.addEventListener("input",draw));$("guideDownloadBtn").addEventListener("click",download);$("guideResetBtn").addEventListener("click", generateDefault);$("guideSurpriseBtn").addEventListener("click", generateSurprise);controls.theme.value="blue";controls.frame.value="none";controls.arrow.value="right";controls.name.value="望意岡";controls.english.value="Motchiy Oka";controls.distance.value="500 m";controls.layout.value="A";draw();});$("guideStorageBtn").addEventListener("click",openModal);$("guideCloseStorageBtn").addEventListener("click",closeModal);$("guideStorageModal").addEventListener("click",e=>{if(e.target===$("guideStorageModal"))closeModal();});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("guideStorageModal").hidden)closeModal();});
+  generateDefault();
 })();
