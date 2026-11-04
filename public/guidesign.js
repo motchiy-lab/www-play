@@ -8,39 +8,101 @@
   let fg = "#fff";
   const getSettings = () => Object.fromEntries(Object.entries(controls).map(([k,v])=>[k,v.value]));
   function fitFont(c,text,maxWidth,start,weight=700){let size=start;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;while(c.measureText(text).width>maxWidth&&size>12){size--;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;}return size;}
-  function arrowPath(c,pts,head,width){c.save();c.strokeStyle=fg;c.fillStyle=fg;c.lineWidth=width;c.lineCap="butt";c.lineJoin="round";c.beginPath();c.moveTo(...pts[0]);pts.slice(1).forEach(p=>c.lineTo(...p));c.stroke();const [x1,y1]=pts.at(-2),[x2,y2]=pts.at(-1),a=Math.atan2(y2-y1,x2-x1),bx=x2-Math.cos(a)*head,by=y2-Math.sin(a)*head,h=head*.62;c.beginPath();c.moveTo(x2,y2);c.lineTo(bx+Math.sin(a)*h,by-Math.cos(a)*h);c.lineTo(bx-Math.sin(a)*h,by+Math.cos(a)*h);c.closePath();c.fill();c.restore();}
+  
+  function arrowPath(c, pts, head, width) {
+    if (pts.length < 2) return;
+  
+    c.save();
+    c.strokeStyle = fg;
+    c.fillStyle = fg;
+    c.lineWidth = width;
+    c.lineCap = "butt";
+    c.lineJoin = "round";
+  
+    // 最後の線分から矢印の向きを求める
+    const [x1, y1] = pts[pts.length - 2];
+    const [x2, y2] = pts[pts.length - 1];
+  
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const length = Math.hypot(dx, dy);
+  
+    if (length === 0) {
+      c.restore();
+      return;
+    }
+  
+    const ux = dx / length;
+    const uy = dy / length;
+  
+    // 三角形が最後の線分より長くならないようにする
+    const actualHead = Math.min(head, length * 0.8);
+  
+    // 三角形の付け根
+    const bx = x2 - ux * actualHead;
+    const by = y2 - uy * actualHead;
+  
+    // 三角形の幅
+    const halfWidth = actualHead * 0.62;
+  
+    // 軸を三角形の付け根まで描画
+    c.beginPath();
+    c.moveTo(pts[0][0], pts[0][1]);
+  
+    for (let i = 1; i < pts.length - 1; i++) {
+      c.lineTo(pts[i][0], pts[i][1]);
+    }
+  
+    c.lineTo(bx, by);
+    c.stroke();
+  
+    // 三角形を独立して描画
+    const px = -uy * halfWidth;
+    const py = ux * halfWidth;
+  
+    c.beginPath();
+    c.moveTo(x2, y2);
+    c.lineTo(bx + px, by + py);
+    c.lineTo(bx - px, by - py);
+    c.closePath();
+    c.fill();
+  
+    c.restore();
+  }
+  
   function drawArrow(c, type, x, y, size) {
     const u = size / 100;
     const p = (a, b) => [x + a * u, y + b * u];
+  
     const d = pts => arrowPath(
       c,
       pts.map(([a, b]) => p(a, b)),
-      28 * u,
+      25 * u,
       13 * u
     );
   
     // 基本の直線矢印
     const simple = {
-      right:     [[3, 50], [97, 50]],
-      left:      [[97, 50], [3, 50]],
-      up:        [[50, 97], [50, 3]],
-      down:      [[50, 3], [50, 97]],
-      upRight:   [[3, 97], [97, 3]],
-      upLeft:    [[97, 97], [3, 3]],
-      downRight: [[3, 3], [97, 97]],
-      downLeft:  [[97, 3], [3, 97]]
+      right:     [[4, 50], [96, 50]],
+      left:      [[96, 50], [4, 50]],
+      up:        [[50, 96], [50, 4]],
+      down:      [[50, 4], [50, 96]],
+      upRight:   [[4, 96], [96, 4]],
+      upLeft:    [[96, 96], [4, 4]],
+      downRight: [[4, 4], [96, 96]],
+      downLeft:  [[96, 4], [4, 96]]
     };
   
     if (simple[type]) return d(simple[type]);
   
     // 曲がる矢印
     const turns = {
-      turnRight:     [[50, 97], [50, 50], [97, 50]],
-      turnLeft:      [[50, 97], [50, 50], [3, 50]],
-      turnUpRight:   [[3, 90], [50, 90], [50, 3]],
-      turnUpLeft:    [[97, 90], [50, 90], [50, 3]],
-      turnDownRight: [[3, 10], [50, 10], [50, 97]],
-      turnDownLeft:  [[97, 10], [50, 10], [50, 97]]
+      turnRight:     [[50, 96], [50, 50], [96, 50]],
+      turnLeft:      [[50, 96], [50, 50], [4, 50]],
+      turnUpRight:   [[4, 90], [50, 90], [50, 4]],
+      turnUpLeft:    [[96, 90], [50, 90], [50, 4]],
+      turnDownRight: [[4, 10], [50, 10], [50, 96]],
+      turnDownLeft:  [[96, 10], [50, 10], [50, 96]]
     };
   
     if (turns[type]) return d(turns[type]);
@@ -48,15 +110,23 @@
     // Uターン
     if (type === "uRight") {
       return d([
-        [25, 97], [25, 35], [38, 18],
-        [62, 18], [75, 35], [75, 97]
+        [25, 96],
+        [25, 35],
+        [38, 18],
+        [62, 18],
+        [75, 35],
+        [75, 96]
       ]);
     }
   
     if (type === "uLeft") {
       return d([
-        [75, 97], [75, 35], [62, 18],
-        [38, 18], [25, 35], [25, 97]
+        [75, 96],
+        [75, 35],
+        [62, 18],
+        [38, 18],
+        [25, 35],
+        [25, 96]
       ]);
     }
   
@@ -66,14 +136,14 @@
       type === "straightLeft" ||
       type === "both"
     ) {
-      d([[50, 97], [50, 3]]);
+      d([[50, 96], [50, 4]]);
   
       if (type !== "straightRight") {
-        d([[50, 50], [3, 50]]);
+        d([[50, 50], [4, 50]]);
       }
   
       if (type !== "straightLeft") {
-        d([[50, 50], [97, 50]]);
+        d([[50, 50], [96, 50]]);
       }
     }
   }
