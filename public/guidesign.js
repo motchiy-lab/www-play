@@ -82,7 +82,7 @@
 	function generateDefault() {
 		// 行き先と配色をランダムに選択
 		generateRandomDestination();
-		controls.theme.value = randomItem(Object.keys(THEMES));
+		// controls.theme.value = randomItem(Object.keys(THEMES));
 
 		// その他は標準設定
 		controls.ratio.value = "4";
