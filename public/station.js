@@ -19,6 +19,13 @@ const canvasSizeSel = document.getElementById('canvasSize');
 const bgFile = document.getElementById('bgFile');
 const bgMode = document.getElementById('bgMode');
 const surpriseBtn = document.getElementById('surpriseBtn');
+const storageBtn = document.getElementById('storageBtn');
+const storageModal = document.getElementById('storageModal');
+const closeStorageBtn = document.getElementById('closeStorageBtn');
+const storageList = document.getElementById('storageList');
+
+const STORAGE_KEY = 'stationGeneratorSlots';
+const STORAGE_SLOT_COUNT = 5;
 
 // 初期謎環状線
 const CIRCULAR = [
@@ -626,6 +633,348 @@ downloadBtn.addEventListener('click', ()=>{
         a.download = `${(enIn.value || 'station').replace(/\s+/g,'_')}.png`; document.body.appendChild(a); a.click();
         setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 150);
     }, 'image/png');
+});
+
+// ========================================
+// 保存データ管理
+// ========================================
+
+// 保存データの取得
+function getStorageSlots() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if (!raw) {
+            return Array(STORAGE_SLOT_COUNT).fill(null);
+        }
+
+        const parsed = JSON.parse(raw);
+
+        if (!Array.isArray(parsed)) {
+            return Array(STORAGE_SLOT_COUNT).fill(null);
+        }
+
+        return Array.from(
+            { length: STORAGE_SLOT_COUNT },
+            (_, i) => {
+                const item = parsed[i];
+
+                if (
+                    item &&
+                    typeof item === 'object' &&
+                    typeof item.name === 'string' &&
+                    item.settings &&
+                    typeof item.settings === 'object'
+                ) {
+                    return item;
+                }
+
+                return null;
+            }
+        );
+    } catch (error) {
+        console.error('保存データの読み込みに失敗しました。', error);
+        return Array(STORAGE_SLOT_COUNT).fill(null);
+    }
+}
+
+// 保存データの書き込み
+function setStorageSlots(slots) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(slots));
+        return true;
+    } catch (error) {
+        console.error('保存データの書き込みに失敗しました。', error);
+
+        alert(
+            '保存に失敗しました。\n' +
+            'ブラウザの保存容量や設定を確認してください。'
+        );
+
+        return false;
+    }
+}
+
+// 現在の入力内容を取得
+function getCurrentSettings() {
+    return {
+        canvasSize: canvasSizeSel.value,
+        bgMode: bgMode.value,
+        iconMode: iconMode.value,
+
+        name: nameIn.value,
+        ruby: rubyIn.value,
+        en: enIn.value,
+
+        prev: prevIn.value,
+        prevEn: prevEnIn.value,
+
+        next: nextIn.value,
+        nextEn: nextEnIn.value,
+
+        company: companyIn.value,
+
+        theme: themeSel.value,
+        arrowStyle: arrowStyleSel.value
+    };
+}
+
+// 現在の設定を指定スロットに保存
+function saveToSlot(index, overwrite = false) {
+    const slots = getStorageSlots();
+    const current = slots[index];
+
+    let saveName;
+
+    if (overwrite && current) {
+        saveName = current.name;
+    } else {
+        const defaultName = nameIn.value.trim() || '名称未設定';
+
+        saveName = prompt(
+            `スロット ${index + 1} に保存する名前を入力してください。`,
+            defaultName
+        );
+
+        if (saveName === null) return;
+
+        saveName = saveName.trim();
+
+        if (!saveName) {
+            alert('保存名を入力してください。');
+            return;
+        }
+    }
+
+    slots[index] = {
+        name: saveName,
+        savedAt: new Date().toISOString(),
+        settings: getCurrentSettings()
+    };
+
+    if (setStorageSlots(slots)) {
+        alert(`「${saveName}」を保存しました。`);
+        renderStorageList();
+    }
+}
+
+// 保存データの読み込み
+function loadFromSlot(index) {
+    const slots = getStorageSlots();
+    const data = slots[index];
+
+    if (!data) return;
+
+    if (!confirm(
+        `「${data.name}」を読み込みますか？\n\n` +
+        '現在の入力内容は置き換えられます。'
+    )) {
+        return;
+    }
+
+    const s = data.settings;
+
+    // サイズ
+    if (['standard', '640x256', '480x240'].includes(s.canvasSize)) {
+        canvasSizeSel.value = s.canvasSize;
+    }
+
+    // 各種入力値
+    nameIn.value = typeof s.name === 'string' ? s.name : '';
+    rubyIn.value = typeof s.ruby === 'string' ? s.ruby : '';
+    enIn.value = typeof s.en === 'string' ? s.en : '';
+
+    prevIn.value = typeof s.prev === 'string' ? s.prev : '';
+    prevEnIn.value = typeof s.prevEn === 'string' ? s.prevEn : '';
+
+    nextIn.value = typeof s.next === 'string' ? s.next : '';
+    nextEnIn.value = typeof s.nextEn === 'string' ? s.nextEn : '';
+
+    companyIn.value = typeof s.company === 'string'
+        ? s.company
+        : 'Saihouheiki Railway';
+
+    // 選択項目
+    bgMode.value = ['none', '30', '50'].includes(s.bgMode)
+        ? s.bgMode
+        : 'none';
+
+    iconMode.value = ['circle', 'square'].includes(s.iconMode)
+        ? s.iconMode
+        : 'circle';
+
+    arrowStyleSel.value = ['normal', 'diamond', 'between'].includes(s.arrowStyle)
+        ? s.arrowStyle
+        : 'normal';
+
+    // 会社名によって選択可能なテーマが変化するため先に更新
+    updateThemeOptions();
+
+    if (
+        typeof s.theme === 'string' &&
+        Array.from(themeSel.options).some(option => option.value === s.theme)
+    ) {
+        themeSel.value = s.theme;
+    } else {
+        themeSel.value = 'sky';
+    }
+
+    // 画像は保存していないため解除
+    iconFile.value = '';
+    bgFile.value = '';
+
+    state.icon = null;
+    state.bg = null;
+
+    // プレビュー更新
+    draw();
+
+    closeStorageModal();
+}
+
+// スロット削除
+function deleteStorageSlot(index) {
+    const slots = getStorageSlots();
+    const data = slots[index];
+
+    if (!data) return;
+
+    if (!confirm(`「${data.name}」を削除しますか？`)) {
+        return;
+    }
+
+    slots[index] = null;
+
+    if (setStorageSlots(slots)) {
+        renderStorageList();
+    }
+}
+
+// ボタン生成
+function createStorageButton(label, callback, className = '') {
+    const button = document.createElement('button');
+
+    button.type = 'button';
+    button.textContent = label;
+
+    if (className) {
+        button.className = className;
+    }
+
+    button.addEventListener('click', callback);
+
+    return button;
+}
+
+// 保存データ一覧の描画
+function renderStorageList() {
+    const slots = getStorageSlots();
+
+    storageList.replaceChildren();
+
+    slots.forEach((data, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'storage-slot';
+
+        // ヘッダー
+        const header = document.createElement('div');
+        header.className = 'storage-slot-header';
+
+        const title = document.createElement('span');
+        title.className = 'storage-slot-title';
+        title.textContent = `スロット ${index + 1}`;
+
+        const status = document.createElement('span');
+        status.className = 'storage-slot-status';
+        status.textContent = data ? '保存済み' : '空きスロット';
+
+        header.append(title, status);
+        slot.appendChild(header);
+
+        // 空きスロット
+        if (!data) {
+            const description = document.createElement('div');
+            description.className = 'storage-slot-date';
+            description.textContent = 'まだ設定は保存されていません。';
+
+            const actions = document.createElement('div');
+            actions.className = 'storage-slot-actions';
+
+            actions.appendChild(
+                createStorageButton(
+                    '現在の設定を保存',
+                    () => saveToSlot(index)
+                )
+            );
+
+            slot.append(description, actions);
+        } else {
+            // 保存済みスロット
+            const name = document.createElement('div');
+            name.className = 'storage-slot-name';
+            name.textContent = data.name;
+
+            const date = document.createElement('div');
+            date.className = 'storage-slot-date';
+
+            const savedDate = new Date(data.savedAt);
+
+            date.textContent = Number.isNaN(savedDate.getTime())
+                ? '保存日時不明'
+                : `最終保存：${savedDate.toLocaleString('ja-JP')}`;
+
+            const actions = document.createElement('div');
+            actions.className = 'storage-slot-actions';
+
+            actions.appendChild(
+                createStorageButton(
+                    '読み込む',
+                    () => loadFromSlot(index)
+                )
+            );
+
+            actions.appendChild(
+                createStorageButton(
+                    '上書き保存',
+                    () => saveToSlot(index, true)
+                )
+            );
+
+            actions.appendChild(
+                createStorageButton(
+                    '削除',
+                    () => deleteStorageSlot(index),
+                    'delete-button'
+                )
+            );
+
+            slot.append(name, date, actions);
+        }
+
+        storageList.appendChild(slot);
+    });
+}
+
+function openStorageModal() {
+    renderStorageList();
+    storageModal.hidden = false;
+    closeStorageBtn.focus();
+}
+function closeStorageModal() {
+    storageModal.hidden = true;
+    storageBtn.focus();
+}
+storageBtn.addEventListener('click', openStorageModal);
+closeStorageBtn.addEventListener('click', closeStorageModal);
+storageModal.addEventListener('click', event => {
+    if (event.target === storageModal) {
+        closeStorageModal();
+    }
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !storageModal.hidden) {
+        closeStorageModal();
+    }
 });
 
 // init
