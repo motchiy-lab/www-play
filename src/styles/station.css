@@ -1,17 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800&display=swap");
-
 .station-generator-page {
-    --bg: #f6fbff;
-    --card: #fff;
-    --muted: #6b8296;
-    --accent: #cfe8ff;
-    --btn-bg: #fff;
-    --btn-border: #d9eefc;
+    --bg: #fff;
+    --panel: #eee;
+    --text: #111;
+    --muted: #2a2a2a;
+    --border: #ccc;
 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
-    font-family: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    background: linear-gradient(180deg, var(--bg), #f8fbff);
-    color: #123;
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
 }
 
 .station-generator-page *,
@@ -20,6 +25,11 @@
     box-sizing: border-box;
 }
 
+.station-generator-page > main {
+    flex: 1;
+}
+
+/* メインレイアウト */
 .station-generator-page .wrap {
     max-width: 1200px;
     margin: 18px auto;
@@ -29,19 +39,21 @@
     gap: 18px;
 }
 
+/* パネル */
 .station-generator-page .card {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 14px;
-    box-shadow: 0 6px 18px rgba(10, 40, 80, .06);
-    border: 1px solid #e6f6ff;
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 10px;
+    border: 1px solid var(--border);
 }
 
 .station-generator-page .card h2 {
-    margin: 0 0 10px 0;
+    margin: 0 0 10px;
     font-size: 16px;
+    color: var(--text);
 }
 
+/* プレビュー */
 .station-generator-page .preview {
     display: flex;
     align-items: center;
@@ -52,12 +64,13 @@
 .station-generator-page canvas {
     width: 100%;
     height: auto;
-    border-radius: 10px;
-    border: 1px solid #dff0ff;
+    border-radius: 6px;
+    border: 1px solid var(--border);
     background: #fff;
     display: block;
 }
 
+/* 入力欄 */
 .station-generator-page .controls {
     display: grid;
     gap: 10px;
@@ -72,35 +85,67 @@
 .station-generator-page input[type="text"],
 .station-generator-page select {
     width: 100%;
+    min-width: 0;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid var(--btn-border);
-    background: #fbfeff;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font: inherit;
 }
 
 .station-generator-page input[type="file"] {
+    width: 100%;
+    min-width: 0;
     padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font: inherit;
 }
 
+/* 前後の駅名入力 */
 .station-generator-page .row {
     display: flex;
     gap: 8px;
 }
 
+/* ボタン */
 .station-generator-page button {
     padding: 10px 12px;
     border-radius: 10px;
-    border: 0;
-    background: var(--accent);
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
     cursor: pointer;
-    font-weight: 700;
+    font: inherit;
+    font-weight: 600;
+    transition: background-color 0.15s ease;
 }
 
+.station-generator-page button:hover {
+    background: #e5e5e5;
+}
+
+.station-generator-page button:active {
+    background: #ddd;
+}
+
+.station-generator-page button:focus-visible,
+.station-generator-page input:focus-visible,
+.station-generator-page select:focus-visible {
+    outline: 2px solid #777;
+    outline-offset: 2px;
+}
+
+/* 補助テキスト */
 .station-generator-page .muted {
     font-size: 12px;
     color: var(--muted);
 }
 
+/* プレビューボタン */
 .station-generator-page .preview-buttons {
     display: flex;
     justify-content: center;
@@ -115,6 +160,7 @@
     font-size: 15px;
 }
 
+/* スマートフォン・タブレット */
 @media (max-width: 980px) {
     .station-generator-page .wrap {
         grid-template-columns: 1fr;
