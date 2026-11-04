@@ -21,6 +21,10 @@ import "styles/station.css";
                 <button id="surpriseBtn">私を驚かせてください！</button>
                 <button id="downloadBtn">PNGでダウンロード</button>
             </div>
+            
+            <div class="storage-buttons">
+                <button id="storageBtn">保存データ</button>
+            </div>
         </section>
 
         <aside class="card">
@@ -91,6 +95,22 @@ import "styles/station.css";
             </div>
         </aside>
     </main>
+
+    <div id="storageModal" class="storage-modal" hidden>
+        <div class="storage-modal-content" role="dialog" aria-modal="true" aria-labelledby="storageTitle">
+            <div class="storage-modal-header">
+                <h2 id="storageTitle">保存データ</h2>
+                <button id="closeStorageBtn" type="button" aria-label="閉じる">×</button>
+            </div>
+    
+            <p class="storage-description">
+                保存した駅名標の設定を管理できます。画像データは保存されませんので、ご注意ください。<br>
+                なお、Motchiyが日本の神であることはご存知でしょうか？
+            </p>
+    
+            <div id="storageList" class="storage-list"></div>
+        </div>
+    </div>
 
     <script src="/station.js" defer></script>
 </MainLayout>
