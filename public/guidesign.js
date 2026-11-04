@@ -9,11 +9,75 @@
   const getSettings = () => Object.fromEntries(Object.entries(controls).map(([k,v])=>[k,v.value]));
   function fitFont(c,text,maxWidth,start,weight=700){let size=start;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;while(c.measureText(text).width>maxWidth&&size>12){size--;c.font=`${weight} ${size}px system-ui,-apple-system,"Noto Sans JP",sans-serif`;}return size;}
   function arrowPath(c,pts,head,width){c.save();c.strokeStyle=fg;c.fillStyle=fg;c.lineWidth=width;c.lineCap="butt";c.lineJoin="round";c.beginPath();c.moveTo(...pts[0]);pts.slice(1).forEach(p=>c.lineTo(...p));c.stroke();const [x1,y1]=pts.at(-2),[x2,y2]=pts.at(-1),a=Math.atan2(y2-y1,x2-x1),bx=x2-Math.cos(a)*head,by=y2-Math.sin(a)*head,h=head*.62;c.beginPath();c.moveTo(x2,y2);c.lineTo(bx+Math.sin(a)*h,by-Math.cos(a)*h);c.lineTo(bx-Math.sin(a)*h,by+Math.cos(a)*h);c.closePath();c.fill();c.restore();}
-  function drawArrow(c,type,x,y,size){const u=size/100,p=(a,b)=>[x+a*u,y+b*u],d=pts=>arrowPath(c,pts.map(([a,b])=>p(a,b)),28*u,13*u);const simple={right:[[12,50],[87,50]],left:[[88,50],[13,50]],up:[[50,88],[50,13]],down:[[50,12],[50,87]],upRight:[[15,85],[85,15]],upLeft:[[85,85],[15,15]],downRight:[[15,15],[85,85]],downLeft:[[85,15],[15,85]]};if(simple[type])return d(simple[type]);
-    const turns={turnRight:[[50,88],[50,50],[88,50]],turnLeft:[[50,88],[50,50],[12,50]],turnUpRight:[[12,72],[50,72],[50,12]],turnUpLeft:[[88,72],[50,72],[50,12]],turnDownRight:[[12,28],[50,28],[50,88]],turnDownLeft:[[88,28],[50,28],[50,88]]};if(turns[type])return d(turns[type]);
-    if(type==="uRight")return d([[25,88],[25,35],[38,18],[62,18],[75,35],[75,88]]);if(type==="uLeft")return d([[75,88],[75,35],[62,18],[38,18],[25,35],[25,88]]);
-    if(type==="straightRight"||type==="straightLeft"||type==="both"){d([[50,88],[50,15]]);if(type!=="straightRight")d([[50,50],[12,50]]);if(type!=="straightLeft")d([[50,50],[88,50]]);}
+  function drawArrow(c, type, x, y, size) {
+    const u = size / 100;
+    const p = (a, b) => [x + a * u, y + b * u];
+    const d = pts => arrowPath(
+      c,
+      pts.map(([a, b]) => p(a, b)),
+      28 * u,
+      13 * u
+    );
+  
+    // 基本の直線矢印
+    const simple = {
+      right:     [[3, 50], [97, 50]],
+      left:      [[97, 50], [3, 50]],
+      up:        [[50, 97], [50, 3]],
+      down:      [[50, 3], [50, 97]],
+      upRight:   [[3, 97], [97, 3]],
+      upLeft:    [[97, 97], [3, 3]],
+      downRight: [[3, 3], [97, 97]],
+      downLeft:  [[97, 3], [3, 97]]
+    };
+  
+    if (simple[type]) return d(simple[type]);
+  
+    // 曲がる矢印
+    const turns = {
+      turnRight:     [[50, 97], [50, 50], [97, 50]],
+      turnLeft:      [[50, 97], [50, 50], [3, 50]],
+      turnUpRight:   [[3, 90], [50, 90], [50, 3]],
+      turnUpLeft:    [[97, 90], [50, 90], [50, 3]],
+      turnDownRight: [[3, 10], [50, 10], [50, 97]],
+      turnDownLeft:  [[97, 10], [50, 10], [50, 97]]
+    };
+  
+    if (turns[type]) return d(turns[type]);
+  
+    // Uターン
+    if (type === "uRight") {
+      return d([
+        [25, 97], [25, 35], [38, 18],
+        [62, 18], [75, 35], [75, 97]
+      ]);
+    }
+  
+    if (type === "uLeft") {
+      return d([
+        [75, 97], [75, 35], [62, 18],
+        [38, 18], [25, 35], [25, 97]
+      ]);
+    }
+  
+    // 直進＋左右分岐
+    if (
+      type === "straightRight" ||
+      type === "straightLeft" ||
+      type === "both"
+    ) {
+      d([[50, 97], [50, 3]]);
+  
+      if (type !== "straightRight") {
+        d([[50, 50], [3, 50]]);
+      }
+  
+      if (type !== "straightLeft") {
+        d([[50, 50], [97, 50]]);
+      }
+    }
   }
+
   function drawToCanvas(target){const ratio=Number(controls.ratio.value)||4,H=target.height,W=H*ratio;target.width=W;const c=target.getContext("2d"),palette=THEMES[controls.theme.value]||THEMES.blue;fg=palette[1];c.fillStyle=palette[0];c.fillRect(0,0,W,H);const pad=H*.055;
     if(controls.frame.value==="outer"||controls.frame.value==="inner"){const inset=controls.frame.value==="inner"?pad:2;c.strokeStyle=fg;c.lineWidth=Math.max(3,H*.012);c.strokeRect(inset,inset,W-inset*2,H-inset*2);}
     c.strokeStyle=fg;c.lineWidth=Math.max(3,H*.012);c.beginPath();c.moveTo(H,H*.16);c.lineTo(H,H*.84);c.stroke();const inset=controls.frame.value==="inner"?pad*1.8:pad;drawArrow(c,controls.arrow.value,inset,inset,H-inset*2);
@@ -33,5 +97,5 @@
   function loadSlot(i){const item=slots()[i];if(!item||!confirm(`「${item.name}」を読み込みますか？\n現在の設定は置き換えられます。`))return;applySettings(item.settings);closeModal();}
   function deleteSlot(i){const data=slots();if(!data[i]||!confirm(`「${data[i].name}」を削除しますか？`))return;data[i]=null;if(setSlots(data))renderSlots();}
   function openModal(){renderSlots();$("guideStorageModal").hidden=false;$("guideCloseStorageBtn").focus();}function closeModal(){$("guideStorageModal").hidden=true;$("guideStorageBtn").focus();}
-  Object.values(controls).forEach(el=>el.addEventListener("input",draw));$("guideDownloadBtn").addEventListener("click",download);$("guideResetBtn").addEventListener("click",()=>{Object.assign(controls.ratio,{value:"4"});controls.theme.value="blue";controls.frame.value="none";controls.arrow.value="right";controls.name.value="中央駅";controls.english.value="Central Station";controls.distance.value="500 m";controls.layout.value="A";draw();});$("guideStorageBtn").addEventListener("click",openModal);$("guideCloseStorageBtn").addEventListener("click",closeModal);$("guideStorageModal").addEventListener("click",e=>{if(e.target===$("guideStorageModal"))closeModal();});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("guideStorageModal").hidden)closeModal();});draw();
+  Object.values(controls).forEach(el=>el.addEventListener("input",draw));$("guideDownloadBtn").addEventListener("click",download);$("guideResetBtn").addEventListener("click",()=>{Object.assign(controls.ratio,{value:"4"});controls.theme.value="blue";controls.frame.value="none";controls.arrow.value="right";controls.name.value="望意岡";controls.english.value="Motchiy Oka";controls.distance.value="500 m";controls.layout.value="A";draw();});$("guideStorageBtn").addEventListener("click",openModal);$("guideCloseStorageBtn").addEventListener("click",closeModal);$("guideStorageModal").addEventListener("click",e=>{if(e.target===$("guideStorageModal"))closeModal();});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("guideStorageModal").hidden)closeModal();});draw();
 })();
