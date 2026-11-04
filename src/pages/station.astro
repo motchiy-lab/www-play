@@ -1,0 +1,97 @@
+---
+import MainLayout from "layouts/Main.astro";
+import "styles/station.css";
+---
+
+<MainLayout
+    title="駅名標ジェネレータ(仮) by さいほうへいき(v1.1)"
+    description="駅名標を簡単にデザインできる無料の駅名標ジェネレータ。背景画像やアイコンを追加し、オリジナルの駅名標をPNG画像としてダウンロードできます！"
+    tags="鉄道,デザイン,PNG,駅名標,ジェネレータ"
+    pageClass="station-generator-page"
+    hideSiteChrome={true}
+>
+    <main class="wrap">
+        <section class="card">
+            <h2>プレビュー</h2>
+            <div class="preview">
+                <canvas id="preview" width="1200" height="600" aria-label="駅名標プレビュー"></canvas>
+            </div>
+
+            <div class="preview-buttons">
+                <button id="resetBtn">初期化</button>
+                <button id="surpriseBtn">私を驚かせてください！</button>
+                <button id="downloadBtn">PNGでダウンロード</button>
+            </div>
+        </section>
+
+        <aside class="card">
+            <h2>入力</h2>
+            <div class="controls">
+                <label>サイズ
+                    <select id="canvasSize">
+                        <option value="standard">標準（1200×600）</option>
+                        <option value="640x256">640×256</option>
+                        <option value="480x240">480×240</option>
+                    </select>
+                </label>
+
+                <label>背景画像<input id="bgFile" type="file" accept="image/*"></label>
+
+                <label>背景透過
+                    <select id="bgMode">
+                        <option value="none">そのまま</option>
+                        <option value="30">30%透過</option>
+                        <option value="50">50%透過</option>
+                    </select>
+                </label>
+
+                <label>アイコン画像<input id="iconFile" type="file" accept="image/*"></label>
+
+                <label>アイコン表示
+                    <select id="iconMode">
+                        <option value="circle">丸枠</option>
+                        <option value="square">四角</option>
+                    </select>
+                </label>
+
+                <label>駅名（大）<input id="name" type="text" value=""></label>
+                <label>ルビ（かな）<input id="ruby" type="text" value=""></label>
+                <label>英語駅名<input id="en" type="text" value=""></label>
+
+                <div class="row">
+                    <div style="flex:1">
+                        <label>前の駅（日本語）<input id="prev" type="text" value=""></label>
+                    </div>
+                    <div style="flex:1">
+                        <label>英語（前）<input id="prevEn" type="text" value=""></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div style="flex:1">
+                        <label>次の駅（日本語）<input id="next" type="text" value=""></label>
+                    </div>
+                    <div style="flex:1">
+                        <label>英語（次）<input id="nextEn" type="text" value=""></label>
+                    </div>
+                </div>
+
+                <label>会社サイン<input id="company" type="text" value="Saihouheiki Railway"></label>
+
+                <label>カラープリセット
+                    <select id="theme"></select>
+                </label>
+
+                <label>行き先枠スタイル
+                    <select id="arrowStyle">
+                        <option value="normal">通常</option>
+                        <option value="diamond">ニニニニ型</option>
+                        <option value="between">ビトウィーン型</option>
+                    </select>
+                </label>
+            </div>
+        </aside>
+    </main>
+
+    <script src="/station.js" defer></script>
+</MainLayout>
