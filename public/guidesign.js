@@ -100,9 +100,6 @@
 
 		// 配色
 		controls.theme.value = randomItem(Object.keys(THEMES));
-
-		// 標識の設定
-		controls.ratio.value = randomItem(["3", "4", "5", "6"]);
 		controls.frame.value = randomItem(["none", "outer", "inner"]);
 		controls.arrow.value = randomItem([
 			"right", "left", "up", "down",
