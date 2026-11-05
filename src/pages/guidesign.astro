@@ -19,23 +19,28 @@ import "styles/guidesign.css";
             <h2>標識の設定</h2>
             <div class="guidesign-controls">
                 <label>サイズ<select id="guideRatio"><option value="3">3:1（3600x1200）</option><option value="4" selected>4:1（4800x1200）</option><option value="5">5:1（6000x1200）</option><option value="6">6:1（7200x1200）</option></select></label>
-                <label>配色
+                <label>カラープリセット
                   <select id="guideTheme">
-                    <option value="blue">青</option>
-                    <option value="deepblue">濃青</option>
-                    <option value="navy">紺</option>
-                    <option value="green">緑</option>
-                    <option value="brown">茶色</option>
-                    <option value="white">白地・青文字</option>
-                    <option value="black">黒</option>
-                    <option value="red">赤・白</option>
-                    <option value="yellow">黄・黒</option>
-                    <option value="orange">オレンジ・白</option>
-                    <option value="purple">紫・白</option>
-                    <option value="cyan">水色・濃紺</option>
-                    <option value="gray">灰色・白</option>
-                    <option value="lime">黄緑・濃緑</option>
-                    <option value="darkred">暗赤・白</option>
+                    <optgroup label="白文字">
+                        <option value="blue">青</option>
+                        <option value="deepblue">濃青</option>
+                        <option value="navy">紺</option>
+                        <option value="green">緑</option>
+                        <option value="orange">オレンジ</option>
+                        <option value="red">赤</option>
+                        <option value="darkred">暗赤</option>
+                        <option value="purple">紫</option>
+                        <option value="brown">茶色</option>
+                        <option value="gray">灰色</option>
+                        <option value="black">黒</option>
+                    </optgroup>
+
+                    <optgroup label="その他のカラーリング">
+                        <option value="white">白・青</option>
+                        <option value="yellow">黄・黒</option>
+                        <option value="cyan">水色・濃紺</option>
+                        <option value="lime">黄緑・濃緑</option>
+                    </optgroup>
                   </select>
                 </label>
                 <label>枠線<select id="guideFrame"><option value="none">枠なし</option><option value="outer">外周に枠線</option><option value="inner">内側に余白付きの枠線</option></select></label>
@@ -43,13 +48,12 @@ import "styles/guidesign.css";
                     <optgroup label="直進・方向"><option value="right">右</option><option value="left">左</option><option value="up">上</option><option value="down">下</option><option value="upRight">右上</option><option value="upLeft">左上</option><option value="downRight">右下</option><option value="downLeft">左下</option></optgroup>
                     <optgroup label="曲がる"><option value="turnRight">右折</option><option value="turnLeft">左折</option><option value="turnUpRight">右上へ曲がる</option><option value="turnUpLeft">左上へ曲がる</option><option value="turnDownRight">右下へ曲がる</option><option value="turnDownLeft">左下へ曲がる</option></optgroup>
                     <optgroup label="Uターン"><option value="uRight">右方向へUターン</option><option value="uLeft">左方向へUターン</option></optgroup>
-                    <optgroup label="分岐"><option value="straightRight">直進・右</option><option value="straightLeft">直進・左</option><option value="both">左右に分岐</option></optgroup>
+                    <optgroup label="分岐"><option value="straightRight">直進・右</option><option value="straightLeft">直進・左</option><option value="both">四差路</option></optgroup>
                 </select></label>
-                <label>日本語の行き先<input id="guideName" type="text" value="中央駅" maxlength="80"></label>
-                <label>英語の行き先<input id="guideEnglish" type="text" value="Central Station" maxlength="100"></label>
+                <label>行き先名<input id="guideName" type="text" value="中央駅" maxlength="80"></label>
+                <label>英語行き先名<input id="guideEnglish" type="text" value="Central Station" maxlength="100"></label>
                 <label>距離・補足<input id="guideDistance" type="text" value="500 m" maxlength="30"></label>
                 <label>文字の配置<select id="guideLayout"><option value="A">A：日本語＋距離／英語</option><option value="B">B：日本語／英語／距離</option></select></label>
-                <p class="guidesign-hint">文字は標識内に収まるよう自動的に縮小されます。矢印と距離は独立した設定です。</p>
             </div>
         </aside>
     </main>
