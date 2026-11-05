@@ -10,9 +10,7 @@ import "styles/guidesign.css";
             <div class="guidesign-preview"><canvas id="guidePreview" width="2000" height="500" aria-label="案内標識プレビュー"></canvas></div>
             <div class="guidesign-buttons">
               <button id="guideResetBtn" type="button">初期化</button>
-              <button id="guideSurpriseBtn" type="button">
-                私を驚かせてください！
-              </button>
+              <button id="guideSurpriseBtn" type="button">私を驚かせてください！</button>
               <button id="guideDownloadBtn" type="button">PNGでダウンロード</button>
               <button id="guideStorageBtn" type="button">保存データ</button>
             </div>
@@ -20,10 +18,10 @@ import "styles/guidesign.css";
         <aside class="guidesign-card">
             <h2>標識の設定</h2>
             <div class="guidesign-controls">
-                <label>標識の比率<select id="guideRatio"><option value="3">1:3</option><option value="4" selected>1:4</option><option value="5">1:5</option><option value="6">1:6</option></select></label>
+                <label>サイズ<select id="guideRatio"><option value="3">3:1（3600x1200）</option><option value="4" selected>4:1（4800x1200）</option><option value="5">5:1（6000x1200）</option><option value="6">6:1（7200x1200）</option></select></label>
                 <label>配色
                   <select id="guideTheme">
-                    <option value="blue">標準的な青</option>
+                    <option value="blue">青</option>
                     <option value="deepblue">濃青</option>
                     <option value="navy">紺</option>
                     <option value="green">緑</option>
