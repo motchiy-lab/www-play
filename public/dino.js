@@ -227,7 +227,7 @@ function update() {
   });
 
   // 太陽/月
-  celestial.x -= speed * 0.25;
+  celestial.x -= 6 * 0.25;
   if (celestial.x < -100) {
     celestial.x = canvas.width;
     if(!notCycle) {
@@ -238,7 +238,7 @@ function update() {
     if (!day) {
       if ((cycleCount + 1) % 10 === 0) {
         celestial.type = "blue_moon";
-        multiplier = 1.1;
+        multiplier = 2.0;
       } else {
         celestial.type = "moon";
         multiplier = 1;
@@ -350,7 +350,7 @@ function draw() {
   ctx.fillText("High: " + highScore, 20, 60);
 
   if (multiplier > 1) {
-    ctx.fillText("x1.1 BONUS!", 20, 90);
+    ctx.fillText("x2.0 BONUS!", 20, 90);
   }
 
   if (gameOver) {
