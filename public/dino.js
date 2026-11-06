@@ -48,6 +48,7 @@ let speed = 6;
 let multiplier = 1;
 let day = true,
   cycleCount = 0;
+let nightAlpha = 0; 
 
 // ===== 初期化 =====
 function start() {
@@ -179,18 +180,25 @@ function update() {
       multiplier = 1;
     }
   }
-
+  
+  if (!day && nightAlpha < 1) {
+    nightAlpha = Math.min(1, nightAlpha + 0.02); // 夜に向かって滑らかに暗く
+  } else if (day && nightAlpha > 0) {
+    nightAlpha = Math.max(0, nightAlpha - 0.02); // 昼に向かって滑らかに明るく
+  }
   // スコア
   score += 0.1 * multiplier;
 }
 
 // ===== 描画 =====
 function draw() {
-  ctx.fillStyle = day ? "#fff" : "#000";
+  const bgRed = Math.floor(255 * (1 - nightAlpha));
+  const bgGreen = Math.floor(255 * (1 - nightAlpha));
+  const bgBlue = Math.floor(255 * (1 - nightAlpha));
+  ctx.fillStyle = `rgb(${bgRed}, ${bgGreen}, ${bgBlue})`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
-  if (!day) ctx.filter = "invert(1)";
 
   // 雲
   clouds.forEach((c) => {
@@ -264,6 +272,14 @@ function draw() {
       }
     });
   });
+  
+  if (nightAlpha > 0) {
+    ctx.save();
+    ctx.globalCompositeOperation = "source-atop";
+    ctx.fillStyle = `rgba(0, 0, 0, ${nightAlpha * 0.45})`; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
 
   ctx.restore();
 
