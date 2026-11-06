@@ -11,16 +11,16 @@ resize();
 // ===== 画像 =====
 const img = {};
 const files = [
-  "run_assets/character_1.png",
-  "run_assets/character_2.png",
-  "run_assets/character_over.png",
-  "run_assets/obstacle_ground.png",
-  "run_assets/obstacle_air.png",
-  "run_assets/sun.png",
-  "run_assets/moon.png",
-  "run_assets/blue_moon.png",
-  "run_assets/clouds.png",
-  "run_assets/star.png",
+  "dino_assets/character_1.png",
+  "dino_assets/character_2.png",
+  "dino_assets/character_over.png",
+  "dino_assets/obstacle_ground.png",
+  "dino_assets/obstacle_air.png",
+  "dino_assets/sun.png",
+  "dino_assets/moon.png",
+  "dino_assets/blue_moon.png",
+  "dino_assets/clouds.png",
+  "dino_assets/star.png",
 ];
 
 let loaded = 0;
@@ -236,7 +236,7 @@ function draw() {
 
   // 雲
   clouds.forEach((c) => {
-    drawSprite("run_assets/clouds.png", c.x, 50, 300, 100, () => {
+    drawSprite("dino_assets/clouds.png", c.x, 50, 300, 100, () => {
       ctx.fillStyle = day ? "#d8ecff" : "#444";
       ctx.beginPath();
       ctx.ellipse(c.x + 150, 90, 120, 24, 0, 0, Math.PI * 2);
@@ -245,9 +245,9 @@ function draw() {
   });
 
   // 太陽/月
-  let cel = "run_assets/sun.png";
+  let cel = "dino_assets/sun.png";
   if (!day) {
-    cel = celestial.type === "blue_moon" ? "run_assets/blue_moon.png" : "run_assets/moon.png";
+    cel = celestial.type === "blue_moon" ? "dino_assets/blue_moon.png" : "dino_assets/moon.png";
   }
   drawSprite(cel, celestial.x, 30, 80, 80, () => {
     ctx.fillStyle = celestial.type === "sun" ? "#ffd34d" : "#e6e9ff";
@@ -262,14 +262,14 @@ function draw() {
 
   // プレイヤー
   drawSprite(
-    gameOver ? "run_assets/character_over.png" : `run_assets/character_${player.frame + 1}.png`,
+    gameOver ? "dino_assets/character_over.png" : `dino_assets/character_${player.frame + 1}.png`,
     player.x, player.y, player.w, player.h,
     () => drawFallbackPlayer(),
   );
 
   // 障害物
   obstacles.forEach((o) => {
-    let name = o.type === "ground" ? "run_assets/obstacle_ground.png" : "run_assets/obstacle_air.png";
+    let name = o.type === "ground" ? "dino_assets/obstacle_ground.png" : "dino_assets/obstacle_air.png";
     drawSprite(name, o.x, o.y, o.w, o.h, () => {
       ctx.fillStyle = "#3d8b4f";
       if (o.type === "ground") {
@@ -288,7 +288,7 @@ function draw() {
   });
 
   items.forEach((i) => {
-    drawSprite("run_assets/star.png", i.x, i.y, i.w, i.h, () => {
+    drawSprite("dino_assets/star.png", i.x, i.y, i.w, i.h, () => {
       ctx.fillStyle = "#ffeb3b";
       ctx.beginPath();
       for (let j = 0; j < 5; j++) {
