@@ -20,6 +20,7 @@ const files = [
   "run_assets/moon.png",
   "run_assets/blue_moon.png",
   "run_assets/clouds.png",
+  "run_assets/star.png",
 ];
 
 let loaded = 0;
@@ -39,7 +40,7 @@ files.forEach((f) => {
 });
 
 // ===== 状態 =====
-let player, obstacles, clouds, celestial;
+let player, obstacles, clouds, celestial, items;
 let frame = 0,
   gameOver = false;
 let score = 0,
@@ -48,6 +49,8 @@ let speed = 6;
 let multiplier = 1;
 let day = true,
   cycleCount = 0;
+
+// 夜の暗さを管理（0 = 昼, 1 = 夜）
 let nightAlpha = 0; 
 
 // ===== 初期化 =====
@@ -65,6 +68,7 @@ function start() {
   };
 
   obstacles = [];
+  items = [];
   clouds = [{ x: 0 }, { x: 400 }];
 
   celestial = { x: canvas.width, type: "sun" };
@@ -86,7 +90,12 @@ function jump() {
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") jump();
 });
-window.addEventListener("touchstart", jump);
+
+// スマホのダブルタップズームを防止しつつジャンプ
+window.addEventListener("touchstart", (e) => {
+  if (e.cancelable) e.preventDefault();
+  jump();
+}, { passive: false });
 
 // ===== 衝突判定（余白カット）=====
 function hit(a, b) {
@@ -104,7 +113,10 @@ function loop() {
   frame++;
   update();
   draw();
-  requestAnimationFrame(loop);
+  
+  if (!gameOver) {
+    requestAnimationFrame(loop);
+  }
 }
 
 // ===== 更新 =====
@@ -128,22 +140,36 @@ function update() {
     player.frame = 1 - player.frame;
   }
 
-  // 障害物生成
   if (frame % 90 === 0) {
+    const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: Math.random() < 0.5 ? 220 : 150,
-      type: Math.random() < 0.5 ? "ground" : "air",
+      y: isGround ? 200 : 140,
+      type: isGround ? "ground" : "air",
       w: 40,
       h: 40,
     });
   }
 
-  // 移動
+  if (frame % 500 === 0) {
+    if (Math.random() < 0.5) {
+      items.push({
+        x: canvas.width,
+        y: 120,
+        w: 30,
+        h: 30,
+      });
+    }
+  }
+
+  // 障害物の移動と削除
   obstacles.forEach((o) => (o.x -= speed));
   obstacles = obstacles.filter((o) => o.x > -50);
 
-  // 衝突
+  items.forEach((i) => (i.x -= speed));
+  items = items.filter((i) => i.x > -50);
+
+  // 衝突（障害物）
   obstacles.forEach((o) => {
     if (hit(player, o)) {
       gameOver = true;
@@ -151,6 +177,14 @@ function update() {
         highScore = Math.floor(score);
         localStorage.setItem("dino_high", highScore);
       }
+      draw();
+    }
+  });
+
+  items.forEach((i, index) => {
+    if (hit(player, i)) {
+      score += 50; // 触れたら50点ゲット！
+      items.splice(index, 1); // 画面から消す
     }
   });
 
@@ -180,22 +214,22 @@ function update() {
       multiplier = 1;
     }
   }
-  
+
+  // 昼夜のフェード処理
   if (!day && nightAlpha < 1) {
-    nightAlpha = Math.min(1, nightAlpha + 0.02); // 夜に向かって滑らかに暗く
+    nightAlpha = Math.min(1, nightAlpha + 0.02);
   } else if (day && nightAlpha > 0) {
-    nightAlpha = Math.max(0, nightAlpha - 0.02); // 昼に向かって滑らかに明るく
+    nightAlpha = Math.max(0, nightAlpha - 0.02);
   }
+
   // スコア
   score += 0.1 * multiplier;
 }
 
 // ===== 描画 =====
 function draw() {
-  const bgRed = Math.floor(255 * (1 - nightAlpha));
-  const bgGreen = Math.floor(255 * (1 - nightAlpha));
-  const bgBlue = Math.floor(255 * (1 - nightAlpha));
-  ctx.fillStyle = `rgb(${bgRed}, ${bgGreen}, ${bgBlue})`;
+  const bgVal = Math.floor(255 * (1 - nightAlpha));
+  ctx.fillStyle = `rgb(${bgVal}, ${bgVal}, ${bgVal})`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
@@ -213,10 +247,7 @@ function draw() {
   // 太陽/月
   let cel = "run_assets/sun.png";
   if (!day) {
-    cel =
-      celestial.type === "blue_moon"
-        ? "run_assets/blue_moon.png"
-        : "run_assets/moon.png";
+    cel = celestial.type === "blue_moon" ? "run_assets/blue_moon.png" : "run_assets/moon.png";
   }
   drawSprite(cel, celestial.x, 30, 80, 80, () => {
     ctx.fillStyle = celestial.type === "sun" ? "#ffd34d" : "#e6e9ff";
@@ -230,32 +261,15 @@ function draw() {
   ctx.fillRect(0, 240, canvas.width, 5);
 
   // プレイヤー
-  let char;
-  if (gameOver) {
-    char = img["run_assets/character_over.png"];
-  } else {
-    char =
-      img[
-        player.frame
-          ? "run_assets/character_2.png"
-          : "run_assets/character_1.png"
-      ];
-  }
   drawSprite(
     gameOver ? "run_assets/character_over.png" : `run_assets/character_${player.frame + 1}.png`,
-    player.x,
-    player.y,
-    player.w,
-    player.h,
+    player.x, player.y, player.w, player.h,
     () => drawFallbackPlayer(),
   );
 
   // 障害物
   obstacles.forEach((o) => {
-    let name =
-      o.type === "ground"
-        ? "run_assets/obstacle_ground.png"
-        : "run_assets/obstacle_air.png";
+    let name = o.type === "ground" ? "run_assets/obstacle_ground.png" : "run_assets/obstacle_air.png";
     drawSprite(name, o.x, o.y, o.w, o.h, () => {
       ctx.fillStyle = "#3d8b4f";
       if (o.type === "ground") {
@@ -272,7 +286,27 @@ function draw() {
       }
     });
   });
-  
+
+  items.forEach((i) => {
+    drawSprite("run_assets/star.png", i.x, i.y, i.w, i.h, () => {
+      ctx.fillStyle = "#ffeb3b";
+      ctx.beginPath();
+      for (let j = 0; j < 5; j++) {
+        ctx.lineTo(
+          i.x + 15 + Math.cos(((18 + j * 72) * Math.PI) / 180) * 15,
+          i.y + 15 + Math.sin(((18 + j * 72) * Math.PI) / 180) * 15
+        );
+        ctx.lineTo(
+          i.x + 15 + Math.cos(((54 + j * 72) * Math.PI) / 180) * 7,
+          i.y + 15 + Math.sin(((54 + j * 72) * Math.PI) / 180) * 7
+        );
+      }
+      ctx.closePath();
+      ctx.fill();
+    });
+  });
+
+  // 神フィルター：すべてのスプライトにうっすら黒をブレンド
   if (nightAlpha > 0) {
     ctx.save();
     ctx.globalCompositeOperation = "source-atop";
@@ -284,7 +318,8 @@ function draw() {
   ctx.restore();
 
   // UI
-  ctx.fillStyle = day ? "#000" : "#fff";
+  const textVal = Math.floor(255 * nightAlpha);
+  ctx.fillStyle = `rgb(${textVal}, ${textVal}, ${textVal})`;
   ctx.font = "20px sans-serif";
   ctx.fillText("Score: " + Math.floor(score), 20, 30);
   ctx.fillText("High: " + highScore, 20, 60);
