@@ -222,7 +222,7 @@ function update() {
 
   // 雲
   clouds.forEach((c) => {
-    c.x -= speed * 0.3;
+    c.x -= 6 * 0.3;
     if (c.x < -300) c.x = canvas.width;
   });
 
