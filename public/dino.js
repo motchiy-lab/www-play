@@ -8,6 +8,8 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+const urlParams = new URLSearchParams(window.location.search);
+
 // ===== 画像 =====
 const img = {};
 const files = [
@@ -36,6 +38,8 @@ const ITEM_TYPES = [
 
 let loaded = 0;
 let started = false;
+let notCycle = urlParams.has('notCycle');
+
 files.forEach((f) => {
   img[f] = new Image();
   const onSettled = () => {
@@ -226,7 +230,9 @@ function update() {
   celestial.x -= speed * 0.25;
   if (celestial.x < -100) {
     celestial.x = canvas.width;
-    day = !day;
+    if(!notCycle) {
+      day = !day;
+    }
     cycleCount++;
 
     if (!day) {
