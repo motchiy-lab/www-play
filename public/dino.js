@@ -74,12 +74,12 @@ function start() {
 
   player = {
     x: 50,
-    y: 200,
+    y: 208,
     vy: 0,
     jumping: false,
     frame: 0,
-    w: 40,
-    h: 40,
+    w: 32,
+    h: 32,
   };
 
   obstacles = [];
@@ -159,10 +159,10 @@ function update() {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: isGround ? 200 : 140,
+      y: isGround ? 208 : 140,
       type: isGround ? "ground" : "air",
-      w: 40,
-      h: 40,
+      w: 32,
+      h: 32,
     });
   }
 
@@ -183,8 +183,8 @@ function update() {
       items.push({
         x: canvas.width,
         y: 120,
-        w: 30,
-        h: 30,
+        w: 32,
+        h: 32,
         type: selectedType.name,
         scoreValue: selectedType.score,
         color: selectedType.color,
@@ -350,7 +350,7 @@ function draw() {
   ctx.fillText("High: " + highScore, 20, 60);
 
   if (multiplier > 1) {
-    ctx.fillText("x2.0 BONUS!", 20, 90);
+    ctx.fillText("x2 BONUS!", 20, 90);
   }
 
   if (gameOver) {
