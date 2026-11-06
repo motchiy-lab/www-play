@@ -20,8 +20,19 @@ const files = [
   "dino_assets/moon.png",
   "dino_assets/blue_moon.png",
   "dino_assets/clouds.png",
-  "dino_assets/star.png",
+  "dino_assets/shaved_ice.png",
+  "dino_assets/melon.png",
+  "dino_assets/apple.png",
+  "dino_assets/candy.png",
 ];
+
+const ITEM_TYPES = [
+  { name: "shaved_ice", weight: 0.1, score: 100, color: "#2196f3" }, // 10%
+  { name: "melon",      weight: 0.2, score: 50,  color: "#4caf50" }, // 20%
+  { name: "apple",      weight: 0.3, score: 30,  color: "#f44336" }, // 30%
+  { name: "candy",      weight: 0.4, score: 10,  color: "#e91e63" }  // 40%
+];
+
 
 let loaded = 0;
 let started = false;
@@ -153,11 +164,27 @@ function update() {
 
   if (frame % 500 === 0) {
     if (Math.random() < 0.5) {
+      const rand = Math.random();
+      let cumulativeWeight = 0;
+      let selectedType = ITEM_TYPES[ITEM_TYPES.length - 1];
+
+      for (const type of ITEM_TYPES) {
+        cumulativeWeight += type.weight;
+        if (rand < cumulativeWeight) {
+          selectedType = type;
+          break;
+        }
+      }
+
       items.push({
         x: canvas.width,
         y: 120,
         w: 30,
         h: 30,
+        type: selectedType.name,
+        scoreValue: selectedType.score,
+        color: selectedType.color,
+        collected: false
       });
     }
   }
@@ -181,12 +208,13 @@ function update() {
     }
   });
 
-  items.forEach((i, index) => {
-    if (hit(player, i)) {
-      score += 50; // 触れたら50点ゲット！
-      items.splice(index, 1); // 画面から消す
+  items.forEach((i) => {
+    if (!i.collected && hit(player, i)) {
+      score += i.scoreValue;
+      i.collected = true;
     }
   });
+  items = items.filter((i) => i.x > -50 && !i.collected);
 
   // 雲
   clouds.forEach((c) => {
@@ -288,25 +316,16 @@ function draw() {
   });
 
   items.forEach((i) => {
-    drawSprite("dino_assets/star.png", i.x, i.y, i.w, i.h, () => {
-      ctx.fillStyle = "#ffeb3b";
-      ctx.beginPath();
-      for (let j = 0; j < 5; j++) {
-        ctx.lineTo(
-          i.x + 15 + Math.cos(((18 + j * 72) * Math.PI) / 180) * 15,
-          i.y + 15 + Math.sin(((18 + j * 72) * Math.PI) / 180) * 15
-        );
-        ctx.lineTo(
-          i.x + 15 + Math.cos(((54 + j * 72) * Math.PI) / 180) * 7,
-          i.y + 15 + Math.sin(((54 + j * 72) * Math.PI) / 180) * 7
-        );
-      }
-      ctx.closePath();
-      ctx.fill();
+    const imgName = `dino_assets/${i.type}.png`;
+    drawSprite(imgName, i.x, i.y, i.w, i.h, () => {
+      ctx.fillStyle = i.color;
+      ctx.fillRect(i.x, i.y, i.w, i.h);
+      ctx.fillStyle = "#fff";
+      ctx.font = "10px sans-serif";
+      ctx.fillText(i.type.toUpperCase(), i.x + 2, i.y + 18);
     });
   });
 
-  // 神フィルター：すべてのスプライトにうっすら黒をブレンド
   if (nightAlpha > 0) {
     ctx.save();
     ctx.globalCompositeOperation = "source-atop";
