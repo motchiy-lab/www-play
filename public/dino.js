@@ -236,7 +236,7 @@ function update() {
     cycleCount++;
 
     if (!day) {
-      if (cycleCount % 10 === 0) {
+      if ((cycleCount + 1) % 10 === 0) {
         celestial.type = "blue_moon";
         multiplier = 1.1;
       } else {
@@ -335,7 +335,7 @@ function draw() {
   if (nightAlpha > 0) {
     ctx.save();
     ctx.globalCompositeOperation = "source-atop";
-    ctx.fillStyle = `rgba(0, 0, 0, ${nightAlpha * 0.45})`; 
+    ctx.fillStyle = `rgba(0, 0, 0, ${nightAlpha * 0.30})`; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
   }
