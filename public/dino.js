@@ -79,8 +79,8 @@ function start() {
     vy: 0,
     jumping: false,
     frame: 0,
-    w: 64,
-    h: 64,
+    w: 48,
+    h: 48,
   };
 
   obstacles = [];
@@ -162,8 +162,8 @@ function update() {
       x: canvas.width,
       y: isGround ? 185 : 115,
       type: isGround ? "ground" : "air",
-      w: 64,
-      h: 64,
+      w: 48,
+      h: 48,
     });
   }
 
@@ -183,9 +183,9 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 120,
-        w: 64,
-        h: 64,
+        y: 115,
+        w: 48,
+        h: 48,
         type: selectedType.name,
         scoreValue: selectedType.score,
         color: selectedType.color,
