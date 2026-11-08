@@ -75,7 +75,7 @@ function start() {
 
   player = {
     x: 50,
-    y: 176,
+    y: 185,
     vy: 0,
     jumping: false,
     frame: 0,
@@ -146,8 +146,8 @@ function update() {
   player.y += player.vy;
   player.vy += 0.6;
 
-  if (player.y >= 176) {
-    player.y = 176;
+  if (player.y >= 185) {
+    player.y = 185;
     player.vy = 0;
     player.jumping = false;
   }
@@ -160,7 +160,7 @@ function update() {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: isGround ? 208 : 140,
+      y: isGround ? 185 : 115,
       type: isGround ? "ground" : "air",
       w: 64,
       h: 64,
