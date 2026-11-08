@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = 300;
+  ctx.imageSmoothingEnabled = false;
 }
 window.addEventListener("resize", resize);
 resize();
@@ -74,12 +75,12 @@ function start() {
 
   player = {
     x: 50,
-    y: 208,
+    y: 176,
     vy: 0,
     jumping: false,
     frame: 0,
-    w: 32,
-    h: 32,
+    w: 64,
+    h: 64,
   };
 
   obstacles = [];
@@ -114,7 +115,7 @@ window.addEventListener("touchstart", (e) => {
 
 // ===== 衝突判定（余白カット）=====
 function hit(a, b) {
-  const margin = 6;
+  const margin = 12;
   return (
     a.x + margin < b.x + b.w - margin &&
     a.x + a.w - margin > b.x + margin &&
@@ -145,8 +146,8 @@ function update() {
   player.y += player.vy;
   player.vy += 0.6;
 
-  if (player.y >= 200) {
-    player.y = 200;
+  if (player.y >= 176) {
+    player.y = 176;
     player.vy = 0;
     player.jumping = false;
   }
@@ -161,12 +162,12 @@ function update() {
       x: canvas.width,
       y: isGround ? 208 : 140,
       type: isGround ? "ground" : "air",
-      w: 32,
-      h: 32,
+      w: 64,
+      h: 64,
     });
   }
 
-  if (frame % 500 === 0) {
+  if (frame % 250 === 0) {
     if (Math.random() < 0.5) {
       const rand = Math.random();
       let cumulativeWeight = 0;
@@ -183,8 +184,8 @@ function update() {
       items.push({
         x: canvas.width,
         y: 120,
-        w: 32,
-        h: 32,
+        w: 64,
+        h: 64,
         type: selectedType.name,
         scoreValue: selectedType.score,
         color: selectedType.color,
