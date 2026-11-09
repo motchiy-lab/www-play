@@ -146,25 +146,14 @@ function update() {
   player.y += player.vy;
   player.vy += 0.6;
 
-  if (player.y >= 185) {
-    player.y = 185;
+  if (player.y >= 182) {
+    player.y = 182;
     player.vy = 0;
     player.jumping = false;
   }
 
   if (frame % 10 === 0) {
     player.frame = 1 - player.frame;
-  }
-
-  if (frame % 70 === 0) {
-    const isGround = Math.random() < 0.5;
-    obstacles.push({
-      x: canvas.width,
-      y: isGround ? 185 : 100,
-      type: isGround ? "ground" : "air",
-      w: 64,
-      h: 64,
-    });
   }
 
   if (frame % 250 === 0) {
@@ -183,7 +172,7 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 100,
+        y: 112,
         w: 48,
         h: 48,
         type: selectedType.name,
@@ -192,6 +181,17 @@ function update() {
         collected: false
       });
     }
+  }
+
+  if (frame % 70 === 0) {
+    const isGround = Math.random() < 0.5;
+    obstacles.push({
+      x: canvas.width,
+      y: isGround ? 185 : 100,
+      type: isGround ? "ground" : "air",
+      w: 64,
+      h: 64,
+    });
   }
 
   // 障害物の移動と削除
