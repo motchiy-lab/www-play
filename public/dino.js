@@ -79,8 +79,8 @@ function start() {
     vy: 0,
     jumping: false,
     frame: 0,
-    w: 48,
-    h: 48,
+    w: 64,
+    h: 64,
   };
 
   obstacles = [];
@@ -95,7 +95,7 @@ function start() {
 // ===== 入力 =====
 function jump() {
   if (!player.jumping && !gameOver) {
-    player.vy = -12;
+    player.vy = -15;
     player.jumping = true;
   }
   if (gameOver) {
@@ -160,10 +160,10 @@ function update() {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: isGround ? 185 : 115,
+      y: isGround ? 185 : 120,
       type: isGround ? "ground" : "air",
-      w: 48,
-      h: 48,
+      w: 64,
+      h: 64,
     });
   }
 
@@ -183,9 +183,9 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 115,
-        w: 48,
-        h: 48,
+        y: 120,
+        w: 64,
+        h: 64,
         type: selectedType.name,
         scoreValue: selectedType.score,
         color: selectedType.color,
