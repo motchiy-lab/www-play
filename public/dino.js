@@ -103,8 +103,16 @@ function jump() {
   }
 }
 
+function dive() {
+  if (player.jumping && !gameOver) {
+    if (player.vy >= -1) { player.vy = 0; }
+    else { player.vy += 1; }
+  }
+}
+
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code === "ArrowUp") jump();
+  if (e.code === "ArrowDown) dive();
 });
 
 // スマホのダブルタップズームを防止しつつジャンプ
