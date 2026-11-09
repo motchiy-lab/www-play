@@ -344,7 +344,7 @@ function draw() {
   // 障害物
   obstacles.forEach((o) => {
     let name = o.type === "ground" ? "dino_assets/obstacle_ground.png"
-      : "hurdle" ? "dino_assets/obstacle_ground.png"
+      : o.type === "hurdle" ? "dino_assets/obstacle_ground.png"
       : "dino_assets/obstacle_air.png";
     drawSprite(name, o.x, o.y, o.w, o.h, () => {
       ctx.fillStyle = "#3d8b4f";
