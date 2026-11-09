@@ -213,7 +213,7 @@ function update() {
   else if(score >= 500) { frequency = 60; }
   
   if (frame % frequency === 0) {
-    if (onlyGround){
+    if (!onlyGround){
       const isGround = Math.random() < 0.5;
       obstacles.push({
         x: canvas.width,
@@ -226,7 +226,7 @@ function update() {
       obstacles.push({
         x: canvas.width,
         y: 185,
-        type: "ground",
+        type: "hurdle",
         w: 64,
         h: 64,
       });
@@ -343,10 +343,12 @@ function draw() {
 
   // 障害物
   obstacles.forEach((o) => {
-    let name = o.type === "ground" ? "dino_assets/obstacle_ground.png" : "dino_assets/obstacle_air.png";
+    let name = o.type === "ground" ? "dino_assets/obstacle_ground.png"
+      : "hurdle" ? "dino_assets/obstacle_ground.png"
+      : "dino_assets/obstacle_air.png";
     drawSprite(name, o.x, o.y, o.w, o.h, () => {
       ctx.fillStyle = "#3d8b4f";
-      if (o.type === "ground") {
+      if (o.type === "ground" || o.type === "hurdle") {
         ctx.fillRect(o.x + 12, o.y, 16, o.h);
         ctx.fillRect(o.x + 2, o.y + 12, 12, 8);
         ctx.fillRect(o.x + 26, o.y + 20, 12, 8);
