@@ -172,7 +172,7 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 112,
+        y: 90,
         w: 48,
         h: 48,
         type: selectedType.name,
@@ -183,7 +183,13 @@ function update() {
     }
   }
 
-  if (frame % 70 === 0) {
+  let frequency = 70;
+  if(score >= 1500) { frequency = 30; }
+  else if(score >= 1200) { frequency = 40; }
+  else if(score >= 800) { frequency = 50; }
+  else if(score >= 500) { frequency = 60; }
+  
+  if (frame % frequency === 0) {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
