@@ -112,7 +112,7 @@ function dive() {
 
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code === "ArrowUp") jump();
-  if (e.code === "ArrowDown) dive();
+  if (e.code === "ArrowDown") dive();
 });
 
 // スマホのダブルタップズームを防止しつつジャンプ
