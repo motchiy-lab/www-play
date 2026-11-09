@@ -172,7 +172,9 @@ function update() {
   }
 
   if (frame % 10 === 0) {
-    player.frame = 1 - player.frame;
+    if (!player.jumping) {
+      player.frame = 1 - player.frame;
+    }
   }
 
   if (frame % 250 === 0) {
