@@ -172,7 +172,7 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 90,
+        y: 65,
         w: 48,
         h: 48,
         type: selectedType.name,
