@@ -156,7 +156,7 @@ function update() {
     player.frame = 1 - player.frame;
   }
 
-  if (frame % 90 === 0) {
+  if (frame % 70 === 0) {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
@@ -184,8 +184,8 @@ function update() {
       items.push({
         x: canvas.width,
         y: 100,
-        w: 64,
-        h: 64,
+        w: 48,
+        h: 48,
         type: selectedType.name,
         scoreValue: selectedType.score,
         color: selectedType.color,
