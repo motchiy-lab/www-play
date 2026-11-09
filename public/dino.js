@@ -40,6 +40,8 @@ const ITEM_TYPES = [
 let loaded = 0;
 let started = false;
 let notCycle = urlParams.has('notCycle');
+let noItem = urlParams.has('noItem');
+let onlyGround = urlParams.has('onlyGround');
 
 files.forEach((f) => {
   img[f] = new Image();
@@ -177,7 +179,7 @@ function update() {
     }
   }
 
-  if (frame % 250 === 0) {
+  if (frame % 250 === 0 && !noItem) {
     if (Math.random() < 0.5) {
       const rand = Math.random();
       let cumulativeWeight = 0;
@@ -205,20 +207,30 @@ function update() {
   }
 
   let frequency = 70;
-  if(score >= 1500) { frequency = 30; }
-  else if(score >= 1200) { frequency = 40; }
+  if(score >= 1500) { frequency = 40; }
+  else if(score >= 1200) { frequency = 45; }
   else if(score >= 800) { frequency = 50; }
   else if(score >= 500) { frequency = 60; }
   
   if (frame % frequency === 0) {
-    const isGround = Math.random() < 0.5;
-    obstacles.push({
-      x: canvas.width,
-      y: isGround ? 185 : 100,
-      type: isGround ? "ground" : "air",
-      w: 64,
-      h: 64,
-    });
+    if (onlyGround){
+      const isGround = Math.random() < 0.5;
+      obstacles.push({
+        x: canvas.width,
+        y: isGround ? 185 : 100,
+        type: isGround ? "ground" : "air",
+        w: 64,
+        h: 64,
+      });
+    } else {
+      obstacles.push({
+        x: canvas.width,
+        y: 185,
+        type: "ground",
+        w: 64,
+        h: 64,
+      });
+    }
   }
 
   // 障害物の移動と削除
