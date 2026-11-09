@@ -95,7 +95,7 @@ function start() {
 // ===== 入力 =====
 function jump() {
   if (!player.jumping && !gameOver) {
-    player.vy = -15;
+    player.vy = -13;
     player.jumping = true;
   }
   if (gameOver) {
@@ -160,7 +160,7 @@ function update() {
     const isGround = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: isGround ? 185 : 120,
+      y: isGround ? 185 : 100,
       type: isGround ? "ground" : "air",
       w: 64,
       h: 64,
@@ -183,7 +183,7 @@ function update() {
 
       items.push({
         x: canvas.width,
-        y: 120,
+        y: 100,
         w: 64,
         h: 64,
         type: selectedType.name,
