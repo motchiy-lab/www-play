@@ -104,7 +104,7 @@ function jump() {
 }
 
 window.addEventListener("keydown", (e) => {
-  if (e.code === "Space") jump();
+  if (e.code === "Space" || e.code === "ArrowUp") jump();
 });
 
 // スマホのダブルタップズームを防止しつつジャンプ
