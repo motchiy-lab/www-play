@@ -41,12 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const addressEl = card.querySelector('.site-card__address');
         const speedEl = card.querySelector('.site-card__speed');
         if (!addressEl || !speedEl) return;
-
+    
         const domain = addressEl.textContent.trim();
         speedEl.textContent = '計測中...';
         card.style.opacity = '0.7';
-
+    
         try {
+            const domainExists = await checkDomainExists(domain);
+            
+            if (!domainExists) {
+                speedEl.textContent = 'Domain not exists';
+                return;
+            }
             const ms = await pingUsingImage(`https://${domain}`);
             speedEl.textContent = `${ms} ms`;
         } catch (error) {
@@ -55,6 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.opacity = '1';
         }
     }
+    
+    async function checkDomainExists(domain) {
+        try {
+            const response = await fetch(`https://cloudflare-dns.com{domain}&type=A`, {
+                headers: { 'Accept': 'application/dns-json' }
+            });
+            const data = await response.json();
+            if (data.Status === 3) {
+                return false;
+            }
+            return data.Answer && data.Answer.length > 0;
+        } catch (e) {
+            return true; 
+        }
+    }
+
 
     addBtn.addEventListener('click', () => {
         const name = nameInput.value.trim();
