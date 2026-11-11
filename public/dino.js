@@ -449,7 +449,7 @@ function playTone(frequency, duration, startTimeOffset = 0) {
     const ctx = getAudioContext();
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
-    oscillator.type = 'sine'; 
+    oscillator.type = 'square'; 
     oscillator.frequency.value = frequency;
     const now = ctx.currentTime + startTimeOffset;
     gainNode.gain.setValueAtTime(0.3, now);
