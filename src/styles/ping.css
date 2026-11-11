@@ -6,6 +6,8 @@
 }
 
 .site-card {
+    position: relative;
+    cursor: pointer;
     display: flex;
     min-height: 140px;
     flex-direction: column;
@@ -42,4 +44,31 @@
     color: #713d8b;
     font-size: 0.9rem;
     font-weight: 600;
+}
+
+.add-site-form {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+.add-site-form input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.site-card__delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+}
+.site-card__delete-btn:hover {
+    color: #ff4d4d;
 }
