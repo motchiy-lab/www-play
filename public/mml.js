@@ -125,3 +125,11 @@ document.getElementById('mml-play-btn').addEventListener('click', () => {
 document.getElementById('mml-stop-btn').addEventListener('click', () => {
   player.stop();
 });
+
+document.querySelectorAll('.mml-sample-btn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    player.stop();
+    const mmlData = e.target.getAttribute('data-mml');
+    document.getElementById('mml-input').value = mmlData;
+  });
+});
