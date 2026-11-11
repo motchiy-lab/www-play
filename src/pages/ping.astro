@@ -7,22 +7,14 @@ import "styles/ping.css";
     <main class="documents-container">
         <h1>Pingチェッカー</h1>
         <nav class="site-grid" aria-label="サイトリスト">
-            <div class="site-card">
-                <span class="site-card__title">Motchiy Server</span>
-                <span class="site-card__address">motchiy.com</span>
-                <span class="site-card__speed">0 ms</span>
-            </div>
-            <div class="site-card">
-                <span class="site-card__title">Google</span>
-                <span class="site-card__address">google.com</span>
-                <span class="site-card__speed">0 ms</span>
-            </div>
-            <div class="site-card">
-                <span class="site-card__title">Bing</span>
-                <span class="site-card__address">bing.com</span>
-                <span class="site-card__speed">0 ms</span>
-            </div>
+
         </nav>
+
+        <div class="add-site-form">
+            <input type="text" id="site-name" placeholder="サイト名">
+            <input type="text" id="site-address" placeholder="ドメイン（https://はいりません）">
+            <button id="add-btn">タイルを追加</button>
+        </div>
     </main>
     <script src="/ping.js" defer></script>
 </MainLayout>
