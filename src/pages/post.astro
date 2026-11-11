@@ -1,0 +1,55 @@
+---
+import MainLayout from "layouts/Main.astro";
+import "styles/mml.css";
+---
+
+<MainLayout title="マルチラインPOSTリクエスター - Play on Heiki!" description="一定時間おきに、指定のアドレスへPOSTリクエストを送り続ける装置です。並列実行も可能です！" tags="HTTP,リクエスト,POST" pageClass="post-page">
+    <main class="documents-container">
+        <h1>マルチラインPOSTリクエスター</h1>
+        <div class="post-field">
+          <label for="post-url">送信先アドレス</label>
+          <input type="url" id="post-url" placeholder="https://example.com/api">
+        </div>
+      
+        <div class="post-field">
+          <label for="post-interval">送信間隔（秒）</label>
+          <input type="number" id="post-interval" value="1" min="0.01" step="0.01">
+        </div>
+      
+        <div class="post-field">
+          <label for="post-format">リクエスト形式</label>
+          <select id="post-format">
+            <option value="json">JSON</option>
+            <option value="text">プレーンテキスト</option>
+            <option value="form">URLエンコード</option>
+          </select>
+        </div>
+      
+        <div class="post-field">
+          <label for="post-body">送信内容</label>
+          <textarea id="post-body" rows="6" placeholder='{"message":"hello"}'></textarea>
+        </div>
+      
+        <div class="post-buttons">
+          <button type="button" id="post-start">実行</button>
+          <button type="button" id="post-stop" disabled>停止</button>
+        </div>
+      
+        <div class="post-stats">
+          <div>
+            成功<strong id="post-success">0</strong>
+          </div>
+          <div>
+            失敗<strong id="post-failure">0</strong>
+          </div>
+          <div>
+            合計<strong id="post-total">0</strong>
+          </div>
+        </div>
+      
+        <div id="post-status">待機中</div>
+        <div id="post-log"></div>
+      </div>
+    </main>
+    <script src="/post.js" defer></script>
+</MainLayout>
