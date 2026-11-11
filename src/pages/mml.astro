@@ -20,12 +20,95 @@ import "styles/mml.css";
             <button id="mml-stop-btn" class="mml-btn mml-btn-stop" disabled>停止</button>
             <span id="mml-status" class="mml-status-text">Ready</span>
           </div>
+          <br>
           <div class="mml-samples">
             <span class="mml-samples-label">サンプル曲:</span>
             <button type="button" class="mml-sample-btn" data-mml="T140 O5 L8 CC>G<CC>G<C D E F E D C C>G<CC>G<C D E F G E C D E F C D E F < C2">木星（惑星）</button>
             <button type="button" class="mml-sample-btn" data-mml="T120 O5 E8E8R8E8R8C8E4 G4R4 >G4R4">地上BGM</button>
+            <button type="button" class="mml-sample-btn" data-mml="T130 O5 L8 C.C.C. C4. >A#4 <C4">ファンファーレ</button>
+            <button type="button" class="mml-sample-btn" data-mml="T100 O5 L4 CC GG AA G2 FF EE DD C2">きらきら星</button>
+            <button type="button" class="mml-sample-btn" data-mml="T132 O5 L8 FF#G#A# G#F#FG# F#FFD# F2 | FF#G#A# G#A#<C>A# G#F#FG# F4">AIZO</button>
           </div>
         </div>
+
+        <h2>MMLってなんですか</h2>
+        <p>MMLはテキストで音楽を記述する仕組みです。文字や数字を並べるだけで、ブラウザが自動で解析してピコピコ音を鳴らしてくれます。</p>
+        <h3>音名と周波数</h3>
+        <p>※オクターブが1つ上がると周波数は2倍に、下がると1/2になります。ここではオクターブ5を例に取りました。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>音名</th>
+              <th>音階（ドレミ）</th>
+              <th>周波数（ヘルツ）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>C</td><td>ド</td><td>523.25 Hz</td></tr>
+            <tr><td>C#</td><td>ド#</td><td>554.37 Hz</td></tr>
+            <tr><td>D</td><td>レ</td><td>587.33 Hz</td></tr>
+            <tr><td>D#</td><td>レ#</td><td>622.25 Hz</td></tr>
+            <tr><td>E</td><td>ミ</td><td>659.25 Hz</td></tr>
+            <tr><td>F</td><td>ファ</td><td>698.46 Hz</td></tr>
+            <tr><td>F#</td><td>ファ#</td><td>739.99 Hz</td></tr>
+            <tr><td>G</td><td>ソ</td><td>783.99 Hz</td></tr>
+            <tr><td>G#</td><td>ソ#</td><td>830.61 Hz</td></tr>
+            <tr><td>A</td><td>ラ</td><td>880.00 Hz</td></tr>
+            <tr><td>A#</td><td>ラ#</td><td>932.33 Hz</td></tr>
+            <tr><td>B</td><td>シ</td><td>987.77 Hz</td></tr>
+            <tr><td>R</td><td>休符 (お休み)</td><td></td></tr>
+          </tbody>
+        </table>
+      
+        <h3>音の長さ</h3>
+        <ul>
+          <li><strong>C4</strong> ：4分音符のド（音名や休符の後ろに数字を置く。数字は2, 4, 8, 16分音符などを表す）</li>
+          <li><strong>R8</strong> ：8分休符</li>
+          <li><strong>C4.</strong> ：付点4分音符（後ろに「.」を付けると長さが1.5倍になります）</li>
+        </ul>
+      
+        <h3>曲全体の操作</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>コマンド</th>
+              <th>意味</th>
+              <th>記述例と解説</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>T [数字]</td>
+              <td>テンポ（速さ）</td>
+              <td>T120 （数字が大きいほど高速になります）</td>
+            </tr>
+            <tr>
+              <td>O [数字]</td>
+              <td>オクターブ</td>
+              <td>O5 （標準的な高さはO4〜O5です）</td>
+            </tr>
+            <tr>
+              <td>&lt;</td>
+              <td>オクターブUP</td>
+              <td>音を1オクターブ高くします</td>
+            </tr>
+            <tr>
+              <td>&gt;</td>
+              <td>オクターブDOWN</td>
+              <td>音を1オクターブ低くします</td>
+            </tr>
+            <tr>
+              <td>L [数字]</td>
+              <td>デフォルト音長</td>
+              <td>L4 （以降の数字がない音符をすべて4分音符として扱います）</td>
+            </tr>
+            <tr>
+              <td>|</td>
+              <td>小節の区切り線</td>
+              <td>演奏には影響しない、人間が見やすくするための飾り線です</td>
+            </tr>
+          </tbody>
+        </table>
     </main>
     <script src="/mml.js" defer></script>
 </MainLayout>
