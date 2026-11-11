@@ -1985,7 +1985,7 @@ let game = {
       name: "[(disad)錬成：巡回する橋(end)]",
       cost: 100n,
       owned: 0n,
-      baseJajutsu: -999,
+      baseJajutsu: -999999999999,
       effect() {
         alert("グッジョブ！　成功したよ");
       },
@@ -1993,7 +1993,7 @@ let game = {
         return debugMode;
       },
       unlocked: false,
-      desc: "テスト用のアイテム。",
+      desc: "テスト用のアイテム。絶対に成功しない邪術。",
       flavor: "なぜか、なぜか、なぜか。問う声は消えずにいる。",
     },
     {
@@ -2008,7 +2008,7 @@ let game = {
         return debugMode;
       },
       unlocked: false,
-      desc: "テスト用のアイテム。",
+      desc: "テスト用のアイテム。成功するかもしれない邪術。",
       flavor: "もしもその種が、滅びゆく国に根ざしたならば――。",
     },
     {
@@ -2023,7 +2023,7 @@ let game = {
         return debugMode;
       },
       unlocked: false,
-      desc: "テスト用のアイテム。",
+      desc: "テスト用のアイテム。確実に成功する邪術。",
       flavor: "あるいは、それを『希望』と呼ぼう。",
     },
   ],
