@@ -1,3 +1,4 @@
+console.log('POST Party!');
 
 (() => {
   const $ = id => document.getElementById(id);
@@ -91,6 +92,8 @@
   }
 
   async function sendRequest(url, requestBody, interval) {
+    console.log('送信処理開始', url);
+    
     if (!running) return;
 
     controller = new AbortController();
@@ -163,6 +166,11 @@
 
     const url = urlInput.value.trim();
     const interval = Number(intervalInput.value);
+    
+    if (!Number.isFinite(interval) || interval < 0.01) {
+      alert('送信間隔は0.01秒以上で入力してください');
+      return;
+    }
 
     if (!url) {
       alert('送信先アドレスを入力してください');
