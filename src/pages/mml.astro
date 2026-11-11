@@ -1,0 +1,31 @@
+---
+import MainLayout from "layouts/Main.astro";
+import "styles/mml.css";
+---
+
+<MainLayout title="MMLプレイヤー - Play on Heiki!" description="ブラウザに標準搭載されているオシレーター（ビープ音）再生の機能を利用して、MMLの再生を行います。" tags="オシレーター,サウンド" pageClass="mml-page">
+    <main class="documents-container">
+        <h1>MMLプレイヤー</h1>
+        <div class="mml-player">
+          <div class="mml-editor-wrapper">
+            <label for="mml-input" class="mml-label">MMLコードを入力</label>
+            <textarea 
+              id="mml-input" 
+              class="mml-textarea" 
+              placeholder="例: T120 C D E F G A B < C"
+            >T140 O5 C8D8E8F8G8A8B8 < C4</textarea>
+          </div>
+          <div class="mml-controls">
+            <button id="mml-play-btn" class="mml-btn mml-btn-play">再生</button>
+            <button id="mml-stop-btn" class="mml-btn mml-btn-stop" disabled>停止</button>
+            <span id="mml-status" class="mml-status-text">Ready</span>
+          </div>
+          <div class="mml-samples">
+            <span class="mml-samples-label">サンプル曲:</span>
+            <button type="button" class="mml-sample-btn" data-mml="T140 O5 L8 CC>G<CC>G<C D E F E D C C>G<CC>G<C D E F G E C D E F C D E F < C2">木星（惑星）</button>
+            <button type="button" class="mml-sample-btn" data-mml="T120 O5 E8E8R8E8R8C8E4 G4R4 >G4R4">地上BGM</button>
+          </div>
+        </div>
+    </main>
+    <script src="/mml.js" defer></script>
+</MainLayout>
