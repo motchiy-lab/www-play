@@ -21,8 +21,7 @@ class SimpleMMLPlayer {
     let octave = 4;
     let defaultLength = 4;
     
-    // 簡易トークナイズ
-    const tokens = mmlString.toLowerCase().replace(/\s+/g, '').match(/([tlo><r-cdefgab][0-9]*#?)/g) || [];
+    const tokens = mmlString.toLowerCase().replace(/\s+/g, '').match(/([tlo><rcdefgab-][0-9]*#?)/g) || [];
     let currentTime = this.ctx.currentTime + 0.05;
 
     for (let i = 0; i < tokens.length; i++) {
