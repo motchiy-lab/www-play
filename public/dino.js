@@ -100,6 +100,7 @@ function jump() {
   if (!player.jumping && !gameOver) {
     player.vy = -13;
     player.jumping = true;
+    playTone(800, 0.08);
   }
   if (player.jumping) {
 
@@ -256,6 +257,8 @@ function update() {
     if (!i.collected && hit(player, i)) {
       score += i.scoreValue;
       i.collected = true;
+      playTone(1000, 0.05, 0);
+      playTone(1300, 0.08, 0.06);
     }
   });
   items = items.filter((i) => i.x > -50 && !i.collected);
@@ -396,6 +399,7 @@ function draw() {
   }
 
   if (gameOver) {
+    playTone(150, 0.15);
     ctx.fillStyle = "red";
     ctx.font = `${Math.min(40, canvas.width / 8)}px sans-serif`;
     const gameOverText = "GAME OVER";
@@ -432,4 +436,26 @@ function drawFallbackPlayer() {
   ctx.fillStyle = "#252525";
   ctx.fillRect(player.x + 8, player.y + 31, 8, 9);
   ctx.fillRect(player.x + 25, player.y + 31, 8, 9);
+}
+
+let audioCtx = null;
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+}
+function playTone(frequency, duration, startTimeOffset = 0) {
+    const ctx = getAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    oscillator.type = 'sine'; 
+    oscillator.frequency.value = frequency;
+    const now = ctx.currentTime + startTimeOffset;
+    gainNode.gain.setValueAtTime(0.3, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    oscillator.start(now);
+    oscillator.stop(now + duration);
 }
