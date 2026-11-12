@@ -17,6 +17,11 @@ import "styles/post.css";
         </div>
       
         <div class="post-field">
+          <label for="post-lines">並列送信ライン数</label>
+          <input type="number" id="post-lines" value="1" min="1" step="1">
+        </div>
+      
+        <div class="post-field">
           <label for="post-format">リクエスト形式</label>
           <select id="post-format">
             <option value="json">JSON</option>
