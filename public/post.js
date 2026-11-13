@@ -1,12 +1,13 @@
-console.log('POST Party!');
-
 (() => {
   const $ = id => document.getElementById(id);
 
   const urlInput = $('post-url');
   const intervalInput = $('post-interval');
+  const linesInput = $('post-lines');
   const formatInput = $('post-format');
   const bodyInput = $('post-body');
+  const waitCheckbox = $('post-wait');
+  const logsCheckbox = $('post-logs');
 
   const startButton = $('post-start');
   const stopButton = $('post-stop');
@@ -21,8 +22,8 @@ console.log('POST Party!');
   const MAX_REQUESTS = 1000;
 
   let running = false;
-  let timer = null;
-  let controller = null;
+  let timers = [];
+  let controllers = [];
 
   let successCount = 0;
   let failureCount = 0;
@@ -35,6 +36,8 @@ console.log('POST Party!');
   }
 
   function addLog(message, type) {
+    if (!logsCheckbox.checked) return;
+    
     const item = document.createElement('div');
 
     item.className = type;
@@ -46,14 +49,10 @@ console.log('POST Party!');
 
   function stop() {
     running = false;
-
-    clearTimeout(timer);
-    timer = null;
-
-    if (controller) {
-      controller.abort();
-      controller = null;
-    }
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    controllers.forEach(c => c.abort());
+    controllers = [];
 
     startButton.disabled = false;
     stopButton.disabled = true;
@@ -96,6 +95,13 @@ console.log('POST Party!');
     
     if (!running) return;
 
+    if (noWaitCheckbox.checked) {
+      const t = setTimeout(() => {
+        sendRequest(url, requestBody, interval);
+      }, interval * 1000);
+      timers.push(t);
+    }
+    
     controller = new AbortController();
 
     try {
@@ -140,25 +146,20 @@ console.log('POST Party!');
       );
 
     } finally {
-      controller = null;
+      controllers = controllers.filter(c => c !== controller);
       updateStats();
     }
 
     if (!running) return;
 
-    if (totalCount >= MAX_REQUESTS) {
-      stop();
-      statusDisplay.textContent =
-        '最大送信回数に到達しました';
-      return;
-    }
-
     statusDisplay.textContent = '実行中';
 
-    // 前のリクエスト完了後に次を送信
-    timer = setTimeout(() => {
-      sendRequest(url, requestBody, interval);
-    }, interval * 1000);
+    if (!noWaitCheckbox.checked) {
+      const t = setTimeout(() => {
+        sendRequest(url, requestBody, interval);
+      }, interval * 1000);
+      timers.push(t);
+    }
   }
 
   startButton.addEventListener('click', () => {
@@ -166,6 +167,7 @@ console.log('POST Party!');
 
     const url = urlInput.value.trim();
     const interval = Number(intervalInput.value);
+    const lines = Number(linesInput.value) || 1;
     
     if (!Number.isFinite(interval) || interval < 0.01) {
       alert('送信間隔は0.01秒以上で入力してください');
@@ -204,7 +206,9 @@ console.log('POST Party!');
 
     statusDisplay.textContent = '実行中';
 
-    sendRequest(parsedUrl.href, requestBody, interval);
+    for (let i = 0; i < lines; i++) {
+      sendRequest(parsedUrl.href, requestBody, interval);
+    }
   });
 
   stopButton.addEventListener('click', stop);
