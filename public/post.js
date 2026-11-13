@@ -19,7 +19,7 @@
   const statusDisplay = $('post-status');
   const logDisplay = $('post-log');
 
-  const MAX_REQUESTS = 1000;
+  const MAX_LOGS = 200;
 
   let running = false;
   let timers = [];
@@ -37,14 +37,16 @@
 
   function addLog(message, type) {
     if (!logsCheckbox.checked) return;
-    
-    const item = document.createElement('div');
 
+    const item = document.createElement('div');
     item.className = type;
-    item.textContent =
-      `[${new Date().toLocaleTimeString()}] ${message}`;
+    item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
 
     logDisplay.prepend(item);
+    
+    while (logDisplay.children.length > MAX_LOGS) {
+      logDisplay.lastChild.remove();
+    }
   }
 
   function stop() {
@@ -91,18 +93,17 @@
   }
 
   async function sendRequest(url, requestBody, interval) {
-    console.log('送信処理開始', url);
-    
     if (!running) return;
 
-    if (noWaitCheckbox.checked) {
+    if (!waitCheckbox.checked) {
       const t = setTimeout(() => {
         sendRequest(url, requestBody, interval);
       }, interval * 1000);
       timers.push(t);
     }
-    
-    controller = new AbortController();
+
+    const controller = new AbortController();
+    controllers.push(controller);
 
     try {
       const response = await fetch(url, {
@@ -118,20 +119,11 @@
 
       if (response.ok) {
         successCount++;
-
-        addLog(
-          `成功: HTTP ${response.status}`,
-          'success'
-        );
+        addLog(`成功: HTTP ${response.status}`, 'success');
       } else {
         failureCount++;
-
-        addLog(
-          `失敗: HTTP ${response.status}`,
-          'failure'
-        );
+        addLog(`失敗: HTTP ${response.status}`, 'failure');
       }
-
     } catch (error) {
       if (error.name === 'AbortError') {
         return;
@@ -139,12 +131,7 @@
 
       totalCount++;
       failureCount++;
-
-      addLog(
-        `失敗: ${error.message}`,
-        'failure'
-      );
-
+      addLog(`失敗: ${error.message}`, 'failure');
     } finally {
       controllers = controllers.filter(c => c !== controller);
       updateStats();
@@ -152,9 +139,7 @@
 
     if (!running) return;
 
-    statusDisplay.textContent = '実行中';
-
-    if (!noWaitCheckbox.checked) {
+    if (waitCheckbox.checked) {
       const t = setTimeout(() => {
         sendRequest(url, requestBody, interval);
       }, interval * 1000);
@@ -168,7 +153,7 @@
     const url = urlInput.value.trim();
     const interval = Number(intervalInput.value);
     const lines = Number(linesInput.value) || 1;
-    
+
     if (!Number.isFinite(interval) || interval < 0.01) {
       alert('送信間隔は0.01秒以上で入力してください');
       return;
@@ -185,13 +170,11 @@
     try {
       parsedUrl = new URL(url);
       requestBody = getRequestBody();
-
     } catch (error) {
       alert(error.message);
       return;
     }
 
-    // カウンター初期化
     successCount = 0;
     failureCount = 0;
     totalCount = 0;
@@ -212,5 +195,4 @@
   });
 
   stopButton.addEventListener('click', stop);
-
 })();
