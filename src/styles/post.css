@@ -8,7 +8,8 @@
   font-weight: bold;
 }
 
-.documents-container input,
+.documents-container input[type="number"],
+.documents-container input[type="url"],
 .documents-container select,
 .documents-container textarea {
   box-sizing: border-box;
