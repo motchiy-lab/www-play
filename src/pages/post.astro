@@ -35,6 +35,16 @@ import "styles/post.css";
           <textarea id="post-body" rows="6" placeholder='{"message":"hello"}'></textarea>
         </div>
       
+        <div class="post-field">
+          <label for="post-wait">レスポンスがくるまで待機する</label>
+          <input type="checkbox" id="post-wait" checked>
+        </div>
+      
+        <div class="post-field">
+          <label for="post-logs">レスポンスのログを出力する</label>
+          <input type="checkbox" id="post-logs" checked>
+        </div>
+
         <div class="post-buttons">
           <button type="button" id="post-start">実行</button>
           <button type="button" id="post-stop" disabled>停止</button>
