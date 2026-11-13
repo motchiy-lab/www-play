@@ -1,16 +1,16 @@
-#post-tool .post-field {
+.documents-container .post-field {
   margin-bottom: 14px;
 }
 
-#post-tool label {
+.documents-container label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-#post-tool input,
-#post-tool select,
-#post-tool textarea {
+.documents-container input,
+.documents-container select,
+.documents-container textarea {
   box-sizing: border-box;
   width: 100%;
   padding: 9px;
@@ -19,29 +19,29 @@
   font-size: 14px;
 }
 
-#post-tool textarea {
+.documents-container textarea {
   resize: vertical;
 }
 
-#post-tool .post-buttons {
+.documents-container .post-buttons {
   display: flex;
   gap: 10px;
   margin: 15px 0;
 }
 
-#post-tool button {
+.documents-container button {
   padding: 9px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-#post-tool button:disabled {
+.documents-container button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-#post-tool .post-stats {
+.documents-container .post-stats {
   display: flex;
   justify-content: space-around;
   gap: 10px;
@@ -51,13 +51,13 @@
   text-align: center;
 }
 
-#post-tool .post-stats div {
+.documents-container .post-stats div {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-#post-tool .post-stats strong {
+.documents-container .post-stats strong {
   font-size: 22px;
 }
 
