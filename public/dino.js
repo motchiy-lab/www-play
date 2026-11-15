@@ -263,12 +263,6 @@ function update() {
   });
   items = items.filter((i) => i.x > -50 && !i.collected);
 
-  // 雲
-  clouds.forEach((c) => {
-    c.x -= 6 * 0.3;
-    if (c.x < -300) c.x = canvas.width;
-  });
-
   // 太陽/月
   celestial.x -= 6 * 0.25;
   if (celestial.x < -100) {
@@ -291,6 +285,12 @@ function update() {
       multiplier = 1;
     }
   }
+  
+  // 雲
+  clouds.forEach((c) => {
+    c.x -= 6 * 0.28;
+    if (c.x < -300) c.x = canvas.width;
+  });
 
   // 昼夜のフェード処理
   if (!day && nightAlpha < 1) {
