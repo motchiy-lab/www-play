@@ -313,7 +313,7 @@ function draw() {
 
   // 雲
   clouds.forEach((c) => {
-    drawSprite("dino_assets/clouds.png", c.x, 50, 300, 100, () => {
+    drawSprite("dino_assets/clouds.png", c.x, 50, 200, 65, () => {
       ctx.fillStyle = day ? "#d8ecff" : "#444";
       ctx.beginPath();
       ctx.ellipse(c.x + 150, 90, 120, 24, 0, 0, Math.PI * 2);
@@ -326,7 +326,7 @@ function draw() {
   if (!day) {
     cel = celestial.type === "blue_moon" ? "dino_assets/blue_moon.png" : "dino_assets/moon.png";
   }
-  drawSprite(cel, celestial.x, 30, 80, 80, () => {
+  drawSprite(cel, celestial.x, 30, 60, 60, () => {
     ctx.fillStyle = celestial.type === "sun" ? "#ffd34d" : "#e6e9ff";
     ctx.beginPath();
     ctx.arc(celestial.x + 40, 70, 32, 0, Math.PI * 2);
