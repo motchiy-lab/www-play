@@ -1,9 +1,9 @@
-import { createBuildingsData } from "./mochi_assets/data_buildings.js";
-import { createUpgradesData } from "./mochi_assets/data_upgrades.js";
-import { createDivineUpgradesData } from "./mochi_assets/data_divine.js";
-import { createItemsData } from "./mochi_assets/data_items.js";
-import { createJajutsuData } from "./mochi_assets/data_jajutsu.js";
-import { createAchievementsData } from "./mochi_assets/data_achievements.js";
+import { createBuildingsData } from "../mochi_assets/data_buildings.js";
+import { createUpgradesData } from "../mochi_assets/data_upgrades.js";
+import { createDivineUpgradesData } from "../mochi_assets/data_divine.js";
+import { createItemsData } from "../mochi_assets/data_items.js";
+import { createJajutsuData } from "../mochi_assets/data_jajutsu.js";
+import { createAchievementsData } from "../mochi_assets/data_achievements.js";
 
 const panel = document.getElementById("panel");
 const count = document.getElementById("count");
