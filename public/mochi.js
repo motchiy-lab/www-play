@@ -474,6 +474,8 @@ function timeAlterStatus() {
 window.timeAlter = timeAlter;
 window.timeAlterStatus = timeAlterStatus;
 
+window.openTab = openTab;
+
 // デバッグモード
 let debugMode = false;
 function enableDebug() {
