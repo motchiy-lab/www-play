@@ -1,4 +1,4 @@
-export function createItemsData(game, getClickPower, isDebug){
+export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
   return [
     {
       name: "たくたんフロストコーヒー",
