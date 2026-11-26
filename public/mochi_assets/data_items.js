@@ -502,7 +502,7 @@ export function createItemsData(game, getClickPower, isDebug){
       effect() {
       },
       unlock(){
-        return debugMode;
+        return isDebug();
       },
       unlocked: false,
       desc: "テスト用のアイテム。",
@@ -515,7 +515,7 @@ export function createItemsData(game, getClickPower, isDebug){
       effect() {
       },
       unlock(){
-        return debugMode;
+        return isDebug();
       },
       unlocked: false,
       desc: "テスト用のアイテム。",
