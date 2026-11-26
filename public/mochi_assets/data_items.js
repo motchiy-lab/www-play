@@ -496,6 +496,149 @@ export function createItemsData(game, getClickPower, isDebug){
     },
     
     {
+      name: "[(r1)焦げた手記の切れ端(end)]",
+      cost: 1000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・刹");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 1500000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の生産力+15%。",
+      flavor: "ボート……関数……鉄鋼……ファーム……",
+    },
+    {
+      name: "[(r1)ひび割れた亡国の水晶片(end)]",
+      cost: 1000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・刹");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.cost = (building.cost * 10n) / 100n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の現在価格-10%。",
+      flavor: "もう光を放たない水晶。でも少しだけ温かい。",
+    },{
+      name: "[(r1)白い砂のアンプル(end)]",
+      cost: 100000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・考");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 3000000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の生産力+30%。",
+      flavor: "とても細かい砂のアンプル。揺らすと心地の良い音がする。",
+    },
+    {
+      name: "[(r1)割れたペンケース(end)]",
+      cost: 100000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・考");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.cost = (building.cost * 75n) / 100n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の現在価格-25%。",
+      flavor: "ひどく割れてしまったペンケース。使い物にはならない。",
+    },{
+      name: "[(r1)氷を写した古い写真(end)]",
+      cost: 10000000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・究");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 7000000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の生産力+70%。",
+      flavor: "どこかの氷山が映ったモノクロの写真。色はなくとも、その奥の太陽の明るさは想像に易い。",
+    },
+    {
+      name: "[(r1)ボロボロのメモ帳(end)]",
+      cost: 10000000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・究");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.cost = (building.cost * 60n) / 100n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の現在価格-40%。",
+      flavor: "肝心のページはすべて破り取られてしまっている。劣化した表紙は、なでるだけで崩れそうだ。",
+    },{
+      name: "[(r1)縫い直されたリボン(end)]",
+      cost: 10000000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・厳");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.multiplier += 15000000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の生産力+150%。",
+      flavor: "何度も何度も縫い直された黒いリボン。縫い目は丁寧で、よく見ないと縫い直したことが分からない。",
+    },
+    {
+      name: "[(r1)白い磁器のカケラ(end)]",
+      cost: 10000000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・厳");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.cost = (building.cost * 40n) / 100n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の現在価格-60%。",
+      flavor: "赤い花の模様が見える、磁器の小さな欠片。花瓶だったのだろうか。",
+    },
+    {
+      name: "[(r1)ココロオブシディアンの原石(end)]",
+      cost: 1000000000000000000n,
+      owned: 0n,
+      unlock() {
+        return hasDivineUpgrade("ある先輩のヒラメキ・完終");
+      },
+      effect() {
+        game.buildings.slice(0, 17).forEach(building => {
+          building.cost = (building.cost * 40n) / 100n;
+          building.multiplier += 2000000n;
+        });
+      },
+      unlocked: false,
+      desc: "すべてのグレード1の設備の現在価格-60%、設備の生産力+200%。",
+      flavor: "大きくて不純物のないココロオブシディアンの原石。ただそれだけ。",
+    },
+    
+    {
       name: "[(disad)ガドリニウムの匣(end)]",
       cost: 100n,
       owned: 0n,
