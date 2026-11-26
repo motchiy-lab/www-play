@@ -158,7 +158,7 @@ let game = {
 // 各リソースの読み込み
 game.buildings = createBuildingsData(game);
 game.upgrades = createUpgradesData(game, hasUpgrade);
-game.items = createItemsData(game, getClickPower, () => debugMode);
+game.items = createItemsData(game, getClickPower, () => debugMode, hasDivineUpgrade);
 game.divineUpgrades = createDivineUpgradesData(game, hasDivineUpgrade);
 game.jajutsuItems = createJajutsuData(game, () => debugMode );
 game.achievements = createAchievementsData(game);
