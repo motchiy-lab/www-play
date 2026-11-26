@@ -1413,6 +1413,21 @@ function getReincarnationBonus() {
   return BigInt(Math.floor(Math.pow(2, r / 5)) - 1);
 }
 
+const MIKAN_BASE_COOKIES = 10n ** 10n;
+
+function bigIntCubeRoot(value) {
+  if (value < 0n) throw new RangeError("負の数は計算できません");
+  if (value < 2n) return value;
+
+  const bitLength = BigInt(value.toString(2).length);
+  let x = 1n << ((bitLength + 2n) / 3n);
+
+  while (true) {
+    const nextX = (2n * x + value / (x * x)) / 3n;
+    if (nextX >= x) return x;
+    x = nextX;
+  }
+}
 function getMikanGain(cookies) {
   cookies = BigInt(cookies);
 
@@ -1420,10 +1435,9 @@ function getMikanGain(cookies) {
     return 0n;
   }
 
-  return BigInt(cookies.toString().length - 10);
+  return bigIntCubeRoot(cookies / MIKAN_BASE_COOKIES);
 }
 
-// 左上の転生ポップアップ
 const reincarnationPopup = document.createElement("button");
 
 reincarnationPopup.id = "reincarnation-popup";
