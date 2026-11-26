@@ -506,6 +506,7 @@ function resetCookie(){
 }
 window.plusCookie = plusCookie;
 window.resetCookie = resetCookie;
+window.gamedata = game;
 // ひたすら　デバッグ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 const tooltip = document.getElementById("tooltip");
