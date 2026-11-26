@@ -277,7 +277,6 @@ export function createDivineUpgradesData(game, hasDivineUpgrade){
       cost: 3n,
       bought: false,
       effect() {
-        game.reinJajutsu += 1;
       },
       initialBonusEffect(bonus) {
         bonus.buildings["バイトたくたん"] ??= {};
@@ -291,6 +290,171 @@ export function createDivineUpgradesData(game, hasDivineUpgrade){
       unlocked: false,
       desc: "転生時の初期所有たくたん+1、たくたんの生産性を+100%。",
       flavor: "香辛料が加速している！",
+    },
+    {
+      name: "たくたん王の導き・II",
+      cost: 15n,
+      bought: false,
+      effect() {
+      },
+      initialBonusEffect(bonus) {
+        bonus.buildings["バイトたくたん"] ??= {};
+        const building = bonus.buildings["バイトたくたん"];
+        building.owned = (building.owned ?? 0n) + 10n;
+        building.multiplier = (building.multiplier ?? 0n) + 3000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・II")
+          && hasDivineUpgrade("山本の導き・II")
+          && hasDivineUpgrade("最高裁の導き・II");
+      },
+      unlocked: false,
+      desc: "転生時の初期所有たくたん+10、たくたんの生産性を+300%。",
+      flavor: "遥か高みさえも喰らい尽くす。",
+    },
+    {
+      name: "たくたん王の導き・III",
+      cost: 250n,
+      bought: false,
+      effect() {
+      },
+      initialBonusEffect(bonus) {
+        bonus.buildings["バイトたくたん"] ??= {};
+        const building = bonus.buildings["バイトたくたん"];
+        building.owned = (building.owned ?? 0n) + 30n;
+        building.multiplier = (building.multiplier ?? 0n) + 10000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・III")
+          && hasDivineUpgrade("山本の導き・III")
+          && hasDivineUpgrade("最高裁の導き・III");
+      },
+      unlocked: false,
+      desc: "転生時の初期所有たくたん+30、たくたんの生産性を+1000%。",
+      flavor: "あまたの星星は、いつか香辛料へと成り果てる。",
+    },
+    {
+      name: "たくたん王の導き・IV",
+      cost: 850n,
+      bought: false,
+      effect() {
+      },
+      initialBonusEffect(bonus) {
+        bonus.buildings["バイトたくたん"] ??= {};
+        const building = bonus.buildings["バイトたくたん"];
+        building.owned = (building.owned ?? 0n) + 100n;
+        building.multiplier = (building.multiplier ?? 0n) + 30000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・IV")
+          && hasDivineUpgrade("山本の導き・IV")
+          && hasDivineUpgrade("最高裁の導き・IV");
+      },
+      unlocked: false,
+      desc: "転生時の初期所有たくたん+100、たくたんの生産性を+3000%。",
+      flavor: "世界を、地を、天を香辛料で埋め尽くす時が来た！",
+    },
+    {
+      name: "たくたん王の導き・V",
+      cost: 1500n,
+      bought: false,
+      effect() {
+      },
+      initialBonusEffect(bonus) {
+        bonus.buildings["バイトたくたん"] ??= {};
+        const building = bonus.buildings["バイトたくたん"];
+        building.owned = (building.owned ?? 0n) + 300n;
+        building.multiplier = (building.multiplier ?? 0n) + 100000000n;
+      },
+      unlock() {
+        return hasDivineUpgrade("日本の神の導き・V")
+          && hasDivineUpgrade("山本の導き・V")
+          && hasDivineUpgrade("最高裁の導き・V");
+      },
+      unlocked: false,
+      desc: "転生時の初期所有たくたん+300、たくたんの生産性を+10000%。より上級なアップグレードを解放する。",
+      flavor: "いかなる神さえも香辛料の前には敵うまい！",
+    },
+
+    {
+      name: "ある先輩のヒラメキ・刹",
+      cost: 3000n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      initialBonusEffect(bonus) {
+      },
+      unlock() {
+        return hasDivineUpgrade("たくたん王の導き・V");
+      },
+      unlocked: false,
+      desc: "建物の生産力を+100%し、いくつかの特殊なアイテムを解放する。",
+      flavor: "「そうでしたね。そろそろ、僕も参加すべきですか」",
+    },
+    {
+      name: "ある先輩のヒラメキ・考",
+      cost: 3000n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      initialBonusEffect(bonus) {
+      },
+      unlock() {
+        return hasDivineUpgrade("たくたん王の導き・V");
+      },
+      unlocked: false,
+      desc: "建物の生産力を+100%し、いくつかの特殊なアイテムを解放する。",
+      flavor: "いくつもの春を過ごした。いくつもの終わりと始まりを見届けた。",
+    },
+    {
+      name: "ある先輩のヒラメキ・究",
+      cost: 3000n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      initialBonusEffect(bonus) {
+      },
+      unlock() {
+        return hasDivineUpgrade("たくたん王の導き・V");
+      },
+      unlocked: false,
+      desc: "建物の生産力を+100%し、いくつかの特殊なアイテムを解放する。",
+      flavor: "棺を抱えて海を渡った。彼は耳を澄ませるが、聞こえたのは静かな風だけ。",
+    },
+    {
+      name: "ある先輩のヒラメキ・厳",
+      cost: 3000n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 1000000n;
+      },
+      initialBonusEffect(bonus) {
+      },
+      unlock() {
+        return hasDivineUpgrade("たくたん王の導き・V");
+      },
+      unlocked: false,
+      desc: "建物の生産力を+100%し、いくつかの特殊なアイテムを解放する。",
+      flavor: "「だから僕はまだ探すんです。約束の果たせる地を」",
+    },
+    {
+      name: "ある先輩のヒラメキ・完終",
+      cost: 50000n,
+      bought: false,
+      effect() {
+        game.reinBuildingsMultiplier += 30000000n;
+      },
+      initialBonusEffect(bonus) {
+      },
+      unlock() {
+        return hasDivineUpgrade("たくたん王の導き・V");
+      },
+      unlocked: false,
+      desc: "建物の生産力を+3000%し、いくつかの特殊なアイテムを解放する！",
+      flavor: "いつかその輪廻が報われる時は来るのだろうか？",
     },
   ];
 }
