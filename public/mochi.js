@@ -1,9 +1,9 @@
-import { createBuildingsData } from "../mochi_assets/data_buildings.js";
-import { createUpgradesData } from "../mochi_assets/data_upgrades.js";
-import { createDivineUpgradesData } from "../mochi_assets/data_divine.js";
-import { createItemsData } from "../mochi_assets/data_items.js";
-import { createJajutsuData } from "../mochi_assets/data_jajutsu.js";
-import { createAchievementsData } from "../mochi_assets/data_achievements.js";
+import { createBuildingsData } from "./mochi_assets/data_buildings.js";
+import { createUpgradesData } from "./mochi_assets/data_upgrades.js";
+import { createDivineUpgradesData } from "./mochi_assets/data_divine.js";
+import { createItemsData } from "./mochi_assets/data_items.js";
+import { createJajutsuData } from "./mochi_assets/data_jajutsu.js";
+import { createAchievementsData } from "./mochi_assets/data_achievements.js";
 
 const panel = document.getElementById("panel");
 const count = document.getElementById("count");
@@ -158,9 +158,9 @@ let game = {
 // 各リソースの読み込み
 game.buildings = createBuildingsData(game);
 game.upgrades = createUpgradesData(game, hasUpgrade);
-game.items = createItemsData(game, getClickPower, isDebug: () => debugMode);
-game.divineUpgrades = createItemsData(game, hasDivineUpgrade);
-game.jajutsuItems = createJajutsuData(game, isDebug: () => debugMode);
+game.items = createItemsData(game, getClickPower, { isDebug: () => debugMode });
+game.divineUpgrades = createDivineUpgradesData(game, hasDivineUpgrade);
+game.jajutsuItems = createJajutsuData(game, { isDebug: () => debugMode });
 game.achievements = createAchievementsData(game);
 
 game.buildings.forEach((b) => {
