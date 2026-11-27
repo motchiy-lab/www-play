@@ -1,5 +1,6 @@
 export function createAchievementsData(game){
   return [
+    // クリック数
     {
       id: "click1",
       name: "ファーストペンギン",
@@ -19,18 +20,6 @@ export function createAchievementsData(game){
       unlocked: false,
     },
     {
-      id: "click314",
-      name: "丸餅",
-      desc: "314回クリックする。",
-      unlocked: false,
-    },
-    {
-      id: "click777",
-      name: "ラッキー！",
-      desc: "777回クリックする。",
-      unlocked: false,
-    },
-    {
       id: "click1000",
       name: "「個人消費には向かない……」",
       desc: "1000回クリックする。",
@@ -40,12 +29,6 @@ export function createAchievementsData(game){
       id: "click10000",
       name: "村ひとつ養える",
       desc: "10000回クリックする。",
-      unlocked: false,
-    },
-    {
-      id: "click65535",
-      name: "16bitの限界",
-      desc: "65535回クリックする。",
       unlocked: false,
     },
     {
@@ -61,6 +44,89 @@ export function createAchievementsData(game){
       unlocked: false,
     },
 
+    // 餅所有数
+    {
+      id: "mochi314",
+      name: "丸餅",
+      desc: "314個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi777",
+      name: "ラッキー！",
+      desc: "777個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi10000",
+      name: "序盤も序盤",
+      desc: "10000個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi65535",
+      name: "16bitの限界",
+      desc: "65535個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi100man",
+      name: "輝ける餅つき屋",
+      desc: "100万個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi1oku",
+      name: "煌めける理の餅屋",
+      desc: "1億個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi1chou",
+      name: "果て無き道へ踏み出す餅屋",
+      desc: "1兆個の餅を獲得する。",
+      unlocked: false,
+    },
+    {
+      id: "mochi1kei",
+      name: "さいほうへいきに認められそうな餅屋",
+      desc: "1京個の餅を獲得する。",
+      unlocked: false,
+    },
+
+    // 転生
+    {
+      id: "rein1",
+      name: "転生したら餅屋だった件",
+      desc: "1回転生する。",
+      unlocked: false,
+    },
+    {
+      id: "rein3",
+      name: "プロプロプロ餅屋",
+      desc: "3回転生する。",
+      unlocked: false,
+    },
+    {
+      id: "rein10",
+      name: "死でも逃れられない運命",
+      desc: "10回転生する。",
+      unlocked: false,
+    },
+    {
+      id: "rein100",
+      name: "餅の神の敬意",
+      desc: "100回転生する。",
+      unlocked: false,
+    },
+    {
+      id: "rein1000",
+      name: "転生を司る神",
+      desc: "1000回転生する。",
+      unlocked: false,
+    },
+
+    // グレード1建物所有
     {
       id: "own_takutan",
       name: "雇用契約",
@@ -309,7 +375,8 @@ export function createAchievementsData(game){
       desc: "Motchiyサーバーを100台購入する。",
       unlocked: false,
     },
-    
+
+    // グレード2建物所有
     {
       id: "own_godgarden",
       name: "偽りの神が舞い降りる地",
