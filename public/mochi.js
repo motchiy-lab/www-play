@@ -172,12 +172,9 @@ const reincarnationInitialState = {
   clickPower: game.clickPower,
   clickMultiplier: game.clickMultiplier,
 
-  stats: { ...game.stats },
-
   buildings: game.buildings.map((x) => ({ ...x })),
   upgrades: game.upgrades.map((x) => ({ ...x })),
   items: game.items.map((x) => ({ ...x })),
-  achievements: game.achievements.map((x) => ({ ...x })),
   jajutsuItems: game.jajutsuItems.map((x) => ({ ...x })),
 };
 
@@ -1234,34 +1231,6 @@ function renderItems() {
   const items = jajutsu
     ? game.jajutsuItems
     : game.items;
-/*
-  subtabs.className = "subtabs";
-
-  function addSubtab(label, value) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = label;
-    button.className =
-      itemSubtab === value ? "active" : "";
-
-    button.onclick = () => {
-      itemSubtab = value;
-      render();
-    };
-
-    subtabs.appendChild(button);
-  }
-
-  addSubtab("通常", "normal");
-
-  if (game.reinJajutsu >= 1) {
-    addSubtab("邪術", "jajutsu");
-  }
-
-  panel.appendChild(subtabs);
-
-  */
-
   items.forEach((it, i) => {
     if (it.unlock && !it.unlocked) return;
 
@@ -1694,8 +1663,6 @@ function reincarnate() {
     game.clickMultiplier =
       reincarnationInitialState.clickMultiplier;
 
-    game.stats = { ...reincarnationInitialState.stats };
-
     game.buildings =
       reincarnationInitialState.buildings.map((x) => ({ ...x }));
 
@@ -1707,9 +1674,7 @@ function reincarnate() {
 
     game.jajutsuItems =
   reincarnationInitialState.jajutsuItems.map((x) => ({ ...x }));
-
-    game.achievements =
-      reincarnationInitialState.achievements.map((x) => ({ ...x }));
+    
     cookieRemainder = 0n;
     timeAlterSpeed = 1;
     timeAlterCredit = 0;
