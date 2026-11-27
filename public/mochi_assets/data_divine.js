@@ -248,13 +248,13 @@ export function createDivineUpgradesData(game, hasDivineUpgrade){
       cost: 50n,
       bought: false,
       effect() {
-        game.reinJajutsu += 30;
+        game.reinJajutsu += 25;
       },
       unlock() {
         return hasDivineUpgrade("邪術神の導き・III");
       },
       unlocked: false,
-      desc: "邪術度を+30%する。",
+      desc: "邪術度を+25%する。",
       flavor: "「邪術に不可能はありません。でも、絶対もありません」― さいほうへいき",
     },
     {
@@ -262,13 +262,13 @@ export function createDivineUpgradesData(game, hasDivineUpgrade){
       cost: 250n,
       bought: false,
       effect() {
-        game.reinJajutsu += 100000;
+        game.reinJajutsu += 40;
       },
       unlock() {
         return hasDivineUpgrade("邪術神の導き・IV");
       },
       unlocked: false,
-      desc: "邪術度を+100000%する。",
+      desc: "邪術度を+40%する。",
       flavor: "「ですから、邪術の腕がいくら上がろうとも、できないことはあるのです」― さいほうへいき",
     },
     
