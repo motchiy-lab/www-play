@@ -139,7 +139,7 @@ export function createAchievementsData(game){
     {
       id: "own_east10",
       name: "超えて行く・東",
-      desc: "西日本を10個購入する。",
+      desc: "東日本を10個購入する。",
       unlocked: false,
     },
 
@@ -343,7 +343,7 @@ export function createAchievementsData(game){
       unlocked: false,
     },
     {
-      id: "own_ztakutan10",
+      id: "own_zzztakutan10",
       name: "さんをつけろよ、鯖主野郎",
       desc: "真超覚醒たくたんを10人雇用する。",
       unlocked: false,
@@ -447,7 +447,7 @@ export function createAchievementsData(game){
       unlocked: false,
     },
     {
-      id: "own_imaginarycaller",
+      id: "own_imaginarycaller10",
       name: "どこから綴られた？",
       desc: "虚構星臨装置を10個購入する。",
       unlocked: false,
@@ -462,7 +462,7 @@ export function createAchievementsData(game){
     {
       id: "own_mochiclock10",
       name: "クロック・コレクター",
-      desc: "ハンドラ・ベルディヤの餅時計をを10個購入する。",
+      desc: "ハンドラ・ベルディヤの餅時計を10個購入する。",
       unlocked: false,
     },
     
@@ -486,7 +486,7 @@ export function createAchievementsData(game){
       unlocked: false,
     },
     {
-      id: "own_ssseto",
+      id: "own_ssseto10",
       name: "「勝つさ」",
       desc: "超覚醒干支を10人雇用する。",
       unlocked: false,
@@ -567,7 +567,7 @@ export function createAchievementsData(game){
     {
       id: "own_takutangarden",
       name: "おしまい？",
-      desc: "たくたん神が箱庭を創造し初めた……次のアップデートを待とう。",
+      desc: "たくたん神が箱庭を創造し始めた……次のアップデートを待とう。",
       unlocked: false,
     },
   ];
