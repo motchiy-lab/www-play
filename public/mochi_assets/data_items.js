@@ -96,6 +96,66 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
       flavor:
         "ふつうの液状化最高裁に慣れていないと、これに手を出してはいけない……。",
     },
+    {
+      name: "さばねこミルク",
+      cost: 45000000n,
+      owned: 0n,
+      unlock() {
+        return getClickPower() >= 4500000n;
+      },
+      effect() {
+        game.clickPower += 262144n;
+      },
+      unlocked: false,
+      desc: "クリック力+262144。",
+      flavor:
+        "栄養価が高く、忙しいときの食事代わりにも、日頃の飲料にもなる素晴らしい缶ミルク。",
+    },
+    {
+      name: "アーチャウエナジー",
+      cost: 235000000n,
+      owned: 0n,
+      unlock() {
+        return getClickPower() >= 8000000n;
+      },
+      effect() {
+        game.clickPower += 1048576n;
+      },
+      unlocked: false,
+      desc: "クリック力+1048576。",
+      flavor:
+        "アーチャウ茶を利用した最強のエナジードリンク。容量・用法を守ってお飲みください。",
+    },
+    {
+      name: "京都レモネード",
+      cost: 1200000000n,
+      owned: 0n,
+      unlock() {
+        return getClickPower() >= 12000000n;
+      },
+      effect() {
+        game.clickPower += 8388608n;
+      },
+      unlocked: false,
+      desc: "クリック力+8388608。",
+      flavor:
+        "Motchiyが大好きな飲みもの。これはリアルで売ってるやつなのでぜひみんなも飲もう！",
+    },
+    {
+      name: "たくたんブラッドティー",
+      cost: 7500000000n,
+      owned: 0n,
+      unlock() {
+        return getClickPower() >= 19000000n;
+      },
+      effect() {
+        game.clickPower += 134217728n;
+      },
+      unlocked: false,
+      desc: "クリック力+134217728。",
+      flavor:
+        "血のような色合いの紅茶。実はたくたんの血が本当に混じっているとか……？",
+    },
 
     {
       name: "星声",
@@ -458,10 +518,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.clickMultiplier += 30000n;
+        game.clickMultiplier += 60000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。クリック力+3%。",
+      desc: "特別なカクテル。クリック力+6%。",
       flavor:
         "「ここには面白いものがいっぱいあるね！　ためしに竹ミルクでカクテルを作ってみたけど」― ミングル",
     },
@@ -663,6 +723,32 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
       unlocked: false,
       desc: "テスト用のアイテム。",
       flavor: "マイトネリウム。原子番号109番、元素記号Mt。名前の由来は研究者リーゼ・マイトナーから。",
+    },
+    {
+      name: "[(disad)ユウロピウムの匣(end)]",
+      cost: 500n,
+      owned: 0n,
+      effect() {
+      },
+      unlock(){
+        return isDebug();
+      },
+      unlocked: false,
+      desc: "テスト用のアイテム。",
+      flavor: "ユウロピウム。原子番号63番、元素記号Eu。名前の由来はヨーロッパから。",
+    },
+    {
+      name: "[(disad)アクチニウムの匣(end)]",
+      cost: 500n,
+      owned: 0n,
+      effect() {
+      },
+      unlock(){
+        return isDebug();
+      },
+      unlocked: false,
+      desc: "テスト用のアイテム。",
+      flavor: "アクチニウム。原子番号89番、元素記号Ac。名前の由来はギリシャ語で光線や放射線を意味する『aktis』から。",
     },
   ];
 }
