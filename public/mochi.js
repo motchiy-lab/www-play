@@ -644,26 +644,61 @@ function checkAchievements() {
   if (game.stats.clicks >= 100n) {
     unlockAchievement("click100");
   }
-  if (game.stats.clicks >= 314n) {
-    unlockAchievement("click314");
-  }
-  if (game.stats.clicks >= 777n) {
-    unlockAchievement("click777");
-  }
   if (game.stats.clicks >= 1000n) {
     unlockAchievement("click1000");
   }
   if (game.stats.clicks >= 10000n) {
     unlockAchievement("click10000");
   }
-  if (game.stats.clicks >= 65535n) {
-    unlockAchievement("click65535");
-  }
   if (game.stats.clicks >= 100000n) {
     unlockAchievement("click100000");
   }
   if (game.stats.clicks >= 1000000n) {
     unlockAchievement("click1000000");
+  }
+  
+  if (game.cookies >= 314n) {
+    unlockAchievement("mochi314");
+  }
+  if (game.cookies >= 777n) {
+    unlockAchievement("mochi777");
+  }
+  if (game.cookies >= 10000n) {
+    unlockAchievement("mochi10000");
+  }
+  if (game.cookies >= 65535n) {
+    unlockAchievement("mochi65535");
+  }
+  if (game.cookies >= 1000000n) {
+    unlockAchievement("mochi100man");
+  }
+  if (game.cookies >= 100000000n) {
+    unlockAchievement("mochi1oku");
+  }
+  if (game.cookies >= 1000000000000n) {
+    unlockAchievement("mochi1chou");
+  }
+  if (game.cookies >= 10000000000000000n) {
+    unlockAchievement("mochi1kei");
+  }
+  
+  if (game.reincarnations >= 1n) {
+    unlockAchievement("rein1");
+  }
+  if (game.reincarnations >= 3n) {
+    unlockAchievement("rein3");
+  }
+  if (game.reincarnations >= 5n) {
+    unlockAchievement("rein5");
+  }
+  if (game.reincarnations >= 10n) {
+    unlockAchievement("rein10");
+  }
+  if (game.reincarnations >= 100n) {
+    unlockAchievement("rein100");
+  }
+  if (game.reincarnations >= 1000n) {
+    unlockAchievement("rein1000");
   }
 
   if (game.buildings[0].owned >= 1) {
@@ -796,6 +831,147 @@ function checkAchievements() {
   }
   if (game.buildings[16].owned >= 100) {
     unlockAchievement("own_motchiy100");
+  }
+  
+  if (game.buildings[17].owned >= 1) {
+    unlockAchievement("own_godgarden");
+  }
+  if (game.buildings[17].owned >= 10) {
+    unlockAchievement("own_godgarden10");
+  }
+  
+  if (game.buildings[18].owned >= 1) {
+    unlockAchievement("own_ztakutan");
+  }
+  if (game.buildings[18].owned >= 10) {
+    unlockAchievement("own_ztakutan10");
+  }
+  
+  if (game.buildings[19].owned >= 1) {
+    unlockAchievement("own_zzztakutan");
+  }
+  if (game.buildings[19].owned >= 10) {
+    unlockAchievement("own_zzztakutan10");
+  }
+  
+  if (game.buildings[20].owned >= 1) {
+    unlockAchievement("own_imaginaryfarm");
+  }
+  if (game.buildings[20].owned >= 10) {
+    unlockAchievement("own_imaginaryfarm10");
+  }
+  
+  if (game.buildings[21].owned >= 1) {
+    unlockAchievement("own_quantummotchiy");
+  }
+  if (game.buildings[21].owned >= 10) {
+    unlockAchievement("own_quantummotchiy10");
+  }
+  
+  if (game.buildings[22].owned >= 1) {
+    unlockAchievement("own_jajutsulab");
+  }
+  if (game.buildings[22].owned >= 10) {
+    unlockAchievement("own_jajutsulab10");
+  }
+  
+  if (game.buildings[23].owned >= 1) {
+    unlockAchievement("own_sseto");
+  }
+  if (game.buildings[23].owned >= 10) {
+    unlockAchievement("own_sseto10");
+  }
+  
+  if (game.buildings[24].owned >= 1) {
+    unlockAchievement("own_stobbe");
+  }
+  if (game.buildings[24].owned >= 10) {
+    unlockAchievement("own_stobbe10");
+  }
+  
+  if (game.buildings[25].owned >= 1) {
+    unlockAchievement("own_garage");
+  }
+  if (game.buildings[25].owned >= 10) {
+    unlockAchievement("own_garage10");
+  }
+  
+  if (game.buildings[26].owned >= 1) {
+    unlockAchievement("own_renon");
+  }
+  if (game.buildings[26].owned >= 10) {
+    unlockAchievement("own_renon10");
+  }
+  
+  if (game.buildings[27].owned >= 1) {
+    unlockAchievement("own_imaginarycaller");
+  }
+  if (game.buildings[27].owned >= 10) {
+    unlockAchievement("own_imaginarycaller10");
+  }
+  
+  if (game.buildings[28].owned >= 1) {
+    unlockAchievement("own_mochiclock");
+  }
+  if (game.buildings[28].owned >= 10) {
+    unlockAchievement("own_mochiclock10");
+  }
+  
+  if (game.buildings[29].owned >= 1) {
+    unlockAchievement("own_mod");
+  }
+  if (game.buildings[29].owned >= 10) {
+    unlockAchievement("own_mod10");
+  }
+  
+  if (game.buildings[30].owned >= 1) {
+    unlockAchievement("own_ssseto");
+  }
+  if (game.buildings[30].owned >= 10) {
+    unlockAchievement("own_ssseto10");
+  }
+  
+  if (game.buildings[31].owned >= 1) {
+    unlockAchievement("own_kaiha");
+  }
+  if (game.buildings[31].owned >= 10) {
+    unlockAchievement("own_kaiha10");
+  }
+  
+  if (game.buildings[32].owned >= 1) {
+    unlockAchievement("own_rai");
+  }
+  if (game.buildings[32].owned >= 10) {
+    unlockAchievement("own_rai10");
+  }
+  
+  if (game.buildings[33].owned >= 1) {
+    unlockAchievement("own_ssrenon");
+  }
+  if (game.buildings[33].owned >= 10) {
+    unlockAchievement("own_ssrenon10");
+  }
+  
+  if (game.buildings[34].owned >= 1) {
+    unlockAchievement("own_middlemod");
+  }
+  if (game.buildings[34].owned >= 10) {
+    unlockAchievement("own_middlemod10");
+  }
+  
+  if (game.buildings[35].owned >= 1) {
+    unlockAchievement("own_boomerang");
+  }
+  if (game.buildings[35].owned >= 10) {
+    unlockAchievement("own_boomerang10");
+  }
+  
+  if (game.buildings[36].owned >= 1) {
+    unlockAchievement("own_finaltakutan");
+  }
+  
+  if (game.buildings[37].owned >= 1) {
+    unlockAchievement("own_takutangarden");
   }
 }
 
