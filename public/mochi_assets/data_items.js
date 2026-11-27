@@ -212,10 +212,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[10].owned >= 1;
       },
       effect() {
-        game.buildings[10].multiplier += 50000n;
+        game.buildings[10].multiplier += 100000n;
       },
       unlocked: false,
-      desc: "金のニンジンの生産性+5%。",
+      desc: "ぺったんうさぎの生産性+10%。",
       flavor: "キラキラしたニンジン。すごそうに見えるが、食べても安全なのか不安にも思えてくる。",
     },
     
@@ -227,10 +227,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[12].owned >= 1;
       },
       effect() {
-        game.buildings[12].multiplier += 50000n;
+        game.buildings[12].multiplier += 140000n;
       },
       unlocked: false,
-      desc: "裏・最高裁判所の生産性+5%。",
+      desc: "裏・最高裁判所の生産性+14%。",
       flavor: "非常に高い価値を持つコイン、一般販売がされる機会は少ない。支払えばほぼ確実に無罪になる。",
     },
     {
@@ -241,10 +241,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[12].owned >= 1;
       },
       effect() {
-        game.buildings[12].multiplier += 120000n;
+        game.buildings[12].multiplier += 220000n;
       },
       unlocked: false,
-      desc: "裏・最高裁判所の生産性+12%。",
+      desc: "裏・最高裁判所の生産性+22%。",
       flavor: "司法を一日間全部奪えるぐらいすごいコイン。",
     },
     
@@ -270,7 +270,7 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[13].owned >= 1;
       },
       effect() {
-        game.buildings.slice(0, 14).forEach(building => {
+        game.buildings.slice(0, 13).forEach(building => {
           building.multiplier += 50000n;
         });
       },
@@ -287,10 +287,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[17].owned >= 1;
       },
       effect() {
-        game.buildings[17].multiplier += 50000n;
+        game.buildings[17].multiplier += 200000n;
       },
       unlocked: false,
-      desc: "神域の二元庭の生産性+5%。",
+      desc: "神域の二元庭の生産性+20%。",
       flavor: "「酒ですよ。市販の消毒液を水で薄めただけだけど酒ですよ」― さいほうへいき",
     },
     
@@ -302,10 +302,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[18].owned >= 1;
       },
       effect() {
-        game.buildings[18].multiplier += 50000n;
+        game.buildings[18].multiplier += 350000n;
       },
       unlocked: false,
-      desc: "真覚醒たくたんの生産性+5%。",
+      desc: "真覚醒たくたんの生産性+35%。",
       flavor: "たくたんが自身の妻などと称している人。それについてはともかく、ぬいぐるみをあげれば喜んでくれるに違いない。",
     },
     
@@ -317,10 +317,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[19].owned >= 1;
       },
       effect() {
-        game.buildings[19].multiplier += 50000n;
+        game.buildings[19].multiplier += 350000n;
       },
       unlocked: false,
-      desc: "真超覚醒たくたんの生産性+5%。",
+      desc: "真超覚醒たくたんの生産性+35%。",
       flavor: "たくたんが自身の愛娘などと称している人。それについてはともかく（ry",
     },
 
@@ -332,10 +332,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[22].owned > 0;
       },
       effect() {
-        game.buildings[22].multiplier += 50000n;
+        game.buildings[22].multiplier += 150000n;
       },
       unlocked: false,
-      desc: "終末邪術ラボの生産性+5%。",
+      desc: "終末邪術ラボの生産性+15%。",
       flavor:
         "禁忌の邪術を利用して製造された、ひんやり冷たい氷水。捻挫した時に当てておけば、痛みがすこし和らぐ。",
     },
@@ -348,10 +348,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
       },
       effect() {
         game.clickMultiplier += 40000n;
-        game.buildings[22].multiplier += 40000n;
+        game.buildings[22].multiplier += 250000n;
       },
       unlocked: false,
-      desc: "クリック力、終末邪術ラボの生産性+4%。",
+      desc: "クリック力、終末邪術ラボの生産性+25%。",
       flavor:
         "禁忌の邪術を利用して製造された、真っ白でフワフワの雪。スキーにとても向いている上質な素材だが、製造コストの問題でスキー場を賄うのは難しそうだ。",
     },
@@ -364,12 +364,12 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[23].owned > 0;
       },
       effect() {
-        game.buildings[23].multiplier += 50000n;
+        game.buildings[23].multiplier += 250000n;
         game.buildings[5].multiplier -= 30000n;
         game.buildings[6].multiplier -= 30000n;
       },
       unlocked: false,
-      desc: "覚醒干支の生産性+5%。ただし、[(disad)覚醒たくたん、超覚醒たくたんの生産性-3%(end)]。",
+      desc: "覚醒干支の生産性+25%。ただし、[(disad)覚醒たくたん、超覚醒たくたんの生産性-3%(end)]。",
       flavor:
         "「はちみつちょうだい」― 干支",
     },
@@ -382,10 +382,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[24].owned > 0;
       },
       effect() {
-        game.buildings[24].multiplier += 50000n;
+        game.buildings[24].multiplier += 500000n;
       },
       unlocked: false,
-      desc: "1847 シュトッベの生産性+5%。",
+      desc: "1847 シュトッベの生産性+50%。",
       flavor:
         "地球、餅工場惑星、シュトッベの間を行き来する銀河鉄道のよりよい燃料。樫の木一本を備長炭にするだけで、三日間の航行が可能になる。",
     },
@@ -398,10 +398,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[26].owned > 0;
       },
       effect() {
-        game.buildings[26].multiplier += 50000n;
+        game.buildings[26].multiplier += 500000n;
       },
       unlocked: false,
-      desc: "社員レノンの生産性+5%。",
+      desc: "社員レノンの生産性+50%。",
       flavor:
         "追加ファイターが購入できるコイン。瞬獄殺。",
     },
@@ -473,10 +473,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[16].multiplier += 250000n;
+        game.buildings[16].multiplier += 2500000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。Motchiyサーバーの生産性+25%。",
+      desc: "特別なカクテル。Motchiyサーバーの生産性+250%。",
       flavor:
         "ミングルは液状化最高裁を用いてカクテルを作ろうとしていたが、さすがに制止が入ったので無難な材料に落ち着いた。",
     },
@@ -488,10 +488,10 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return game.buildings[25].owned > 0;
       },
       effect() {
-        game.buildings[25].multiplier += 300000n;
+        game.buildings[25].multiplier += 800000n;
       },
       unlocked: false,
-      desc: "特別なカクテル。『楽園』ガレージの生産性+30%。",
+      desc: "特別なカクテル。『楽園』ガレージの生産性+80%。",
       flavor: "「僕らにとって特別な味わいです、と言って僕はグラスを傾けました」― ボンファイア・レノックス",
     },
     
@@ -503,12 +503,12 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return hasDivineUpgrade("ある先輩のヒラメキ・刹");
       },
       effect() {
-        game.buildings.slice(0, 17).forEach(building => {
+        game.buildings.slice(1, 17).forEach(building => {
           building.multiplier += 1500000n;
         });
       },
       unlocked: false,
-      desc: "すべてのグレード1の設備の生産力+15%。",
+      desc: "バイトたくたんを除くすべてのグレード1の設備の生産力+150%。",
       flavor: "ボート……関数……鉄鋼……ファーム……",
     },
     {
@@ -520,7 +520,7 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
       },
       effect() {
         game.buildings.slice(0, 17).forEach(building => {
-          building.cost = (building.cost * 10n) / 100n;
+          building.cost = (building.cost * 90n) / 100n;
         });
       },
       unlocked: false,
@@ -534,12 +534,12 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return hasDivineUpgrade("ある先輩のヒラメキ・考");
       },
       effect() {
-        game.buildings.slice(0, 17).forEach(building => {
+        game.buildings.slice(1, 17).forEach(building => {
           building.multiplier += 3000000n;
         });
       },
       unlocked: false,
-      desc: "すべてのグレード1の設備の生産力+30%。",
+      desc: "バイトたくたんを除くすべてのグレード1の設備の生産力+300%。",
       flavor: "とても細かい砂のアンプル。揺らすと心地の良い音がする。",
     },
     {
@@ -565,12 +565,12 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return hasDivineUpgrade("ある先輩のヒラメキ・究");
       },
       effect() {
-        game.buildings.slice(0, 17).forEach(building => {
+        game.buildings.slice(1, 17).forEach(building => {
           building.multiplier += 7000000n;
         });
       },
       unlocked: false,
-      desc: "すべてのグレード1の設備の生産力+70%。",
+      desc: "バイトたくたんを除くすべてのグレード1の設備の生産力+700%。",
       flavor: "どこかの氷山が映ったモノクロの写真。色はなくとも、その奥の太陽の明るさは想像に易い。",
     },
     {
@@ -596,12 +596,12 @@ export function createItemsData(game, getClickPower, isDebug, hasDivineUpgrade){
         return hasDivineUpgrade("ある先輩のヒラメキ・厳");
       },
       effect() {
-        game.buildings.slice(0, 17).forEach(building => {
+        game.buildings.slice(1, 17).forEach(building => {
           building.multiplier += 15000000n;
         });
       },
       unlocked: false,
-      desc: "すべてのグレード1の設備の生産力+150%。",
+      desc: "バイトたくたんを除くすべてのグレード1の設備の生産力+1500%。",
       flavor: "何度も何度も縫い直された黒いリボン。縫い目は丁寧で、よく見ないと縫い直したことが分からない。",
     },
     {
