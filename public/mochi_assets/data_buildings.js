@@ -393,5 +393,18 @@ export function createBuildingsData(game){
       flavor:
         "干支では絶対に到達できない、すべての世界の力を吸収して最強へと至ったたくたん。しかし……？",
     },
+    {
+      name: "[(r1)たくたん神の箱庭(end)]",
+      cost: 350000000000000000000n,
+      mps: 350000000000000n,
+      owned: 0n,
+      unlock() {
+        return game.buildings[36].owned > 0;
+      },
+      unlocked: false,
+      desc: "これこそが、その神の手であると。現在のバージョンで実装されている建物はここまでです！",
+      flavor:
+        "すべてを喰らいつくしたたくたんは、新たなる世界を創り出した。すべては、餅を生み出すために……。",
+    },
   ];
 }
