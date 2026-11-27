@@ -300,13 +300,274 @@ export function createAchievementsData(game){
     {
       id: "own_motchiy",
       name: "「ここからだ」",
-      desc: "Motchiyサーバーを購入する。",
+      desc: "Motchiyサーバーを購入し、上位の建物をアンロックする！",
       unlocked: false,
     },
     {
       id: "own_motchiy100",
       name: "「……アッハッハッハッハ！」",
       desc: "Motchiyサーバーを100台購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_godgarden",
+      name: "偽りの神が舞い降りる地",
+      desc: "神域の二元庭を購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_godgarden10",
+      name: "「すべては記された文字なのに？」",
+      desc: "神域の二元庭を10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_ztakutan",
+      name: "Zランク",
+      desc: "真覚醒たくたんを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_ztakutan10",
+      name: "超えて行こう！！",
+      desc: "真覚醒たくたんを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_zzztakutan",
+      name: "ZZZランク",
+      desc: "真超覚醒たくたんを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_ztakutan10",
+      name: "さんをつけろよ、鯖主野郎",
+      desc: "真超覚醒たくたんを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_imaginaryfarm",
+      name: "農業ってなに？",
+      desc: "虚数世界農場を購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_imaginaryfarm10",
+      name: "作物を育てたつもり",
+      desc: "虚数世界農場を10回購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_quantummotchiy",
+      name: "最新鋭ハードウェア！",
+      desc: "量子化Motchiyサーバーを購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_quantummotchiy10",
+      name: "最新技術の安定生産",
+      desc: "量子化Motchiyサーバーを10機購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_jajutsulab",
+      name: "闇の研究機関",
+      desc: "終末邪術ラボを購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_jajutsulab10",
+      name: "世界を滅ぼしかねない",
+      desc: "終末邪術ラボを10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_sseto",
+      name: "Z<SS",
+      desc: "覚醒干支を雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_sseto10",
+      name: "ふくろだたき",
+      desc: "覚醒干支を10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_stobbe",
+      name: "彼の所在は未だ不明",
+      desc: "1847 Stobbeを購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_stobbe10",
+      name: "宇宙2.5天文単位の旅",
+      desc: "1847 Stobbeを10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_garage",
+      name: "チーム奉樂へようこそ",
+      desc: "楽園ガレージを購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_garage10",
+      name: "マイ・ディア",
+      desc: "楽園ガレージを10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_renon",
+      name: "なんと、正規雇用",
+      desc: "社員レノンを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_renon10",
+      name: "労働組合",
+      desc: "社員レノンを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_imaginarycaller",
+      name: "物語の奥から",
+      desc: "虚構星臨装置を購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_imaginarycaller",
+      name: "どこから綴られた？",
+      desc: "虚構星臨装置を10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_mochiclock",
+      name: "かの巨匠",
+      desc: "ハンドラ・ベルディヤの餅時計を購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_mochiclock10",
+      name: "クロック・コレクター",
+      desc: "ハンドラ・ベルディヤの餅時計をを10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_mod",
+      name: "公認チートもどき",
+      desc: "小規模なModを導入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_mod10",
+      name: "ゲーム魔改造の夜",
+      desc: "小規模なModを10個導入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_ssseto",
+      name: "配布キャラ",
+      desc: "超覚醒干支を雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_ssseto",
+      name: "「勝つさ」",
+      desc: "超覚醒干支を10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_kaiha",
+      name: "香辛料を創りし者",
+      desc: "社員kaihaを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_kaiha10",
+      name: "使えないと言われたスキルを成長させて餅を作ります",
+      desc: "社員kaihaを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_rai",
+      name: "誰なんだ……？",
+      desc: "社員Raiを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_rai10",
+      name: "よく分からなくても友達",
+      desc: "社員Raiを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_ssrenon",
+      name: "もともとUZ+++++だったのに？",
+      desc: "覚醒レノンを雇用する。",
+      unlocked: false,
+    },
+    {
+      id: "own_ssrenon10",
+      name: "「もう無理よ」",
+      desc: "覚醒レノンを10人雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_middlemod",
+      name: "さらなる改造進化",
+      desc: "中規模なModを導入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_middlemod10",
+      name: "ゴテゴテ",
+      desc: "中規模なModを10個導入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_boomerang",
+      name: "「……反転分布か！」",
+      desc: "超虚数ブーメラン星雲を購入する。",
+      unlocked: false,
+    },
+    {
+      id: "own_boomerang10",
+      name: "Boomeranged",
+      desc: "超虚数ブーメラン星雲を10個購入する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_finaltakutan",
+      name: "おしまい。",
+      desc: "終焉覚醒たくたんを雇用する。",
+      unlocked: false,
+    },
+    
+    {
+      id: "own_takutangarden",
+      name: "おしまい？",
+      desc: "たくたん神が箱庭を創造し初めた……次のアップデートを待とう。",
       unlocked: false,
     },
   ];
